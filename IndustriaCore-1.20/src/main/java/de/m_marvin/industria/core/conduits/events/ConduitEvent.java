@@ -1,4 +1,4 @@
-package de.m_marvin.industria.core.conduits.engine;
+package de.m_marvin.industria.core.conduits.events;
 
 import de.m_marvin.industria.core.conduits.types.ConduitPos;
 import de.m_marvin.industria.core.conduits.types.conduits.ConduitEntity;
@@ -9,8 +9,8 @@ import net.minecraftforge.eventbus.api.Event;
 public class ConduitEvent extends Event {
 	
     private final LevelAccessor level;
-	private ConduitPos position;
-	private ConduitEntity conduitState;
+	private final ConduitPos position;
+	private final ConduitEntity conduitState;
 	
 	public ConduitEvent(LevelAccessor level, ConduitPos position, ConduitEntity conduitState) {
 		this.level = level;

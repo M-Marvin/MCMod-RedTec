@@ -109,6 +109,16 @@ public class TransistorBlock extends DiodeLikeBlock implements EntityBlock, IEle
 	}
 	
 	@Override
+	public double getCurrentPower(Level level, BlockPos pos, BlockState instance) {
+		return 0;
+	}
+	
+	@Override
+	public double getMaxPowerGeneration(Level level, BlockPos pos, BlockState instance) {
+		return 0;
+	}
+	
+	@Override
 	public void onNetworkNotify(Level level, BlockState instance, BlockPos position) {
 		GameUtility.triggerClientSync(level, position);
 	}

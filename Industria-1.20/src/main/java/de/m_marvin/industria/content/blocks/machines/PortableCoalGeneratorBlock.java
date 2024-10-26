@@ -218,7 +218,7 @@ public class PortableCoalGeneratorBlock extends BaseEntityFixedMultiBlock implem
 	}
 	
 	@Override
-	public double getPower(BlockState state, Level level, BlockPos pos) {
+	public double getCurrentPower(Level level, BlockPos pos, BlockState instance) {
 		if (level.getBlockEntity(pos) instanceof PortableCoalGeneratorBlockEntity generator && generator.getMaster() != null) {
 			String[] wireLanes = generator.getNodeLanes();
 			double shuntVoltage = ElectricUtility.getVoltageBetweenLocal(level, pos, "SHUNT", 1, wireLanes[0], 0).orElse(0.0);
@@ -229,6 +229,12 @@ public class PortableCoalGeneratorBlock extends BaseEntityFixedMultiBlock implem
 			return Math.max(powerUsed > 1.0 ? parametrics.getPowerMin() : 0, powerUsed);
 		}
 		return 0.0;
+	}
+	
+	@Override
+	public double getMaxPowerGeneration(Level level, BlockPos pos, BlockState instance) {
+		BlockParametrics parametrics = BlockParametricsManager.getInstance().getParametrics(this);
+		return parametrics.getPowerMax();
 	}
 	
 	@Override

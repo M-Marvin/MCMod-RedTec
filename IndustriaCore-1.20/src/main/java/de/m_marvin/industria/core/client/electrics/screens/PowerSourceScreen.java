@@ -1,6 +1,8 @@
 package de.m_marvin.industria.core.client.electrics.screens;
 
 import de.m_marvin.industria.IndustriaCore;
+import de.m_marvin.industria.core.client.util.screens.AbstractContainerWidgetScreen;
+import de.m_marvin.industria.core.client.util.widgets.CircuitSwitch;
 import de.m_marvin.industria.core.client.util.widgets.PowerInfo;
 import de.m_marvin.industria.core.electrics.engine.network.CEditPowerSourcePackage;
 import de.m_marvin.industria.core.electrics.types.blockentities.PowerSourceBlockEntity;
@@ -9,17 +11,19 @@ import de.m_marvin.industria.core.electrics.types.blocks.IElectricInfoProvider.E
 import de.m_marvin.industria.core.electrics.types.containers.PowerSourceContainer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class PowerSourceScreen extends AbstractContainerScreen<PowerSourceContainer> {
+public class PowerSourceScreen extends AbstractContainerWidgetScreen<PowerSourceContainer> {
 
 	protected ElectricInfo electricInfo;
 	protected PowerInfo powerInfo;
 	protected EditBox voltageField;
 	protected EditBox powerField;
+	
+	// TODO debuging
+	protected CircuitSwitch cswitch;
 	
 	public PowerSourceScreen(PowerSourceContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
 		super(pMenu, pPlayerInventory, pTitle);
@@ -48,6 +52,9 @@ public class PowerSourceScreen extends AbstractContainerScreen<PowerSourceContai
 		this.powerField.setMaxLength(5);
 		this.powerField.setValue(Integer.toString(this.menu.getBlockEntity().getPower()));
 		this.addRenderableWidget(this.powerField);
+		
+		this.cswitch = new CircuitSwitch(this.leftPos + 180, this.topPos + 10, this.menu.getBlockEntity().getLevel(), this.electricInfo.componentPos());
+		this.addRenderableWidget(this.cswitch);
 		
 		this.titleLabelY = 0;
 		this.titleLabelX = this.imageWidth / 2 - this.font.width(this.title) / 2;
@@ -89,7 +96,7 @@ public class PowerSourceScreen extends AbstractContainerScreen<PowerSourceContai
 	public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
 		if (pKeyCode == 256) {
 			this.voltageField.setFocused(false);
-			this.voltageField.setFocused(false);
+			this.powerField.setFocused(false);
 		}
 		if (this.voltageField.keyPressed(pKeyCode, pScanCode, pModifiers) || this.voltageField.canConsumeInput()) return true;
 		if (this.powerField.keyPressed(pKeyCode, pScanCode, pModifiers) || this.powerField.canConsumeInput()) return true;

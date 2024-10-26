@@ -2,10 +2,10 @@ package de.m_marvin.industria.core.conduits.engine;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.conduits.ConduitUtility;
-import de.m_marvin.industria.core.conduits.engine.ConduitEvent.ConduitLoadEvent;
-import de.m_marvin.industria.core.conduits.engine.ConduitEvent.ConduitUnloadEvent;
 import de.m_marvin.industria.core.conduits.engine.network.SCConduitPackage.SCBreakConduitPackage;
 import de.m_marvin.industria.core.conduits.engine.network.SCConduitPackage.SCPlaceConduitPackage;
+import de.m_marvin.industria.core.conduits.events.ConduitEvent.ConduitLoadEvent;
+import de.m_marvin.industria.core.conduits.events.ConduitEvent.ConduitUnloadEvent;
 import de.m_marvin.industria.core.conduits.engine.network.SSyncConduitPackage;
 import de.m_marvin.industria.core.conduits.types.conduits.ConduitEntity;
 import de.m_marvin.industria.core.registries.Capabilities;

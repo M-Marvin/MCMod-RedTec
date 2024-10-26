@@ -3,7 +3,7 @@
 	"voltageMax": 300,
 	"voltageMin": 200,
 	"nominalPower": 2000,
-	"powerMax": 3000,
+	"powerMax": 2000,
 	"powerMin": 100,
 	"wattsPerWaterMB": 100000,
 	"wattsPerFuelTick": 1000

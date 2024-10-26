@@ -3,6 +3,7 @@ package de.m_marvin.industria.content.client.screens;
 import de.m_marvin.industria.content.Industria;
 import de.m_marvin.industria.content.container.PortableCoalGeneratorContainer;
 import de.m_marvin.industria.core.client.util.screens.AbstractFluidContainerScreen;
+import de.m_marvin.industria.core.client.util.widgets.CircuitSwitch;
 import de.m_marvin.industria.core.client.util.widgets.PowerInfo;
 import de.m_marvin.industria.core.electrics.types.blocks.IElectricInfoProvider;
 import de.m_marvin.industria.core.electrics.types.blocks.IElectricInfoProvider.ElectricInfo;
@@ -18,6 +19,7 @@ public class PortableCoalGeneratorScreen extends AbstractFluidContainerScreen<Po
 	
 	protected ElectricInfo electricInfo;
 	protected PowerInfo powerInfo;
+	protected CircuitSwitch circuitSwitch;
 	
 	public PortableCoalGeneratorScreen(PortableCoalGeneratorContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
 		super(pMenu, pPlayerInventory, pTitle);
@@ -34,6 +36,8 @@ public class PortableCoalGeneratorScreen extends AbstractFluidContainerScreen<Po
 		
 		if (this.electricInfo == null) return;
 		
+		this.circuitSwitch = new CircuitSwitch(this.leftPos + 176, this.topPos + 5, this.menu.getBlockEntity().getLevel(), this.electricInfo.componentPos());
+		this.addRenderableWidget(this.circuitSwitch);
 		this.powerInfo = new PowerInfo(font, this.leftPos + 90, this.topPos + 22, 68, this.electricInfo);
 		this.addRenderableWidget(this.powerInfo);
 		

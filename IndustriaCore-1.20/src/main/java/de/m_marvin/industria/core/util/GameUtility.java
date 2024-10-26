@@ -10,6 +10,7 @@ import de.m_marvin.industria.core.registries.IndustriaTags;
 import de.m_marvin.univec.impl.Vec3d;
 import de.m_marvin.univec.impl.Vec3f;
 import de.m_marvin.univec.impl.Vec4f;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -178,6 +179,11 @@ public class GameUtility {
 	public static void triggerClientSync(Level level, BlockPos pos) {
 		BlockState state = level.getBlockState(pos);
 		level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
+	}
+	
+	@SuppressWarnings("resource")
+	public static long getSystemTicks() {
+		return Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getGameTime() : 0;
 	}
 	
 	public static HitResult raycast(Level level, Vec3d from, Vec3d direction, double range) {

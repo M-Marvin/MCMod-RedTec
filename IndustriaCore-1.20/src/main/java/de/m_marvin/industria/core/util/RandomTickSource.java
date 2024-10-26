@@ -68,7 +68,6 @@ public class RandomTickSource {
 									for (Predicate<BlockState> predicate : tickConsumers.keySet()) {
 										if (predicate.test(blockstate)) tickConsumers.get(predicate).get().onRandomTick(level, blockpos, blockstate);
 									}
-									
 								}
 							}
 						}

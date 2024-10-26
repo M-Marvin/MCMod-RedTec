@@ -105,6 +105,16 @@ public class WireHolderBlock extends Block implements IElectricBlock, ITooltipAd
 	}
 	
 	@Override
+	public double getCurrentPower(Level level, BlockPos pos, BlockState instance) {
+		return 0;
+	}
+	
+	@Override
+	public double getMaxPowerGeneration(Level level, BlockPos pos, BlockState instance) {
+		return 0;
+	}
+	
+	@Override
 	public NodePos[] getConnections(Level level, BlockPos pos, BlockState instance) {
 		return IntStream.range(0, NODE_COUNT).mapToObj(i -> new NodePos(pos, i)).toArray(i -> new NodePos[i]);
 	}

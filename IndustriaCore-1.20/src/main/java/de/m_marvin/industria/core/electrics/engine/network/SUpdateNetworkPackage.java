@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import de.m_marvin.industria.core.electrics.engine.ClientElectricPackageHandler;
+import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
+import de.m_marvin.industria.core.electrics.engine.ElectricNetwork.State;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetworkHandlerCapability.Component;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,10 +19,18 @@ public class SUpdateNetworkPackage {
 	
 	public final String dataList;
 	public final Set<Component<?, ?, ?>> components;
+	public final State state;
 	
-	public SUpdateNetworkPackage(Set<Component<?, ?, ?>> components, String dataList) {
+	public SUpdateNetworkPackage(ElectricNetwork network) {
+		this.dataList = network.printDataList();
+		this.components = network.getComponents();
+		this.state = network.getState();;
+	}
+	
+	public SUpdateNetworkPackage(Set<Component<?, ?, ?>> components, String dataList, State state) {
 		this.dataList = dataList;
 		this.components = components;
+		this.state = state;
 	}
 	
 	public Set<Component<?, ?, ?>> getComponents() {
@@ -31,6 +41,10 @@ public class SUpdateNetworkPackage {
 		return dataList;
 	}
 	
+	public State getState() {
+		return state;
+	}
+	
 	public static void encode(SUpdateNetworkPackage msg, FriendlyByteBuf buff) {
 		buff.writeInt(msg.components.size());
 		for (Component<?, ?, ?> component : msg.components) {
@@ -39,6 +53,7 @@ public class SUpdateNetworkPackage {
 			buff.writeNbt(componentTag);
 		}
 		buff.writeUtf(msg.dataList);
+		buff.writeEnum(msg.state);
 	}
 	
 	public static SUpdateNetworkPackage decode(FriendlyByteBuf buff) {
@@ -50,7 +65,8 @@ public class SUpdateNetworkPackage {
 			components.add(component);
 		}
 		String dataList = buff.readUtf();
-		return new SUpdateNetworkPackage(components, dataList);
+		State state = buff.readEnum(State.class);
+		return new SUpdateNetworkPackage(components, dataList, state);
 	}
 	
 	public static void handle(SUpdateNetworkPackage msg, Supplier<NetworkEvent.Context> ctx) {

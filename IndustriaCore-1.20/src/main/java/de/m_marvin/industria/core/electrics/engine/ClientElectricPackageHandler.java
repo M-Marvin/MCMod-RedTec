@@ -1,5 +1,7 @@
 package de.m_marvin.industria.core.electrics.engine;
 
+import java.util.Optional;
+
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetworkHandlerCapability.Component;
 import de.m_marvin.industria.core.electrics.engine.network.SSyncCircuitTemplatesPackage;
@@ -48,8 +50,12 @@ public class ClientElectricPackageHandler {
 		
 		Level level = Minecraft.getInstance().level;
 		ElectricNetworkHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_NETWORK_HANDLER_CAPABILITY);
-		
+
+		Optional<Component<?, ?, ?>> c = msg.getComponents().stream().findAny();
+
 		handler.injectNodeVoltages(msg.getComponents(), msg.getDataList());
+		if (c.isPresent())
+			handler.updateNetworkState(c.get().pos(), msg.getState());
 		
 	}
 	

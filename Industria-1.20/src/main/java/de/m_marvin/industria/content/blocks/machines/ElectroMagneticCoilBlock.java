@@ -304,6 +304,16 @@ public class ElectroMagneticCoilBlock extends BaseEntityBlock implements IBaseEn
 	}
 	
 	@Override
+	public double getMaxPowerGeneration(Level level, BlockPos pos, BlockState instance) {
+		return 0;
+	}
+	
+	@Override
+	public double getCurrentPower(Level level, BlockPos pos, BlockState instance) {
+		return 0;
+	}
+	
+	@Override
 	public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
 		if (pLevel.getBlockEntity(pPos) instanceof ElectroMagneticCoilBlockEntity) {
 			MagnetismUtility.updateField(pLevel, pPos);

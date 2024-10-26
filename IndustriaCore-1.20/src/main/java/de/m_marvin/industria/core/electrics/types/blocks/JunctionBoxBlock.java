@@ -107,6 +107,16 @@ public class JunctionBoxBlock extends BaseEntityBlock implements IElectricBlock,
 			ElectricUtility.plotConnectEquealNamed(plotter, level, this, position, instance);
 		}
 	}
+
+	@Override
+	public double getCurrentPower(Level level, BlockPos pos, BlockState instance) {
+		return 0;
+	}
+	
+	@Override
+	public double getMaxPowerGeneration(Level level, BlockPos pos, BlockState instance) {
+		return 0;
+	}
 	
 	public Direction getBlockFacing(Level level, BlockState state, BlockPos position) {
 		return PhysicUtility.optionalContraptionTransform(level, position, (transform, direction) -> PhysicUtility.toWorldDirection(transform, direction), state.getValue(BlockStateProperties.FACING));

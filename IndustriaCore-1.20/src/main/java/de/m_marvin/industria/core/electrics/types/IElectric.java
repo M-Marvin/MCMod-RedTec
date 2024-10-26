@@ -41,6 +41,9 @@ public interface IElectric<I, P, T> {
 	public I deserializeNBTInstance(CompoundTag nbt);
 	public P deserializeNBTPosition(CompoundTag nbt);
 	
+	public double getMaxPowerGeneration(Level level, P pos, I instance);
+	public double getCurrentPower(Level level, P pos, I instance);
+	
 	public NodePos[] getConnections(Level level, P pos, I instance);
 	public String[] getWireLanes(Level level, P pos, I instance, NodePos node);
 	public void setWireLanes(Level level, P pos, I instance, NodePos node, String[] laneLabels);

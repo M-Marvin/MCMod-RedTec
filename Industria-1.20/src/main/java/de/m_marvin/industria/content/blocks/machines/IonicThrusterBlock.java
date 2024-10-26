@@ -128,14 +128,19 @@ public class IonicThrusterBlock extends AbstractThrusterBlock implements IElectr
 	}
 	
 	@Override
-	public double getPower(BlockState state, Level level, BlockPos pos) {
+	public double getCurrentPower(Level level, BlockPos pos, BlockState instance) {
 		if (level.getBlockEntity(pos) instanceof IonicThrusterBlockEntity thruster) {
 			String[] wireLanes = thruster.getNodeLanes();
 			BlockParametrics parametrics = BlockParametricsManager.getInstance().getParametrics(this);
 			double voltage = ElectricUtility.getVoltageBetweenLocal(level, pos, wireLanes[0], 0, wireLanes[1], 0).orElse(0.0);
-			return parametrics.getPowerV(voltage);
+			return -parametrics.getPowerV(voltage);
 		}
 		return 0.0;
+	}
+	
+	@Override
+	public double getMaxPowerGeneration(Level level, BlockPos pos, BlockState instance) {
+		return 0;
 	}
 	
 	@Override

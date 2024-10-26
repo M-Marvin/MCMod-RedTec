@@ -2,7 +2,10 @@ package de.m_marvin.industria.core.electrics.engine;
 
 import java.util.Optional;
 
+import de.m_marvin.industria.core.electrics.ElectricUtility;
+import de.m_marvin.industria.core.electrics.engine.ElectricNetwork.State;
 import de.m_marvin.industria.core.electrics.engine.network.CEditPowerSourcePackage;
+import de.m_marvin.industria.core.electrics.engine.network.CPlayerSwitchNetworkPackage;
 import de.m_marvin.industria.core.electrics.engine.network.CUpdateJunctionLanesPackage;
 import de.m_marvin.industria.core.electrics.types.blockentities.IJunctionEdit;
 import de.m_marvin.industria.core.electrics.types.blockentities.PowerSourceBlockEntity;
@@ -13,6 +16,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent.Context;
 
 public class ServerElectricPackageHandler {
+	
+	public static void handlePlayerSwitchNetwork(CPlayerSwitchNetworkPackage msg, Context ctx) {
+		ElectricUtility.setNetworkState(ctx.getSender().level(), msg.getComponent(), msg.getState() ? State.ONLINE : State.OFFLINE);
+	}
 	
 	public static void handleUpdateJunctionLanes(CUpdateJunctionLanesPackage msg, Context ctx) {
 		

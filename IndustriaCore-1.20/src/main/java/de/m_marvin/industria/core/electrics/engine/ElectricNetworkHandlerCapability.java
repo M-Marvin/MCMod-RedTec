@@ -21,12 +21,14 @@ import com.google.common.base.Objects;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.Config;
-import de.m_marvin.industria.core.conduits.engine.ConduitEvent;
-import de.m_marvin.industria.core.conduits.engine.ConduitEvent.ConduitBreakEvent;
-import de.m_marvin.industria.core.conduits.engine.ConduitEvent.ConduitPlaceEvent;
+import de.m_marvin.industria.core.client.electrics.events.ElectricNetworkEvent;
+import de.m_marvin.industria.core.conduits.events.ConduitEvent;
+import de.m_marvin.industria.core.conduits.events.ConduitEvent.ConduitBreakEvent;
+import de.m_marvin.industria.core.conduits.events.ConduitEvent.ConduitPlaceEvent;
 import de.m_marvin.industria.core.conduits.types.ConduitPos;
 import de.m_marvin.industria.core.conduits.types.ConduitPos.NodePos;
 import de.m_marvin.industria.core.electrics.ElectricUtility;
+import de.m_marvin.industria.core.electrics.engine.ElectricNetwork.State;
 import de.m_marvin.industria.core.electrics.engine.network.SSyncComponentsPackage;
 import de.m_marvin.industria.core.electrics.engine.network.SUpdateNetworkPackage;
 import de.m_marvin.industria.core.electrics.types.IElectric;
@@ -44,6 +46,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -266,7 +269,7 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 			List<ElectricNetwork> networks = components.stream().map(electricHandler.component2circuitMap::get).distinct().toList();
 			IndustriaCore.NETWORK.send(PacketDistributor.PLAYER.with(event::getPlayer), new SSyncComponentsPackage(components, event.getChunk().getPos(), SyncRequestType.ADDED));
 			for (ElectricNetwork network : networks) {
-				IndustriaCore.NETWORK.send(ElectricUtility.TRACKING_NETWORK.with(() -> network), new SUpdateNetworkPackage(network.getComponents(), network.printDataList()));
+				IndustriaCore.NETWORK.send(ElectricUtility.TRACKING_NETWORK.with(() -> network), new SUpdateNetworkPackage(network));
 			}
 		}
 	}
@@ -413,6 +416,12 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 		public ChunkPos getAffectedChunk(Level level) {
 			return type.getAffectedChunk(level, pos);
 		}
+		public double getMaxPowerGeneration(Level level) {
+			return type.getMaxPowerGeneration(level, pos, this.instance(level));
+		}
+		public double getCurrentPower(Level level) {
+			return type.getCurrentPower(level, pos, this.instance(level));
+		}
 	}
 	
 	/**
@@ -428,6 +437,15 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 	@SuppressWarnings("unchecked")
 	public <I, P, T> Component<I, P, T> getComponentAt(P position) {
 		return (Component<I, P, T>) this.pos2componentMap.get(position);
+	}
+	
+	/**
+	 * Returns the network an component at the given position
+	 */
+	public <P> ElectricNetwork getNetworkAt(P position) {
+		Component<?, P, ?> component = getComponentAt(position);
+		if (component == null) return null;
+		return this.component2circuitMap.get(component);
 	}
 	
 	/**
@@ -517,7 +535,21 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 	}
 	
 	/**
-	 * Updates the network which has a component at the given position
+	 * Changes the state of the network at the given position.
+	 * If the state has actually changed, necessary events are triggered.
+	 */
+	public <P> void updateNetworkState(P position, ElectricNetwork.State state) {
+		ElectricNetwork network = getNetworkAt(position);
+		MinecraftForge.EVENT_BUS.post(new ElectricNetworkEvent.StateChangeEvent(network, state));
+		network.setState(state);
+		if (state == State.FAILED) {
+			MinecraftForge.EVENT_BUS.post(new ElectricNetworkEvent.FuseTripedEvent(network));
+		}
+		triggerUpdates(network);
+	}
+	
+	/**
+	 * Updates the network which has a component at the given position.
 	 */
 	public <P> void updateNetwork(P position) {
 		
@@ -547,16 +579,27 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 					}
 				}
 			});
-
+			
 			getSimulationProcessor().processNetwork(circuit).thenAccept(state -> {
-				if (state)
-					IndustriaCore.NETWORK.send(ElectricUtility.TRACKING_NETWORK.with(() -> circuitFinalized), new SUpdateNetworkPackage(circuitFinalized.getComponents(), circuitFinalized.printDataList()));
+				if (!state) {
+					circuitFinalized.tripFuse();
+					MinecraftForge.EVENT_BUS.post(new ElectricNetworkEvent.FuseTripedEvent(circuitFinalized));
+				}
+				triggerUpdates(circuitFinalized);
 			});
 			
 		}
 		
 	}
 
+	/**
+	 * Triggers the same update methods as when updating the network, without actually starting a new simulation.
+	 */
+	public void triggerUpdates(ElectricNetwork network) {
+		network.getComponents().forEach(c -> c.onNetworkChange(network.getLevel()));
+		IndustriaCore.NETWORK.send(ElectricUtility.TRACKING_NETWORK.with(() -> network), new SUpdateNetworkPackage(network));
+	}
+	
 	/**
 	 * Removes a component from the network and updates it and its components
 	 */

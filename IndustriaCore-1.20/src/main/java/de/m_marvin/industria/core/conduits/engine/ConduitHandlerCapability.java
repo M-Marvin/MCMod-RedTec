@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import de.m_marvin.industria.IndustriaCore;
-import de.m_marvin.industria.core.conduits.engine.ConduitEvent.ConduitBreakEvent;
-import de.m_marvin.industria.core.conduits.engine.ConduitEvent.ConduitLoadEvent;
-import de.m_marvin.industria.core.conduits.engine.ConduitEvent.ConduitPlaceEvent;
-import de.m_marvin.industria.core.conduits.engine.ConduitEvent.ConduitUnloadEvent;
 import de.m_marvin.industria.core.conduits.engine.network.SSyncConduitPackage;
+import de.m_marvin.industria.core.conduits.events.ConduitEvent.ConduitBreakEvent;
+import de.m_marvin.industria.core.conduits.events.ConduitEvent.ConduitLoadEvent;
+import de.m_marvin.industria.core.conduits.events.ConduitEvent.ConduitPlaceEvent;
+import de.m_marvin.industria.core.conduits.events.ConduitEvent.ConduitUnloadEvent;
 import de.m_marvin.industria.core.conduits.types.ConduitHitResult;
 import de.m_marvin.industria.core.conduits.types.ConduitNode;
 import de.m_marvin.industria.core.conduits.types.ConduitPos;

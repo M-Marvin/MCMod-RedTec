@@ -107,7 +107,7 @@ public class PowerSourceBlock extends BaseEntityBlock implements IElectricBlock,
 	}
 	
 	@Override
-	public double getPower(BlockState state, Level level, BlockPos pos) {
+	public double getCurrentPower(Level level, BlockPos pos, BlockState instance) {
 		if (level.getBlockEntity(pos) instanceof PowerSourceBlockEntity source) {
 			String[] wireLanes = source.getNodeLanes();
 			double shuntVoltage = ElectricUtility.getVoltageBetweenLocal(level, pos, "SHUNT", 1, wireLanes[0], 0).orElse(0.0);
@@ -116,6 +116,14 @@ public class PowerSourceBlock extends BaseEntityBlock implements IElectricBlock,
 			double powerUsed = sourceVoltage * sourceCurrent;
 			BlockParametrics parametrics = BlockParametricsManager.getInstance().getParametrics(this);
 			return Math.max(powerUsed > 1.0 ? parametrics.getPowerMin() : 0, powerUsed);
+		}
+		return 0.0;
+	}
+	
+	@Override
+	public double getMaxPowerGeneration(Level level, BlockPos pos, BlockState instance) {
+		if (level.getBlockEntity(pos) instanceof PowerSourceBlockEntity source) {
+			return source.getPower();
 		}
 		return 0.0;
 	}

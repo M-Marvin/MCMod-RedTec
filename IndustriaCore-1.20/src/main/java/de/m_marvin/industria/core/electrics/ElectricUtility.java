@@ -12,6 +12,7 @@ import com.google.common.base.Predicate;
 import de.m_marvin.industria.core.conduits.types.ConduitPos.NodePos;
 import de.m_marvin.industria.core.electrics.engine.CircuitTemplateManager;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
+import de.m_marvin.industria.core.electrics.engine.ElectricNetwork.State;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetworkHandlerCapability;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetworkHandlerCapability.Component;
 import de.m_marvin.industria.core.electrics.types.CircuitTemplate.Plotter;
@@ -90,6 +91,32 @@ public class ElectricUtility {
 	public static boolean isInNetwork(Level level, Object pos) {
 		ElectricNetworkHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_NETWORK_HANDLER_CAPABILITY);
 		return handler.isInNetwork(pos);
+	}
+	
+	/**
+	 * Returns the electric network with an component at the fiven position
+	 */
+	public static ElectricNetwork getNetworkAt(Level level, Object pos) {
+		ElectricNetworkHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_NETWORK_HANDLER_CAPABILITY);
+		return handler.getNetworkAt(pos);
+	}
+	
+	/**
+	 * Changes the state of the network with an component at the given position
+	 * Runs necessary updates and triggers events
+	 */
+	public static void setNetworkState(Level level, Object pos, ElectricNetwork.State state) {
+		ElectricNetworkHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_NETWORK_HANDLER_CAPABILITY);
+		
+		handler.updateNetworkState(pos, state);
+		ElectricNetwork network = handler.getNetworkAt(pos);
+		if (network != null && !level.isClientSide()) {
+			if (state == State.ONLINE) {
+				handler.updateNetwork(pos);
+			} else {
+				handler.triggerUpdates(network);;
+			}
+		}
 	}
 	
 	/**

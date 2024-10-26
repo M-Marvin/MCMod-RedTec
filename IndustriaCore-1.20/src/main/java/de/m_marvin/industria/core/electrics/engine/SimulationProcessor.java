@@ -93,11 +93,8 @@ public class SimulationProcessor {
 				}
 				if (this.currentTask == null) continue;
 				String netList = this.currentTask.network.getNetList();
-				if (!processNetList(netList)) {
-					// TODO make fuse blow/ingame message
-				}
-				this.currentTask.network.getComponents().forEach(c -> c.onNetworkChange(this.currentTask.network.getLevel()));
-				this.currentTask.completable.complete(true);
+				boolean result = processNetList(netList);
+				this.currentTask.completable.complete(result);
 			}
 		}
 		
@@ -152,7 +149,6 @@ public class SimulationProcessor {
 	}
 	
 	public CompletableFuture<Boolean> processNetwork(ElectricNetwork network) {
-		if (this.shouldShutdown) return CompletableFuture.completedFuture(false);
 		synchronized (tasks) {
 			for (SimTask task : this.tasks) {
 				if (task.network == network) {

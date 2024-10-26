@@ -27,15 +27,22 @@ import net.minecraft.world.level.Level;
 
 public class ElectricNetwork {
 	
+	public static enum State {
+		ONLINE,OFFLINE,FAILED;
+	}
+	
 	protected String title;
 	protected final Supplier<Level> level;
 	protected Set<Component<?, ?, ?>> components = ConcurrentHashMap.newKeySet();
-	protected Set<Component<?, ?, ?>> componentsLast = new HashSet<>();
 	protected long templateCounter;
 	protected StringBuilder circuitBuilder;
 	protected String groundNode;
 	protected String netList = "";
 	protected Map<String, Double> nodeVoltages = Maps.newHashMap();
+	protected State state = State.ONLINE;
+	protected double maxPower;
+	protected double currentConsumtion;
+	protected double currentProduction;
 
 	protected static Object ngLinkLock = new Object();
 	
@@ -67,6 +74,7 @@ public class ElectricNetwork {
 			String circuitName = handler.saveCircuit(this.netList, printDataList());
 			tag.putString("Circuit", circuitName);
 		}
+		tag.putString("State", this.state.name().toLowerCase());
 		return tag;
 	}
 	
@@ -81,6 +89,7 @@ public class ElectricNetwork {
 			this.netList = lists[0];
 			this.parseDataList(lists[1]);
 		}
+		this.state = State.valueOf(tag.getString("State").toUpperCase());
 	}
 	
 	public Set<Component<?, ?, ?>> getComponents() {
@@ -88,10 +97,11 @@ public class ElectricNetwork {
 	}
 
 	public void reset() {
+		this.maxPower = 0;
+		this.currentConsumtion = 0;
 		this.circuitBuilder = new StringBuilder();
 		this.netList = "";
 		this.groundNode = null;
-		this.componentsLast = components;
 		this.components = ConcurrentHashMap.newKeySet();
 	}
 	
@@ -185,7 +195,57 @@ public class ElectricNetwork {
 			.map(s -> s.split("\t"))
 			.filter(s -> s.length == 2)
 			.forEach(s -> this.nodeVoltages.put(s[0], Double.valueOf(s[1].split(" V")[0])));
+
+		recalculateLoads();
 		return this.nodeVoltages.size() > 0;
+	}
+	
+	public synchronized void recalculateLoads() {
+		this.maxPower = 0;
+		this.currentConsumtion = 0;
+		this.currentProduction = 0;
+		for (Component<?, ?, ?> c : this.components) {
+			this.maxPower += c.getMaxPowerGeneration(getLevel());
+			double p = c.getCurrentPower(getLevel());
+			if (p > 0) {
+				this.currentProduction += p;
+			} else {
+				this.currentConsumtion += -p;
+			}
+		}
+	}
+	
+	public double getMaxPower() {
+		return maxPower;
+	}
+	
+	public double getCurrentConsumtion() {
+		return currentConsumtion;
+	}
+	
+	public double getCurrentProduction() {
+		return currentProduction;
+	}
+	
+	public void tripFuse() {
+		setState(State.FAILED);
+	}
+	
+	public void setState(State state) {
+		this.state = state;
+		recalculateLoads();
+	}
+	
+	public State getState() {
+		return state;
+	}
+	
+	public boolean isTripped() {
+		return this.state == State.FAILED;
+	}
+	
+	public boolean isOnline() {
+		return this.state == State.ONLINE;
 	}
 	
 	public String getNetList() {
@@ -203,13 +263,13 @@ public class ElectricNetwork {
 	public synchronized Optional<Double> getFloatingNodeVoltage(NodePos node, int laneId, String lane) {
 		String nodeName = getNodeKeyString(node, laneId, lane);
 		if (!this.nodeVoltages.containsKey(nodeName)) return Optional.empty();
-		return Optional.of(this.nodeVoltages.get(nodeName));
+		return Optional.of(isOnline() ? this.nodeVoltages.get(nodeName) : 0.0);
 	}
 
 	public synchronized Optional<Double> getFloatingLocalNodeVoltage(BlockPos position, String lane, int group) {
 		String nodeName = getLocalNodeKeyString(position, lane, group);
 		if (!this.nodeVoltages.containsKey(nodeName)) return Optional.empty();
-		return Optional.of(this.nodeVoltages.get(nodeName));
+		return Optional.of(isOnline() ? this.nodeVoltages.get(nodeName) : 0.0);
 	}
 
 	private static final Pattern FILTER_NODE_PATTERN = Pattern.compile("(?:N[0-9_]{5,})|(?:node\\|[A-Za-z0-9_~]+\\|)|(?:intnode\\|[A-Za-z0-9_~]+\\|_[0-9])");

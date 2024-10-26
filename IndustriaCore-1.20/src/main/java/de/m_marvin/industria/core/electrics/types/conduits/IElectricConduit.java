@@ -42,6 +42,16 @@ public interface IElectricConduit extends IElectric<ConduitEntity, ConduitPos, C
 		return new NodePos[] { pos.getNodeA(), pos.getNodeB() };
 	}
 	
+	@Override
+	default double getCurrentPower(Level level, ConduitPos pos, ConduitEntity instance) {
+		return 0;
+	}
+	
+	@Override
+	default double getMaxPowerGeneration(Level level, ConduitPos pos, ConduitEntity instance) {
+		return 0;
+	}
+	
 	public int getWireCount();
 	
 	@Override
