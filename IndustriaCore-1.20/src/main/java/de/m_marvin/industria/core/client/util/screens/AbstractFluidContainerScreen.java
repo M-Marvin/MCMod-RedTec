@@ -16,7 +16,6 @@ import de.m_marvin.industria.core.util.container.IFluidSlotContainer;
 import de.m_marvin.industria.core.util.container.IFluidSlotContainer.FluidSlot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
