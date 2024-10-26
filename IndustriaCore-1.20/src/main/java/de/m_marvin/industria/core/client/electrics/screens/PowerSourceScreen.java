@@ -2,7 +2,6 @@ package de.m_marvin.industria.core.client.electrics.screens;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.client.util.screens.AbstractContainerWidgetScreen;
-import de.m_marvin.industria.core.client.util.widgets.CircuitSwitch;
 import de.m_marvin.industria.core.client.util.widgets.PowerInfo;
 import de.m_marvin.industria.core.electrics.engine.network.CEditPowerSourcePackage;
 import de.m_marvin.industria.core.electrics.types.blockentities.PowerSourceBlockEntity;
@@ -21,9 +20,6 @@ public class PowerSourceScreen extends AbstractContainerWidgetScreen<PowerSource
 	protected PowerInfo powerInfo;
 	protected EditBox voltageField;
 	protected EditBox powerField;
-	
-	// TODO debuging
-	protected CircuitSwitch cswitch;
 	
 	public PowerSourceScreen(PowerSourceContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
 		super(pMenu, pPlayerInventory, pTitle);
@@ -52,9 +48,6 @@ public class PowerSourceScreen extends AbstractContainerWidgetScreen<PowerSource
 		this.powerField.setMaxLength(5);
 		this.powerField.setValue(Integer.toString(this.menu.getBlockEntity().getPower()));
 		this.addRenderableWidget(this.powerField);
-		
-		this.cswitch = new CircuitSwitch(this.leftPos + 180, this.topPos + 10, this.menu.getBlockEntity().getLevel(), this.electricInfo.componentPos());
-		this.addRenderableWidget(this.cswitch);
 		
 		this.titleLabelY = 0;
 		this.titleLabelX = this.imageWidth / 2 - this.font.width(this.title) / 2;
