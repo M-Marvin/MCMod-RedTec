@@ -28,7 +28,7 @@ apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'org.spongepowered.mixin' // Required for VS2
+apply plugin: 'org.spongepowered.mixin' // Required for VS2 and industriacore
 
 version = mod_version
 group = mod_group_id
@@ -159,6 +159,9 @@ configurations.all {
 dependencies {
 
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+	
+	// Enable mixin processor
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 	
 	// Valkyrien Skies 2
     implementation fg.deobf("org.valkyrienskies:valkyrienskies-120-forge:${rootProject.vs2_version}") { transitive = false }

@@ -9,7 +9,7 @@
 
 "industriacore.commands.setconduit.success":							"Changed conduit beginning at %1$s %2$s %3$s",
 "industriacore.commands.setconduit.failure":							"Placement of conduit impossible!",
-"industriacore.commands.contraption.remove.success":					"Contraption %1$s removed",
+"industriacore.commands.contraption.remove.success":					"Contraption removed",
 "industriacore.commands.contraption.remove.success_multiple":			"Removed %1$s contraptions",
 "industriacore.commands.contraption.create.failed":						"Creation of Contraption failed!",
 "industriacore.commands.contraption.create.success":					"Contraption created from blocks at %1$s %2$s %3$s",
@@ -42,6 +42,14 @@
 "industriacore.commands.debug.node_voltages.node":						"ID: %d",
 "industriacore.commands.debug.node_voltages.lane":						"→ %d '%s': %d V",
 "industriacore.commands.debug.circuit_copied":							"Circuit netlist copied to clipboard",
+
+"industriacore.commands.template.loaded":								"Template '%s' loaded and placed",
+"industriacore.commands.template.notfound":								"Template '%s' not found",
+"industriacore.commands.template.loadfailed":							"Could not load template '%s'",
+"industriacore.commands.template.saved":								"Template '%s' saved",
+
+"industriacore.argument.rotation.invalid":								"Invalid rotation: '%s'",
+"industriacore.argument.mirror.invalid":								"Invalid mirroring: '%s'",
 
 "industriacore.argument.contraption.options.unknown":					"Unknown option '%s'",
 "industriacore.argument.contraption.options.inapplicable":				"Option '%s' is not applicable here",

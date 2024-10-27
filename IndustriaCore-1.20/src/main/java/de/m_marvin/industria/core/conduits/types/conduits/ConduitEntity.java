@@ -3,6 +3,7 @@ package de.m_marvin.industria.core.conduits.types.conduits;
 import de.m_marvin.industria.core.conduits.types.ConduitPos;
 import de.m_marvin.industria.core.conduits.types.conduits.Conduit.ConduitShape;
 import de.m_marvin.industria.core.registries.Conduits;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -40,8 +41,12 @@ public class ConduitEntity {
 	}
 	
 	public CompoundTag save() {
+		return save(BlockPos.ZERO);
+	}
+	
+	public CompoundTag save(BlockPos relative) {
 		CompoundTag tag = new CompoundTag();
-		tag.put("Position", this.position.writeNBT(new CompoundTag()));
+		tag.put("Position", this.position.writeNBT(new CompoundTag(), relative));
 		tag.putString("Conduit", Conduits.CONDUITS_REGISTRY.get().getKey(this.conduit).toString());
 		tag.putDouble("Length", this.length);
 		if (this.shape != null) tag.put("Shape", this.shape.save());
@@ -50,10 +55,14 @@ public class ConduitEntity {
 	}
 	
 	public static ConduitEntity load(CompoundTag tag) {
+		return load(tag, BlockPos.ZERO);
+	}
+	
+	public static ConduitEntity load(CompoundTag tag, BlockPos relative) {
 		ResourceLocation conduitName = new ResourceLocation(tag.getString("Conduit"));
 		Conduit conduit = Conduits.CONDUITS_REGISTRY.get().getValue(conduitName);
 		if (conduit == null) return null;
-		ConduitPos position = ConduitPos.readNBT(tag.getCompound("Position"));
+		ConduitPos position = ConduitPos.readNBT(tag.getCompound("Position"), relative);
 		double length = tag.getDouble("Length");
 		ConduitShape shape = tag.contains("Shape") ? ConduitShape.load(tag.getCompound("Shape")) : null;
 		ConduitEntity state = conduit.newConduitEntity(position, conduit, length);

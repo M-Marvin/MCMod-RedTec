@@ -212,6 +212,10 @@ public class ConduitHandlerCapability implements ICapabilitySerializable<ListTag
 				return false;
 			}
 			conduitState.getConduit().onPlace(level, position, conduitState);
+			
+			// Send package to server just to make sure it is up to date, should already be the case if placed trough an player.
+			BlockPos middle = MathUtility.getMiddleBlock(nodeApos, nodeBpos);
+			IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(middle)), new SSyncConduitPackage(conduitState, level.getChunkAt(middle).getPos(), SyncRequestType.ADDED));
 			return true;
 		}
 		
@@ -227,6 +231,10 @@ public class ConduitHandlerCapability implements ICapabilitySerializable<ListTag
 			if (conduits.contains(conduitState)) {
 				if (this.conduits.remove(conduitState)) {
 					conduitState.dismantle(level);
+					
+					// Send package to server just to make sure it is up to date, should already be the case if removed trough an player.
+					BlockPos middle = MathUtility.getMiddleBlock(conduitState.getPosition().getNodeApos(), conduitState.getPosition().getNodeBpos());
+					IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(middle)), new SSyncConduitPackage(conduitState, level.getChunkAt(middle).getPos(), SyncRequestType.REMOVED));
 					return true;
 				}
 			}

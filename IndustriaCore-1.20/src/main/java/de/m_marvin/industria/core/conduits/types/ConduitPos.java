@@ -122,14 +122,22 @@ public class ConduitPos {
 	}
 	
 	public CompoundTag writeNBT(CompoundTag nbt) {
-		nbt.put("NodeA", this.nodeA.writeNBT(new CompoundTag()));
-		nbt.put("NodeB", this.nodeB.writeNBT(new CompoundTag()));
+		return writeNBT(nbt, BlockPos.ZERO);
+	}
+	
+	public CompoundTag writeNBT(CompoundTag nbt, BlockPos relative) {
+		nbt.put("NodeA", this.nodeA.writeNBT(new CompoundTag(), relative));
+		nbt.put("NodeB", this.nodeB.writeNBT(new CompoundTag(), relative));
 		return nbt;
 	}
 	
 	public static ConduitPos readNBT(CompoundTag nbt) {
-		NodePos nodeA = NodePos.readNBT(nbt.getCompound("NodeA"));
-		NodePos nodeB = NodePos.readNBT(nbt.getCompound("NodeB"));
+		return readNBT(nbt, BlockPos.ZERO);
+	}
+	
+	public static ConduitPos readNBT(CompoundTag nbt, BlockPos relative) {
+		NodePos nodeA = NodePos.readNBT(nbt.getCompound("NodeA"), relative);
+		NodePos nodeB = NodePos.readNBT(nbt.getCompound("NodeB"), relative);
 		return new ConduitPos(nodeA, nodeB);
 	}
 	
@@ -189,13 +197,21 @@ public class ConduitPos {
 		}
 		
 		public CompoundTag writeNBT(CompoundTag nbt) {
-			nbt.put("Pos", NbtUtils.writeBlockPos(this.block));
+			return writeNBT(nbt, BlockPos.ZERO);
+		}
+		
+		public CompoundTag writeNBT(CompoundTag nbt, BlockPos relative) {
+			nbt.put("Pos", NbtUtils.writeBlockPos(this.block.subtract(relative)));
 			nbt.putInt("Id", this.node);
 			return nbt;
 		}
 		
 		public static NodePos readNBT(CompoundTag nbt) {
-			return new NodePos(NbtUtils.readBlockPos(nbt.getCompound("Pos")), nbt.getInt("Id"));
+			return readNBT(nbt, BlockPos.ZERO);
+		}
+		
+		public static NodePos readNBT(CompoundTag nbt, BlockPos relative) {
+			return new NodePos(NbtUtils.readBlockPos(nbt.getCompound("Pos")).offset(relative), nbt.getInt("Id"));
 		}
 		
 		@Override

@@ -20,6 +20,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.8.21'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.8.21'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'org.spongepowered.mixin' version '0.7.+' // Required for VS2 and mixins
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -27,7 +28,6 @@ apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'org.spongepowered.mixin' // Required for VS2
 
 version = mod_version
 group = mod_group_id
@@ -146,6 +146,9 @@ repositories {
 	maven {
 		url 'https://modmaven.dev/'
 	}
+	    maven {
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+    }
     maven {
         name = "Valkyrien Skies Internal"
         url = 'https://maven.valkyrienskies.org'
@@ -180,6 +183,9 @@ dependencies {
 
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 	
+	// Enable mixin processor
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	
 	// Valkyrien Skies 2
     implementation fg.deobf("org.valkyrienskies:valkyrienskies-120-forge:${rootProject.vs2_version}") { transitive = false }
 	
@@ -195,10 +201,7 @@ dependencies {
 	implementation fg.deobf("curse.maven:kotlinforforge-351264:$forge_kotlin_version")
     implementation "com.fasterxml.jackson.core:jackson-annotations:2.13.3"
     
- 	// NG Link
-	//shade("com.github.M-Marvin:LIBRARY-ElectronFlow:$electronflow_version")
-	//minecraftLibrary("com.github.M-Marvin:LIBRARY-ElectronFlow:$electronflow_version")
-	//api("com.github.M-Marvin:LIBRARY-ElectronFlow:$electronflow_version")
+ 	// ElectronFlow
 	shade("de.m_marvin.electronflow:jelectronflow:${electronflow_version}")
 	minecraftLibrary("de.m_marvin.electronflow:jelectronflow:${electronflow_version}")
 	api("de.m_marvin.electronflow:jelectronflow:${electronflow_version}")
@@ -213,6 +216,11 @@ dependencies {
 	minecraftLibrary("de.m_marvin.archiveutility:archiveutility:${archutil_version}")
 	api("de.m_marvin.archiveutility:archiveutility:${archutil_version}")
 	
+}
+
+mixin {
+	add sourceSets.main, 'mixins.industriacore.refmap.json'
+	config 'mixins.industriacore.json'
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

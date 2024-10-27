@@ -27,32 +27,31 @@ import net.minecraftforge.network.PacketDistributor;
 public class ConduitUtility {
 	
 	public static boolean setConduit(Level level, ConduitPos position, Conduit conduit, double length) {
-		if (!level.isClientSide()) {
+		ConduitHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONDUIT_HANDLER_CAPABILITY);
+		if (handler.placeConduit(position, conduit, length) && !level.isClientSide()) {
+			// This is just to make sure events are triggered on both side
 			BlockPos middlePos = MathUtility.getMiddleBlock(
 					PhysicUtility.ensureWorldBlockCoordinates(level, position.getNodeApos(), position.getNodeApos()), 
 					PhysicUtility.ensureWorldBlockCoordinates(level, position.getNodeBpos(), position.getNodeBpos()));
 			IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(middlePos)), new SCConduitPackage.SCPlaceConduitPackage(position, conduit, length));
+			return true;
 		}
-		ConduitHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONDUIT_HANDLER_CAPABILITY);
-		return handler.placeConduit(position, conduit, length);
-	}
-	
-	public static boolean removeConduitFromClient(Level level, ConduitPos conduitPosition, boolean dropItems) {
-		IndustriaCore.NETWORK.sendToServer(new SCConduitPackage.SCBreakConduitPackage(conduitPosition, dropItems));
-		return ConduitUtility.removeConduit(level, conduitPosition, dropItems);
+		return false;
 	}
 	
 	public static boolean removeConduit(Level level, ConduitPos position, boolean dropItems) {
-		if (!level.isClientSide()) {
+		ConduitHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONDUIT_HANDLER_CAPABILITY);
+		if (handler.breakConduit(position, dropItems) && !level.isClientSide()) {
+			// This is just to make sure events are triggered on both side
 			BlockPos middlePos = MathUtility.getMiddleBlock(
 					PhysicUtility.ensureWorldBlockCoordinates(level, position.getNodeApos(), position.getNodeApos()), 
 					PhysicUtility.ensureWorldBlockCoordinates(level, position.getNodeBpos(), position.getNodeBpos()));
 			IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(middlePos)), new SCConduitPackage.SCBreakConduitPackage(position, dropItems));
+			return true;
 		}
-		ConduitHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONDUIT_HANDLER_CAPABILITY);
-		return handler.breakConduit(position, dropItems);
+		return false;
 	}
-
+	
 	public static Optional<ConduitEntity> getConduit(Level level, ConduitPos position) {
 		ConduitHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONDUIT_HANDLER_CAPABILITY);
 		return handler.getConduit(position);

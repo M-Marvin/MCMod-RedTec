@@ -7,6 +7,7 @@ import de.m_marvin.industria.core.client.util.GraphicsUtility;
 import de.m_marvin.industria.core.electrics.ElectricUtility;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
 import de.m_marvin.industria.core.electrics.engine.network.CPlayerSwitchNetworkPackage;
+import de.m_marvin.industria.core.util.ConditionalExecutor;
 import de.m_marvin.industria.core.util.GameUtility;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -24,7 +25,7 @@ public class CircuitSwitch extends AbstractWidget {
 	
 	protected float time;
 	protected int lampState = 0;
-	protected float leverPostion = 0.0F;
+	protected float leverPosition = 0.0F;
 	protected float leverReleasePosition;
 	protected float leverReleaseTime;
 	protected boolean leverGrabbed = false;
@@ -66,11 +67,11 @@ public class CircuitSwitch extends AbstractWidget {
 		renderArrows(pGuiGraphics, a);
 		
 		// Lever
-		renderLever(pGuiGraphics, this.leverPostion / 33F);
+		renderLever(pGuiGraphics, this.leverPosition / 33F);
 		
 		// Lever motion
-		if (!this.leverState && this.leverPostion > 0F && !this.leverGrabbed) {
-			this.leverPostion = (1F - (this.time - this.leverReleaseTime) / 10F) * this.leverReleasePosition;
+		if (!this.leverState && this.leverPosition > 0F && !this.leverGrabbed) {
+			this.leverPosition = (1F - (this.time - this.leverReleaseTime) / 10F) * this.leverReleasePosition;
 		}
 
 	}
@@ -78,19 +79,23 @@ public class CircuitSwitch extends AbstractWidget {
 	public void onLeverChanges() {
 		System.out.println(!this.leverState);
 		
-		IndustriaCore.NETWORK.sendToServer(new CPlayerSwitchNetworkPackage(this.componentPos, !this.leverState));
+		if (!this.leverState) {
+			ConditionalExecutor.CLIENT_TICK_EXECUTOR.executeAfterDelay(() -> IndustriaCore.NETWORK.sendToServer(new CPlayerSwitchNetworkPackage(this.componentPos, !this.leverState)), 40);
+		} else {
+			IndustriaCore.NETWORK.sendToServer(new CPlayerSwitchNetworkPackage(this.componentPos, !this.leverState));
+		}
 	}
 	
 	public void updateLeverState(boolean state) {
 		this.leverState = state;
-		this.leverPostion = this.leverState ? 33F : 0F;
+		this.leverPosition = this.leverState ? 33F : 0F;
 	}
 	
 	@Override
 	public void onRelease(double pMouseX, double pMouseY) {
 		super.onRelease(pMouseX, pMouseY);
 		this.leverGrabbed = false;
-		this.leverReleasePosition = this.leverPostion;
+		this.leverReleasePosition = this.leverPosition;
 		this.leverReleaseTime = this.time;
 	}
 	
@@ -98,18 +103,18 @@ public class CircuitSwitch extends AbstractWidget {
 	public void onClick(double pMouseX, double pMouseY) {
 		super.onClick(pMouseX, pMouseY);
 		this.leverGrabbed = true;
-		this.leverGrabPos = pMouseY - this.leverPostion;
+		this.leverGrabPos = pMouseY - this.leverPosition;
 	}
 	
 	@Override
 	protected void onDrag(double pMouseX, double pMouseY, double pDragX, double pDragY) {
 		super.onDrag(pMouseX, pMouseY, pDragX, pDragY);
-		if (this.leverGrabbed) this.leverPostion = (float) Math.min(33F, Math.max(0F, pMouseY - this.leverGrabPos));
+		if (this.leverGrabbed) this.leverPosition = (float) Math.min(33F, Math.max(0F, pMouseY - this.leverGrabPos));
 		
-		if (this.leverPostion > 30F) {
+		if (this.leverPosition > 30F) {
 			if (this.leverState == false) onLeverChanges();
 			this.leverState = true;
-			this.leverPostion = 33.0F;
+			this.leverPosition = 33.0F;
 		} else {
 			if (this.leverState == true) onLeverChanges();
 			this.leverState = false;

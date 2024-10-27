@@ -78,6 +78,12 @@ public class MathUtility {
 		return v;
 	}
 	
+	public static boolean isBetweenInclusive(BlockPos minPos, BlockPos maxPos, BlockPos testPos) {
+		return	minPos.getX() <= testPos.getX() && maxPos.getX() >= testPos.getX() &&
+				minPos.getY() <= testPos.getY() && maxPos.getY() >= testPos.getY() &&
+				minPos.getZ() <= testPos.getZ() && maxPos.getZ() >= testPos.getZ();
+	}
+	
 	public static float clampToDegree(float angle) {
 		return angle % 360;
 	}

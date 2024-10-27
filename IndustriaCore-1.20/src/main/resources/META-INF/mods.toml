@@ -24,6 +24,9 @@ authors="M_Marvin" #optional
 displayTest="MATCH_VERSION"
 description='''Example mod description.\nNewline characters can be used and will be replaced properly.'''
 
+[[mixins]]
+config="mixins.industriacore.json"
+
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.industriacore]] #optional
     # the modid of the dependency

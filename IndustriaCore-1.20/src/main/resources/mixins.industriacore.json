@@ -1,0 +1,8 @@
+{
+	"required": true,
+	"package": "de.m_marvin.industria.core.util.mixin",
+	"mixins": [
+		"StructureTemplateExtender"
+	],
+	"refmap": "mixins.industriacore.refmap.json"
+}
