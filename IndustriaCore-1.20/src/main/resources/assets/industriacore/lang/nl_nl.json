@@ -10,7 +10,7 @@
 "industriacore.commands.setconduit.success":			"Lijn beginnend bij %1$s %2$s %3$s gewijzigt",
 "industriacore.commands.setconduit.failure":			"Plaatsing van de lijn niet mogelijk!",
 "industriacore.commands.contraption.remove.success":		"Apparaat verwijdert",
-"industriacore.commands.contraption.remove.success_multiple":	"%1$s apparaten verwijderd",
+"industriacore.commands.contraption.remove.success_multiple":	"Apparaten verwijderd",
 "industriacore.commands.contraption.create.failed":		"Genereren van de apparaat mislukt!",
 "industriacore.commands.contraption.create.success": 		"Apparaat gegenereerd van blokken op %1$s %2$s %3$s",
 "industriacore.commands.contraption.create.toLarge": 		"Geselecteerd gebied te groot: %1$sx%2$sx%3$s (max. %4$sx%5$sx%6$s)!",
@@ -42,6 +42,14 @@
 "industriacore.commands.debug.node_voltages.node":		"ID: %d",
 "industriacore.commands.debug.node_voltages.lane":		"→ %d '%s': %d V",
 "industriacore.commands.debug.circuit_copied":			"Circuitnetlijst gekopieerd naar klembord",
+
+"industriacore.commands.template.loaded":								"Sjabloon '%s' geladen en geplaatst",
+"industriacore.commands.template.notfound":								"Sjabloon '%s' niet gevonden",
+"industriacore.commands.template.loadfailed":							"Laden van de sjabloon '%s' mislukt",
+"industriacore.commands.template.saved":								"Sjabloon '%s' opgeslagen",
+
+"industriacore.argument.rotation.invalid":								"Ongeldige rotatie: '%s'",
+"industriacore.argument.mirror.invalid":								"Ongeldige asspiegeling: '%s'",
 
 "industriacore.argument.contraption.options.unknown":			"Optie '%s' is onbekend",
 "industriacore.argument.contraption.options.inapplicable":		"Optie '%s' is hier niet van toepassing",

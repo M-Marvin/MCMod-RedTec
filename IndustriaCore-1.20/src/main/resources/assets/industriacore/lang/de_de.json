@@ -43,6 +43,14 @@
 "industriacore.commands.debug.node_voltages.lane":		"→ %d '%s': %d V",
 "industriacore.commands.debug.circuit_copied":			"Schaltungsnetzliste in Zwischenablage kopiert",
 
+"industriacore.commands.template.loaded":								"Struktur '%s' geladen und platziert",
+"industriacore.commands.template.notfound":								"Struktur '%s' nicht gefunden",
+"industriacore.commands.template.loadfailed":							"Laden der Struktur '%s' fehlgeschlagen",
+"industriacore.commands.template.saved":								"Struktur '%s' gespeichert",
+
+"industriacore.argument.rotation.invalid":								"Ungültige Rotation: '%s'",
+"industriacore.argument.mirror.invalid":								"Ungültige Spiegelung: '%s'",
+
 "industriacore.argument.contraption.options.unknown":			"Unbekannte Option '%s'!",
 "industriacore.argument.contraption.options.inapplicable":		"Filter ‚%s‘ ist hier nicht anwendbar",
 "industriacore.argument.contraption.options.sort.irreversible":		"Ungültige oder unbekannte Sortierung ‚%s‘",
