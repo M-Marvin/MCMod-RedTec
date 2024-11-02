@@ -189,9 +189,9 @@ public class ContraptionUtility {
 		return handler.removeContraption(contraption);
 	}
 	
-	public static boolean convertToContraption(ServerLevel level, AABB areaBounds, boolean removeOriginal, float scale) {
+	public static boolean convertToContraption(ServerLevel level, BlockPos pos1, BlockPos pos2, boolean removeOriginal, float scale) {
 		ContraptionHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONTRAPTION_HANDLER_CAPABILITY);
-		return handler.convertToContraption(areaBounds, removeOriginal, scale);
+		return handler.convertToContraption(pos1, pos2, removeOriginal, scale);
 	}
 	
 	public static boolean assembleToContraption(ServerLevel level, List<BlockPos> blocks, boolean removeOriginal, float scale) {
@@ -249,7 +249,7 @@ public class ContraptionUtility {
 	
 	public static boolean isSolidContraptionBlock(BlockState state) {
 		double mass = VS2MassSyncPatch.getPatchedBlockMass(state);
-		return mass > 0; // FIXME [VS2dep] hitbox check missing check if mass != 0 and hitbox != null
+		return mass > 0 && state.getCollisionShape(null, null) != null;
 	}
 	
 	public static boolean isValidContraptionBlock(BlockState state) {

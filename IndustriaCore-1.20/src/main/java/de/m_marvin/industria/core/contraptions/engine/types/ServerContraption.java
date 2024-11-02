@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.valkyrienskies.core.api.ships.ServerShip;
+import org.valkyrienskies.mod.common.util.SplittingDisablerAttachment;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.contraptions.engine.ContraptionAttachment;
@@ -49,8 +50,9 @@ public class ServerContraption extends Contraption {
 		getShip().setSlug(name);
 	}
 	
-	public <T extends ContraptionAttachment> T getAttachment(Class<T> attachmentClass) {
-		return getShip().getAttachment(attachmentClass);
+	public <T> T getAttachment(Class<T> attachmentClass) {
+		T attachment = getShip().getAttachment(attachmentClass);
+		return attachment;
 	}
 	
 	public <T extends ContraptionAttachment> void removeAttachment(Class<T> attachmentClass) {
@@ -58,12 +60,12 @@ public class ServerContraption extends Contraption {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T extends ContraptionAttachment> void setAttachment(T attachment) {
-		attachment.setContrapion(this);
+	public <T> void setAttachment(T attachment) {
+		if (attachment instanceof ContraptionAttachment att) att.setContraption(this);
 		getShip().saveAttachment((Class<T>) attachment.getClass(), attachment);
 	}
 	
-	public <T extends ContraptionAttachment> T getOrCreateAttachment(Class<T> attachmentClass) {
+	public <T> T getOrCreateAttachment(Class<T> attachmentClass) {
 		T attachment = getAttachment(attachmentClass);
 		if (attachment == null) {
 			try {
@@ -103,4 +105,31 @@ public class ServerContraption extends Contraption {
 		tags.add(tag);
 	}
 
+//	public boolean canSplit() {
+//		return getAttachment(SplittingDisablerAttachment.class).canSplit();
+//	}
+//	
+//	public void setCanSplit(boolean canSplit) {
+//		if (canSplit) {
+//			getAttachment(SplittingDisablerAttachment.class).enableSplitting();
+//		} else {
+//			getAttachment(SplittingDisablerAttachment.class).disableSplitting();
+//		}
+//		this.lastSplitState = canSplit;
+//	}
+//	
+//	/* Helper method to temporarily disable splitting without overriding the inteded state */
+//	
+//	private boolean lastSplitState;
+//	
+//	public void tempDisableSplit() {
+//		boolean split = canSplit();
+//		setCanSplit(false);
+//		this.lastSplitState = split;
+//	}
+//	
+//	public void tempRestoreSplit() {
+//		setCanSplit(this.lastSplitState);
+//	}
+	
 }

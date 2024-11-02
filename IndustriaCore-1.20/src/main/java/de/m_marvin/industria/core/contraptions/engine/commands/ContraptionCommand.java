@@ -15,6 +15,7 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
+import de.m_marvin.industria.core.Config;
 import de.m_marvin.industria.core.contraptions.ContraptionUtility;
 import de.m_marvin.industria.core.contraptions.engine.commands.arguments.contraption.ContraptionArgument;
 import de.m_marvin.industria.core.contraptions.engine.commands.arguments.vec3relative.Vec3Relative;
@@ -40,7 +41,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
 
 public class ContraptionCommand {
 	
@@ -193,6 +193,17 @@ public class ContraptionCommand {
 								)
 						)
 				)
+//		).then(
+//				Commands.literal("splitting")
+//				.then(
+//						Commands.argument("contraption", ContraptionArgument.contraptions())
+//						.then(
+//								Commands.argument("state", BoolArgumentType.bool())
+//								.executes((source) ->
+//										setSplitting(source, ContraptionArgument.getContraptions(source, "contraption"), BoolArgumentType.getBool(source, "state"))
+//								)
+//						)
+//				)
 		).then(
 				Commands.literal("scale")
 				.then(
@@ -269,6 +280,17 @@ public class ContraptionCommand {
 		return 1;
 		
 	}
+	
+//	public static int setSplitting(CommandContext<CommandSourceStack> source, Collection<ServerContraption> contraptions, boolean state) {
+//
+//		for (ServerContraption contaption : contraptions) {
+//			contaption.setCanSplit(state);
+//		}
+//		
+//		source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.splitting.set." + (state ? "on" : "off"), contraptions.size()), false);
+//		return 1;
+//		
+//	}
 	
 	public static int setName(CommandContext<CommandSourceStack> source, ServerContraption contraption, String name) {
 		
@@ -402,19 +424,19 @@ public class ContraptionCommand {
 	
 	public static int createContraption(CommandContext<CommandSourceStack> source, BlockPos pos1, BlockPos pos2, float scale) {
 		
-		AABB bounds = new AABB(MathUtility.getMinCorner(pos1, pos2), MathUtility.getMaxCorner(pos1, pos2));
+		int maxBlocks = Config.MAX_SELECTION_BLOCKS.get();
+		int blockCount = 
+				(Math.max(pos1.getX(), pos2.getX()) - Math.min(pos1.getX(), pos2.getX()) + 1) *
+				(Math.max(pos1.getY(), pos2.getY()) - Math.min(pos1.getY(), pos2.getY()) + 1) *
+				(Math.max(pos1.getZ(), pos2.getZ()) - Math.min(pos1.getZ(), pos2.getZ()) + 1);
 		
-		if (bounds.getXsize() > 32 || bounds.getYsize() > 32 || bounds.getZsize() > 32) {
-			source.getSource().sendFailure(Component.translatable("industriacore.commands.contraption.create.tolarge", (int) bounds.getXsize(), (int) bounds.getYsize(), (int) bounds.getZsize(), 32, 32, 32));
+		if (blockCount > maxBlocks) {
+			source.getSource().sendFailure(Component.translatable("industriacore.commands.contraption.create.invalidstructure", blockCount, maxBlocks));
 			return 0;
 		}
 		
-		boolean success = ContraptionUtility.convertToContraption(source.getSource().getLevel(), bounds, true, scale);
-		
-		BlockPos minCorner = MathUtility.getMinCorner(pos1, pos2);
-		
-		if (success) {
-			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.create.success", (int) minCorner.getX(), (int) minCorner.getY(), (int) minCorner.getZ()), true);
+		if (ContraptionUtility.convertToContraption(source.getSource().getLevel(), pos1, pos2, true, scale)) {
+			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.create.success", blockCount), true);
 			return Command.SINGLE_SUCCESS;
 		}
 		
@@ -425,19 +447,18 @@ public class ContraptionCommand {
 	
 	public static int assembleContraption(CommandContext<CommandSourceStack> source, BlockPos startPos, float scale) {
 		
-		Optional<List<BlockPos>> structureBlocks = StructureFinder.findStructure(source.getSource().getLevel(), startPos, 16 * 16 * 16, ContraptionUtility::isValidContraptionBlock);
+		int maxBlocks = Config.MAX_SELECTION_BLOCKS.get();
+		Optional<List<BlockPos>> structureBlocks = StructureFinder.findStructure(source.getSource().getLevel(), startPos, maxBlocks, ContraptionUtility::isValidContraptionBlock);
 		
-		if (structureBlocks.isEmpty()) {
+		if (structureBlocks.isEmpty() || structureBlocks.get().isEmpty()) {
 			
-			source.getSource().sendFailure(Component.translatable("industriacore.commands.contraption.assemble.toLarge", 16 * 16 * 16));
+			source.getSource().sendFailure(Component.translatable("industriacore.commands.contraption.assemble.invalidstructure", maxBlocks));
 			return 0;
 			
 		}
 		
-		boolean success = ContraptionUtility.assembleToContraption(source.getSource().getLevel(), structureBlocks.get(), true, scale);
-		
-		if (success) {
-			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.assemble.success", startPos.getX(), startPos.getY(), startPos.getZ(), startPos), true);
+		if (ContraptionUtility.assembleToContraption(source.getSource().getLevel(), structureBlocks.get(), true, scale)) {
+			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.assemble.success", structureBlocks.get().size()), true);
 			return Command.SINGLE_SUCCESS;
 		}
 		

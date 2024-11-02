@@ -3,9 +3,6 @@ package de.m_marvin.industria.core.magnetism.engine;
 import org.valkyrienskies.core.api.ships.PhysShip;
 import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-
 import de.m_marvin.industria.core.contraptions.ContraptionUtility;
 import de.m_marvin.industria.core.contraptions.engine.ForcesInducer;
 import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
@@ -15,12 +12,10 @@ import de.m_marvin.industria.core.util.GameUtility;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 
-@JsonIncludeProperties({})
 public class MagneticForceInducer extends ForcesInducer {
 	
-	@JsonIgnore
 	protected LongOpenHashSet fields = new LongOpenHashSet();
-	
+
 	public void addField(long fieldId) {
 		this.fields.add(fieldId);
 	}
@@ -35,7 +30,7 @@ public class MagneticForceInducer extends ForcesInducer {
 	
 	@Override
 	public void applyForces(PhysShip contraptionPhysics) {
-
+		
 		if (getLevel() == null) return;
 		MagnetismHandlerCapability handler = GameUtility.getLevelCapability(this.getLevel(), Capabilities.MAGNETISM_HANDLER_CAPABILITY);
 

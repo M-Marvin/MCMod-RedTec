@@ -46,6 +46,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -81,6 +82,8 @@ public class ContraptionHandlerCapability implements ICapabilitySerializable<Com
 	
 	private Long2ObjectMap<Set<String>> contraptionTags = new Long2ObjectArrayMap<>();
 	private Level level;
+	
+	private static MinecraftServer staticServer;
 	
 	@Override
 	public CompoundTag serializeNBT() {
@@ -122,6 +125,10 @@ public class ContraptionHandlerCapability implements ICapabilitySerializable<Com
 	/* Event handling */
 	
 	/* End of events */
+	
+	public static MinecraftServer getStaticServer() {
+		return staticServer;
+	}
 	
 	public ContraptionHandlerCapability(Level level) {
 		this.level = level;
@@ -353,47 +360,25 @@ public class ContraptionHandlerCapability implements ICapabilitySerializable<Com
 		
 	}
 	
-	public boolean convertToContraption(AABB areaBounds, boolean removeOriginal, float scale) {
+	public boolean convertToContraption(BlockPos pos1, BlockPos pos2, boolean removeOriginal, float scale) {
 		if (this.level.isClientSide()) return false;
 		
-		BlockPos structureCornerMin = null;
-		BlockPos structureCornerMax = null;
-		
-		// Floor bounds
-		int areaMinBlockX = (int) Math.floor(areaBounds.minX);
-		int areaMinBlockY = (int) Math.floor(areaBounds.minY);
-		int areaMinBlockZ = (int) Math.floor(areaBounds.minZ);
-		int areaMaxBlockX = (int) Math.floor(areaBounds.maxX);
-		int areaMaxBlockY = (int) Math.floor(areaBounds.maxY);
-		int areaMaxBlockZ = (int) Math.floor(areaBounds.maxZ);
-		
 		// Check for solid blocks and invalid blocks, shrink bounds to actual size
+		BlockPos structureCornerMin1 = MathUtility.getMinCorner(pos1, pos2);
+		BlockPos structureCornerMax1 = MathUtility.getMaxCorner(pos1, pos2);
+		BlockPos structureCornerMin = pos1;
+		BlockPos structureCornerMax = pos2;
 		boolean hasSolids = false;
-		for (int x = areaMinBlockX; x <= areaMaxBlockX; x++) {
-			for (int z = areaMinBlockZ; z <= areaMaxBlockZ; z++) {
-				for (int y = areaMinBlockY; y <= areaMaxBlockY; y++) {
-					
+		for (int x = structureCornerMin1.getX(); x <= structureCornerMax1.getX(); x++) {
+			for (int z = structureCornerMin1.getZ(); z <= structureCornerMax1.getZ(); z++) {
+				for (int y = structureCornerMin1.getY(); y <= structureCornerMax1.getY(); y++) {
 					BlockPos itPos = new BlockPos(x, y, z);
 					BlockState itState = level.getBlockState(itPos);
-					
 					if (ContraptionUtility.isValidContraptionBlock(itState)) {
-						
-						if (structureCornerMin == null) {
-							structureCornerMin = itPos;
-						} else {
-							structureCornerMin = MathUtility.getMinCorner(itPos, structureCornerMin);
-						}
-						
-						if (structureCornerMax == null) {
-							structureCornerMax = itPos;
-						} else {
-							structureCornerMax = MathUtility.getMaxCorner(itPos, structureCornerMax);
-						}
-						
+						structureCornerMin = MathUtility.getMinCorner(structureCornerMin, itPos);
+						structureCornerMax = MathUtility.getMaxCorner(structureCornerMax, itPos);
 					}
-					
 					if (ContraptionUtility.isSolidContraptionBlock(itState)) hasSolids = true;
-					
 				}
 			}
 		}
@@ -401,7 +386,7 @@ public class ContraptionHandlerCapability implements ICapabilitySerializable<Com
 		if (!hasSolids) return false;
 		
 		// Safety check, if (for what ever reason) no corners could be calculated, set center block as bounds
-		if (structureCornerMax == null) structureCornerMax = structureCornerMin = MathUtility.toBlockPos(areaBounds.getCenter().x(), areaBounds.getCenter().y(), areaBounds.getCenter().z());
+		if (structureCornerMax == null || structureCornerMin == null) structureCornerMax = structureCornerMin = MathUtility.getMiddleBlock(pos1, pos2);
 		
 		// Create new contraption at center of bounds
 		Vec3d contraptionWorldPos = MathUtility.getMiddle(structureCornerMin, structureCornerMax);
@@ -410,9 +395,8 @@ public class ContraptionHandlerCapability implements ICapabilitySerializable<Com
 		
 		// Create template from world blocks
 		StructureTemplate template = new StructureTemplate();
-		BlockPos worldPosOrigin = new BlockPos(areaMinBlockX, areaMinBlockY, areaMinBlockZ);
-		BlockPos structSize = new BlockPos(areaMaxBlockX - areaMinBlockX + 1, areaMaxBlockY - areaMinBlockY + 1, areaMaxBlockZ - areaMinBlockZ + 1);
-		template.fillFromWorld(this.level, worldPosOrigin, structSize, false, null);
+		BlockPos structSize = structureCornerMax.subtract(structureCornerMin).offset(1, 1, 1);
+		template.fillFromWorld(this.level, structureCornerMin, structSize, false, null);
 		
 		// Place blocks on ship
 		BlockPos contraptionCenter = contraption.getCenterPos();
@@ -434,7 +418,10 @@ public class ContraptionHandlerCapability implements ICapabilitySerializable<Com
 		}
 		
 		// Remove all blocks, block entities and conduits in origin bounds
-		if (removeOriginal) GameUtility.removeBlocksAndConduits(this.level, worldPosOrigin, worldPosOrigin.offset(structSize).offset(-1, -1, -1));
+		if (removeOriginal) GameUtility.removeBlocksAndConduits(this.level, structureCornerMin, structureCornerMax);
+		if (this.level.getBlockState(contraptionCenter).getBlock() == Blocks.ERROR_BLOCK.get()) {
+			this.level.removeBlock(contraptionCenter, false);
+		}
 		
 		// Set the final position gain, since the contraption moves slightly if blocks are added
 		if (contraption != null) teleportContraption(contraption, contraptionPosition, true);
@@ -447,16 +434,18 @@ public class ContraptionHandlerCapability implements ICapabilitySerializable<Com
 		if (this.level.isClientSide()) return false;
 		if (blocks.isEmpty()) return false;
 		
+		// Calculate bounds of the area containing all blocks adn check for solids and invalid blocks
 		BlockPos structureCornerMin = blocks.get(0);
 		BlockPos structureCornerMax = blocks.get(0);
 		boolean hasSolids = false;
-		
-		// Calculate bounds of the area containing all blocks adn check for solids and invalid blocks
 		for (BlockPos itPos : blocks) {
 			if (ContraptionUtility.isSolidContraptionBlock(level.getBlockState(itPos))) {
-				structureCornerMin = MathUtility.getMinCorner(structureCornerMin, itPos);
-				structureCornerMax = MathUtility.getMaxCorner(structureCornerMax, itPos);
-				hasSolids = true;
+				BlockState itState = level.getBlockState(itPos);
+				if (ContraptionUtility.isValidContraptionBlock(itState)) {
+					structureCornerMin = MathUtility.getMinCorner(structureCornerMin, itPos);
+					structureCornerMax = MathUtility.getMaxCorner(structureCornerMax, itPos);
+				}
+				if (ContraptionUtility.isSolidContraptionBlock(itState)) hasSolids = true;
 			}
 		}
 		
@@ -466,17 +455,16 @@ public class ContraptionHandlerCapability implements ICapabilitySerializable<Com
 		StructureTemplate template = new StructureTemplate();
 		BlockPos templateOrigin = ((StructureTemplateExtended) template).fillFromLevelPosIterable(level, blocks, null);
 		
-		// Remove original blocks
-		if (removeOriginal) GameUtility.removeBlocksAndConduits(level, blocks);
-		
 		// Create new contraption at min corner
-		ContraptionPosition contraptionPosition = new ContraptionPosition(new Quaterniond(new Vec3d(0, 1, 1), 0), Vec3d.fromVec(templateOrigin), this.getDimension());
+		Vec3d shipPos = Vec3d.fromVec(templateOrigin).addI(Vec3d.fromVec(template.getSize()).div(2.0));
+		ContraptionPosition contraptionPosition = new ContraptionPosition(new Quaterniond(new Vec3d(0, 1, 1), 0), shipPos, this.getDimension());
 		ServerContraption contraption = createContraptionAt(contraptionPosition, scale);
 		
 		// Place blocks on ship
 		BlockPos contraptionCenter = contraption.getCenterPos();
 		StructurePlaceSettings settings = new StructurePlaceSettings();
 		settings.setIgnoreEntities(true);
+		
 		if (!template.placeInWorld((ServerLevel) this.level, contraptionCenter, contraptionCenter, settings, this.level.getRandom(), 3)) {
 			
 			// Placement failed, place error blocks to mark intended bounds
@@ -491,13 +479,15 @@ public class ContraptionHandlerCapability implements ICapabilitySerializable<Com
 			this.level.setBlock(contraptionCenter.offset(structSize.getX(), structSize.getY(), structSize.getZ()), Blocks.ERROR_BLOCK.get().defaultBlockState(), 3);
 			
 		}
-		
-		// Set the final position gain, since the contraption moves slightly if blocks are added
-		if (contraption != null) {
-			Vec3d contraptionWorldPos = MathUtility.getMiddle(structureCornerMin, structureCornerMax);
-			contraptionPosition = new ContraptionPosition(new Quaterniond(new Vec3d(0, 1, 1), 0), contraptionWorldPos, this.getDimension());
-			teleportContraption(contraption, contraptionPosition, true);
+
+		// Remove all blocks, block entities and conduits in origin bounds
+		if (removeOriginal) GameUtility.removeBlocksAndConduits(this.level, blocks);
+		if (this.level.getBlockState(contraptionCenter).getBlock() == Blocks.ERROR_BLOCK.get()) {
+			this.level.removeBlock(contraptionCenter, false);
 		}
+
+		// Set the final position gain, since the contraption moves slightly if blocks are added
+		if (contraption != null) teleportContraption(contraption, contraptionPosition, true);
 		
 		return true;
 		

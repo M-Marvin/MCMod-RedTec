@@ -50,6 +50,7 @@ public class StructureFinder {
 	
 	protected static boolean checkBlock(Level level, BlockPos pos, int scanDepth, List<BlockPos> posList, Predicate<BlockState> blockPredicate) {
 		if (!posList.contains(pos)) {
+			System.out.println("ddddd" + scanDepth);
 			BlockState state = level.getBlockState(pos);
 			if (blockPredicate.test(state)) {
 				posList.add(pos);

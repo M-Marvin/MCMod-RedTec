@@ -205,6 +205,8 @@ dependencies {
 	// Valkyrien Skies Core API
 	implementation("org.valkyrienskies.core:api:$vs_core_version")
     implementation("org.valkyrienskies.core:api-game:$vs_core_version")
+    implementation("org.valkyrienskies.core:util:$vs_core_version")
+    implementation("org.valkyrienskies.core:impl:$vs_core_version")
     
 	// Kotlin for Forge (required by VS2)
 	runtimeOnly fg.deobf("curse.maven:kotlinforforge-351264:$forge_kotlin_version")

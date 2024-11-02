@@ -17,6 +17,7 @@ public class Config {
 	
 	public static final String CATEGORY_UTIL = "util";
 	public static ForgeConfigSpec.BooleanValue EF_DEBUG_LOGGING;
+	public static ForgeConfigSpec.IntValue MAX_SELECTION_BLOCKS;
 	
 	public static final String CATEGORY_PHYSICS = "physics";
 	public static ForgeConfigSpec.DoubleValue MAGNETIC_FORCE_MULTIPLIER_LINEAR;
@@ -33,12 +34,17 @@ public class Config {
 		BUILDER.comment("Industria Core utility settings").push(CATEGORY_UTIL);
 		EF_DEBUG_LOGGING = BUILDER.comment("If true, the native lib will print simmulation data (and some other things) from the electric networks into the logs.").define("simulation_debug_logging", false);
 		BUILDER.pop();
+		
 		BUILDER.comment("Industria Core electrics settings").push(CATEGORY_ELECTIRCS);
 		ELECTIRC_SIMULATION_THREADS = BUILDER.comment("Number of paralell running EPT's").defineInRange("simulation_threads", 1, 1, 16);
 		ELECTRIC_SIMULATION_COMMAND = BUILDER.comment("Simulation engine execution command.").define("simulation_exec_command", "op");
 		CONFIG_COMMON = BUILDER.build();
 		
 		BUILDER = new ForgeConfigSpec.Builder();
+		BUILDER.comment("Industria Core utility settings").push(CATEGORY_UTIL);
+		MAX_SELECTION_BLOCKS = BUILDER.comment("Maximum number of blocks selectable (/template /contraption assemble)").defineInRange("max_assemble_blocks", 16 * 16 * 16, 1, Integer.MAX_VALUE);
+		BUILDER.pop();
+		
 		BUILDER.comment("Physics related settings").push(CATEGORY_PHYSICS);
 		MAGNETIC_FORCE_MULTIPLIER_LINEAR = BUILDER.comment("The field strength of the magnets gets multiplied with this value for the linear force applied to the magnets (double this, double the strength of all magnets)").defineInRange("magnetic_force_multiplier_linear", MagneticField.DEFAULT_LINEAR_FORCE_MULTIPLIER, 0.0, Double.MAX_VALUE);
 		MAGNETIC_FORCE_MULTIPLIER_ANGULAR = BUILDER.comment("The field strength of the magnets gets multiplied with this value for the angular force applied to the magnets (double this, double the strength of all magnets)").defineInRange("magnetic_force_multiplier_angular", MagneticField.DEFAULT_ANGULAR_FORCE_MULTIPLIER, 0.0, Double.MAX_VALUE);

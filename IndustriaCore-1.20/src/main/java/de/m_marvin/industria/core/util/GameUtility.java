@@ -8,6 +8,7 @@ import java.util.stream.StreamSupport;
 
 import de.m_marvin.industria.core.conduits.ConduitUtility;
 import de.m_marvin.industria.core.conduits.types.conduits.ConduitEntity;
+import de.m_marvin.industria.core.contraptions.ContraptionUtility;
 import de.m_marvin.industria.core.electrics.types.blockentities.IJunctionEdit;
 import de.m_marvin.industria.core.electrics.types.containers.JunctionBoxContainer;
 import de.m_marvin.industria.core.registries.Blocks;
@@ -29,13 +30,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -140,30 +141,41 @@ public class GameUtility {
 			ConduitUtility.removeConduit(level, conduit.getPosition(), false);
 		}
 		
-		// Remove blocks
+		BlockState air = net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+		BlockState blk = Blocks.ERROR_BLOCK.get().defaultBlockState();//net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+
+		// Replace with full blocks (prevent block drop and unintended ship removal)
 		for (int y = from.getY(); y <= to.getY(); y++) {
 			for (int z = from.getZ(); z <= to.getZ(); z++) {
 				for (int x = from.getX(); x <= to.getX(); x++) {
 					BlockPos pos = new BlockPos(x, y, z);
-					ChunkAccess chunk = level.getChunk(pos);
-					BlockPos chunkPos = pos.subtract(new BlockPos(chunk.getPos().getMinBlockX(), 0, chunk.getPos().getMinBlockZ()));
-					chunk.setBlockState(chunkPos, Blocks.ERROR_BLOCK.get().defaultBlockState(), false);
+					level.setBlockAndUpdate(pos, blk);
 				}
 			}
 		}
 		
-		// Notify removed blocks
+		// Remove blocks without updates (trick VS2 to prevent unintended ship splitting)
 		for (int y = from.getY(); y <= to.getY(); y++) {
 			for (int z = from.getZ(); z <= to.getZ(); z++) {
 				for (int x = from.getX(); x <= to.getX(); x++) {
 					BlockPos pos = new BlockPos(x, y, z);
-					level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
-					GameUtility.triggerClientSync(level, pos);
-					GameUtility.triggerUpdate(level, pos);
+					ChunkPos chunk = new ChunkPos(pos);
+					BlockPos cpos = pos.subtract(new BlockPos(chunk.getMinBlockX(), 0, chunk.getMinBlockZ()));
+					level.getChunk(pos).setBlockState(cpos, air, false);
 				}
 			}
 		}
-		
+
+		// Notify removed blocks to update ship bounds
+		for (int y = from.getY(); y <= to.getY(); y++) {
+			for (int z = from.getZ(); z <= to.getZ(); z++) {
+				for (int x = from.getX(); x <= to.getX(); x++) {
+					BlockPos pos = new BlockPos(x, y, z);
+					ContraptionUtility.triggerBlockChange(level, pos, blk, air);
+				}
+			}
+		}
+	
 	}
 
 	public static void removeBlocksAndConduits(Level level, Collection<BlockPos> positions) {
@@ -176,19 +188,25 @@ public class GameUtility {
 				StreamSupport.stream(positions.spliterator(), false).filter(c.getPosition().getNodeApos()::equals).findAny().isPresent() &&
 				StreamSupport.stream(positions.spliterator(), false).filter(c.getPosition().getNodeBpos()::equals).findAny().isPresent())
 			.forEach(c -> ConduitUtility.removeConduit(level, c.getPosition(), false));
-		
-		// Remove blocks
+
+		BlockState air = net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+		BlockState blk = Blocks.ERROR_BLOCK.get().defaultBlockState();//net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+
+		// Replace with full blocks (prevent block drop and unintended ship removal)
 		for (BlockPos pos : positions) {
-			ChunkAccess chunk = level.getChunk(pos);
-			BlockPos chunkPos = pos.subtract(new BlockPos(chunk.getPos().getMinBlockX(), 0, chunk.getPos().getMinBlockZ()));
-			chunk.setBlockState(chunkPos, Blocks.ERROR_BLOCK.get().defaultBlockState(), false);
+			level.setBlockAndUpdate(pos, blk);
 		}
-		
-		// Notify removed blocks
+
+		// Remove blocks without updates (trick VS2 to prevent unintended ship splitting)
 		for (BlockPos pos : positions) {
-			level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
-			GameUtility.triggerClientSync(level, pos);
-			GameUtility.triggerUpdate(level, pos);
+			ChunkPos chunk = new ChunkPos(pos);
+			BlockPos cpos = pos.subtract(new BlockPos(chunk.getMinBlockX(), 0, chunk.getMinBlockZ()));
+			level.getChunk(pos).setBlockState(cpos, air, false);
+		}
+
+		// Notify removed blocks to update ship bounds
+		for (BlockPos pos : positions) {
+			ContraptionUtility.triggerBlockChange(level, pos, blk, air);
 		}
 		
 	}
