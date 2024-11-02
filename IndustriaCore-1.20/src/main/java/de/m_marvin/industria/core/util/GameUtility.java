@@ -1,11 +1,16 @@
 package de.m_marvin.industria.core.util;
 
 import java.awt.Color;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
+import de.m_marvin.industria.core.conduits.ConduitUtility;
+import de.m_marvin.industria.core.conduits.types.conduits.ConduitEntity;
 import de.m_marvin.industria.core.electrics.types.blockentities.IJunctionEdit;
 import de.m_marvin.industria.core.electrics.types.containers.JunctionBoxContainer;
-import de.m_marvin.industria.core.physics.PhysicUtility;
+import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.registries.IndustriaTags;
 import de.m_marvin.univec.impl.Vec3d;
 import de.m_marvin.univec.impl.Vec3f;
@@ -13,7 +18,6 @@ import de.m_marvin.univec.impl.Vec4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -28,16 +32,13 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -111,7 +112,7 @@ public class GameUtility {
 	}
 	
 	public static Vec3f getWorldGravity(BlockGetter level) {
-		return new Vec3f(0, 10, 0); // TODO [VS2dep] use gravity constant from VS2
+		return new Vec3f(0, 10, 0); // FIXME [VS2dep] use gravity constant from VS2
 	}
 	
 	public static <T extends Capability<C>, C extends ICapabilitySerializable<?>> C getLevelCapability(Level level, T cap) {
@@ -131,45 +132,65 @@ public class GameUtility {
 		level.addFreshEntity(drop);
 	}
 	
-	public static void setBlock(Level level, BlockPos pos, BlockState state) {
-		LevelChunk chunk = (LevelChunk) level.getChunk(pos);
-		LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(pos.getY()));
-		BlockState oldState = level.getBlockState(pos);
-		section.setBlockState(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15, state);
-		PhysicUtility.triggerBlockChange(level, pos, oldState, state);
-	}
-
-	public static void removeBlock(Level level, BlockPos pos) {
-		level.removeBlockEntity(pos);
-		setBlock(level, pos, Blocks.AIR.defaultBlockState());
-	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void copyBlock(Level level, BlockPos from, BlockPos to) {
-		BlockState state = level.getBlockState(from);
-		BlockEntity blockentity = level.getBlockEntity(from);
+	public static void removeBlocksAndConduits(Level level, BlockPos from, BlockPos to) {
 		
-		setBlock(level, to, state);
-		
-		// Transfer pending schedule-ticks
-		if (level.getBlockTicks().hasScheduledTick(from, state.getBlock())) {
-			level.getBlockTicks().schedule(new ScheduledTick(state.getBlock(), to, 0, 0));	
+		// Remove conduits
+		List<ConduitEntity> conduits = ConduitUtility.getConduitsInBounds(level, from, to, false);
+		for (ConduitEntity conduit : conduits) {
+			ConduitUtility.removeConduit(level, conduit.getPosition(), false);
 		}
 		
-		// Transfer block-entity data
-		if (state.hasBlockEntity() && blockentity != null) {
-			CompoundTag data = blockentity.serializeNBT();
-			level.setBlockEntity(blockentity);
-			BlockEntity newBlockentity = level.getBlockEntity(to);
-			if (newBlockentity != null) {
-				newBlockentity.deserializeNBT(data);
+		// Remove blocks
+		for (int y = from.getY(); y <= to.getY(); y++) {
+			for (int z = from.getZ(); z <= to.getZ(); z++) {
+				for (int x = from.getX(); x <= to.getX(); x++) {
+					BlockPos pos = new BlockPos(x, y, z);
+					ChunkAccess chunk = level.getChunk(pos);
+					BlockPos chunkPos = pos.subtract(new BlockPos(chunk.getPos().getMinBlockX(), 0, chunk.getPos().getMinBlockZ()));
+					chunk.setBlockState(chunkPos, Blocks.ERROR_BLOCK.get().defaultBlockState(), false);
+				}
 			}
 		}
+		
+		// Notify removed blocks
+		for (int y = from.getY(); y <= to.getY(); y++) {
+			for (int z = from.getZ(); z <= to.getZ(); z++) {
+				for (int x = from.getX(); x <= to.getX(); x++) {
+					BlockPos pos = new BlockPos(x, y, z);
+					level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+					GameUtility.triggerClientSync(level, pos);
+					GameUtility.triggerUpdate(level, pos);
+				}
+			}
+		}
+		
 	}
-	
-	public static void relocateBlock(Level level, BlockPos from, BlockPos to) {
-		copyBlock(level, from, to);
-		removeBlock(level, from);
+
+	public static void removeBlocksAndConduits(Level level, Collection<BlockPos> positions) {
+		
+		// Remove conduits
+		positions.stream()
+			.flatMap(pos -> ConduitUtility.getConduitsAtBlock(level, pos).stream())
+			.distinct()
+			.filter(c -> 
+				StreamSupport.stream(positions.spliterator(), false).filter(c.getPosition().getNodeApos()::equals).findAny().isPresent() &&
+				StreamSupport.stream(positions.spliterator(), false).filter(c.getPosition().getNodeBpos()::equals).findAny().isPresent())
+			.forEach(c -> ConduitUtility.removeConduit(level, c.getPosition(), false));
+		
+		// Remove blocks
+		for (BlockPos pos : positions) {
+			ChunkAccess chunk = level.getChunk(pos);
+			BlockPos chunkPos = pos.subtract(new BlockPos(chunk.getPos().getMinBlockX(), 0, chunk.getPos().getMinBlockZ()));
+			chunk.setBlockState(chunkPos, Blocks.ERROR_BLOCK.get().defaultBlockState(), false);
+		}
+		
+		// Notify removed blocks
+		for (BlockPos pos : positions) {
+			level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+			GameUtility.triggerClientSync(level, pos);
+			GameUtility.triggerUpdate(level, pos);
+		}
+		
 	}
 	
 	public static void triggerUpdate(Level level, BlockPos pos) {

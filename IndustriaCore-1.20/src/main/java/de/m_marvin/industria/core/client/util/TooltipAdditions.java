@@ -6,12 +6,12 @@ import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.conduits.types.conduits.Conduit;
 import de.m_marvin.industria.core.conduits.types.items.AbstractConduitBlockItem;
 import de.m_marvin.industria.core.conduits.types.items.AbstractConduitItem;
+import de.m_marvin.industria.core.contraptions.ContraptionUtility;
 import de.m_marvin.industria.core.electrics.types.blocks.IElectricBlock;
 import de.m_marvin.industria.core.electrics.types.conduits.ElectricConduit;
 import de.m_marvin.industria.core.magnetism.types.blocks.IMagneticBlock;
 import de.m_marvin.industria.core.parametrics.BlockParametrics;
 import de.m_marvin.industria.core.parametrics.engine.BlockParametricsManager;
-import de.m_marvin.industria.core.physics.PhysicUtility;
 import de.m_marvin.industria.core.registries.IndustriaTags;
 import de.m_marvin.industria.core.util.Formatter;
 import de.m_marvin.industria.core.util.items.ITooltipAdditionsModifier;
@@ -107,7 +107,7 @@ public class TooltipAdditions {
 	
 	public static void addPhysicsTooltips(List<Component> tooltips, Block block) {
 		if (!shouldShow(block, TOOLTIP_PHYSICS)) return;
-		addTooltip(tooltips, Component.translatable("industriacore.tooltip.physics.mass", PhysicUtility.getBlockMass(block.defaultBlockState())));
+		addTooltip(tooltips, Component.translatable("industriacore.tooltip.physics.mass", ContraptionUtility.getBlockMass(block.defaultBlockState())));
 	}
 	
 	public static void addConduitTooltips(List<Component> tooltips, Conduit conduit) {

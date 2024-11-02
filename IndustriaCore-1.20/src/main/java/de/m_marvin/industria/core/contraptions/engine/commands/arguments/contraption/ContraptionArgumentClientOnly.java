@@ -1,11 +1,11 @@
-package de.m_marvin.industria.core.physics.engine.commands.arguments.contraption;
+package de.m_marvin.industria.core.contraptions.engine.commands.arguments.contraption;
 
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import de.m_marvin.industria.core.physics.PhysicUtility;
-import de.m_marvin.industria.core.physics.types.Contraption;
-import de.m_marvin.industria.core.physics.types.ContraptionHitResult;
+import de.m_marvin.industria.core.contraptions.ContraptionUtility;
+import de.m_marvin.industria.core.contraptions.engine.types.Contraption;
+import de.m_marvin.industria.core.contraptions.engine.types.ContraptionHitResult;
 import de.m_marvin.univec.impl.Vec3d;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -23,11 +23,11 @@ public class ContraptionArgumentClientOnly {
 		Vec3d direction = Vec3d.fromVec(player.getViewVector(0));
 		double range = player.getBlockReach();
 		
-		ContraptionHitResult result = PhysicUtility.clipForContraption(level, eyePos, direction, range);
+		ContraptionHitResult result = ContraptionUtility.clipForContraption(level, eyePos, direction, range);
 		
 		if (result.getType() != Type.MISS) {
 			
-			Contraption contraption = new Contraption(level, result.getContraption());
+			Contraption contraption = result.getContraption();
 			SharedSuggestionProvider.suggest(Lists.newArrayList(contraption.getIdString(), contraption.getName().getString()), builder);
 			
 		}

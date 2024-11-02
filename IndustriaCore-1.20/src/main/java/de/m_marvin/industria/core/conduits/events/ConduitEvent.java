@@ -33,8 +33,11 @@ public class ConduitEvent extends Event {
 	@Cancelable
 	public static class ConduitBreakEvent extends ConduitEvent {
 		
-		public ConduitBreakEvent(LevelAccessor level, ConduitPos position, ConduitEntity conduitState) {
+		public boolean dropItems;
+		
+		public ConduitBreakEvent(LevelAccessor level, ConduitPos position, ConduitEntity conduitState, boolean dropItems) {
 			super(level, position, conduitState);
+			this.dropItems = dropItems;
 		}
 
 		@Override

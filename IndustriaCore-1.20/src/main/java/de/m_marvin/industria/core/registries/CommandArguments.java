@@ -2,8 +2,10 @@ package de.m_marvin.industria.core.registries;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.conduits.engine.command.ConduitArgument;
-import de.m_marvin.industria.core.physics.engine.commands.arguments.contraption.ContraptionArgument;
-import de.m_marvin.industria.core.physics.engine.commands.arguments.vec3relative.Vec3RelativeArgument;
+import de.m_marvin.industria.core.contraptions.engine.commands.arguments.contraption.ContraptionArgument;
+import de.m_marvin.industria.core.contraptions.engine.commands.arguments.vec3relative.Vec3RelativeArgument;
+import de.m_marvin.industria.core.util.commands.MirroringArgument;
+import de.m_marvin.industria.core.util.commands.RotationArgument;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
@@ -30,5 +32,11 @@ public class CommandArguments {
 	
 	public static final RegistryObject<SingletonArgumentInfo<ConduitArgument>> CONDUIT_ARGUMENT = COMMAND_ARGUMENT_TYPES.register("conduit", () ->
 		ArgumentTypeInfos.registerByClass(ConduitArgument.class, SingletonArgumentInfo.contextFree(ConduitArgument::conduit)));
+	
+	public static final RegistryObject<SingletonArgumentInfo<RotationArgument>> BLOCK_ROTATION_ARGUMENT = COMMAND_ARGUMENT_TYPES.register("block_rotation", () ->
+		ArgumentTypeInfos.registerByClass(RotationArgument.class, SingletonArgumentInfo.contextFree(RotationArgument::rotation)));
+
+	public static final RegistryObject<SingletonArgumentInfo<MirroringArgument>> BLOCK_MIRROR_ARGUMENT = COMMAND_ARGUMENT_TYPES.register("block_mirror", () ->
+		ArgumentTypeInfos.registerByClass(MirroringArgument.class, SingletonArgumentInfo.contextFree(MirroringArgument::mirroring)));
 	
 }

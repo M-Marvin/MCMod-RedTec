@@ -1,4 +1,4 @@
-package de.m_marvin.industria.core.physics.engine.commands.arguments.contraption;
+package de.m_marvin.industria.core.contraptions.engine.commands.arguments.contraption;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,13 +10,11 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import org.valkyrienskies.core.api.ships.Ship;
-
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import de.m_marvin.industria.core.physics.PhysicUtility;
-import de.m_marvin.industria.core.physics.types.Contraption;
+import de.m_marvin.industria.core.contraptions.ContraptionUtility;
+import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -27,12 +25,12 @@ import net.minecraft.world.phys.Vec3;
 
 public class ContraptionSelector {
 	
-	public static final BiConsumer<Vec3, List<? extends Contraption>> ORDER_ARBITRARY = (p_261404_, p_261405_) -> {
+	public static final BiConsumer<Vec3, List<? extends ServerContraption>> ORDER_ARBITRARY = (p_261404_, p_261405_) -> {
 	};
 		
 	private final int maxResults;
 	private final boolean worldLimited;
-	private final Predicate<Contraption> predicate;
+	private final Predicate<ServerContraption> predicate;
 	private final MinMaxBounds.Doubles range;
 	private final MinMaxBounds.Doubles mass;
 	private final MinMaxBounds.Doubles size;
@@ -40,7 +38,7 @@ public class ContraptionSelector {
 	private final Function<Vec3, Vec3> position;
 	@Nullable
 	private final AABB aabb;
-	private final BiConsumer<Vec3, List<? extends Contraption>> order;
+	private final BiConsumer<Vec3, List<? extends ServerContraption>> order;
 	private final boolean currentContraption;
 	@Nullable
 	private final String contraptionName;
@@ -48,7 +46,7 @@ public class ContraptionSelector {
 	private final OptionalLong contraptionId;
 	private final boolean usesSelector;
 	 
-	public ContraptionSelector(int pMaxResults, boolean pWorldLimited, Predicate<Contraption> predicate, MinMaxBounds.Doubles pRange, MinMaxBounds.Doubles pMass, MinMaxBounds.Doubles pSize, Optional<Boolean> pStatic, Function<Vec3, Vec3> pPositions, @Nullable AABB pAabb, BiConsumer<Vec3, List<? extends Contraption>> order, boolean pCurrentContraption, @Nullable String pContraptionName, @Nullable OptionalLong contraptionId, boolean pUsesSelector) {
+	public ContraptionSelector(int pMaxResults, boolean pWorldLimited, Predicate<ServerContraption> predicate, MinMaxBounds.Doubles pRange, MinMaxBounds.Doubles pMass, MinMaxBounds.Doubles pSize, Optional<Boolean> pStatic, Function<Vec3, Vec3> pPositions, @Nullable AABB pAabb, BiConsumer<Vec3, List<? extends ServerContraption>> order, boolean pCurrentContraption, @Nullable String pContraptionName, @Nullable OptionalLong contraptionId, boolean pUsesSelector) {
 		this.maxResults = pMaxResults;
 		this.worldLimited = pWorldLimited;
 		this.predicate = predicate;
@@ -73,7 +71,7 @@ public class ContraptionSelector {
 		return worldLimited;
 	}
 
-	public Predicate<Contraption> getPredicate() {
+	public Predicate<ServerContraption> getPredicate() {
 		return predicate;
 	}
 
@@ -101,7 +99,7 @@ public class ContraptionSelector {
 		return aabb;
 	}
 
-	public BiConsumer<Vec3, List<? extends Contraption>> getOrder() {
+	public BiConsumer<Vec3, List<? extends ServerContraption>> getOrder() {
 		return order;
 	}
 
@@ -121,12 +119,12 @@ public class ContraptionSelector {
 		return usesSelector;
 	}
 	
-	private Predicate<Contraption> getPredicateWithAdditonal(Vec3 position) {
-		Predicate<Contraption> predicate = this.predicate;
+	private Predicate<ServerContraption> getPredicateWithAdditonal(Vec3 position) {
+		Predicate<ServerContraption> predicate = this.predicate;
 		if (this.aabb != null) {
 			AABB aabb = this.aabb.move(position);
 			predicate = predicate.and((contraption) -> {
-				return aabb.intersects(contraption.getWorldBounds());
+				return aabb.intersects(contraption.getContraptionHitboxInWorldBoundsV());
 			});
 		}
 		
@@ -163,9 +161,9 @@ public class ContraptionSelector {
 		}
 	}
 
-	public Contraption findSingleContraption(CommandSourceStack source) throws CommandSyntaxException {
+	public ServerContraption findSingleContraption(CommandSourceStack source) throws CommandSyntaxException {
 		this.checkPermissions(source);
-		List<Contraption> list = findContraptions(source);
+		List<ServerContraption> list = findContraptions(source);
 		if (list.isEmpty()) {
 			throw ContraptionArgument.NO_CONTRAPTIONS_FOUND.create();
 		} else if (list.size() > 1) {
@@ -175,34 +173,33 @@ public class ContraptionSelector {
 		}
 	}
 	
-	private void addContraptions(List<Contraption> list, ServerLevel level, Vec3 position, Predicate<Contraption> predicate) {
+	private void addContraptions(List<ServerContraption> list, ServerLevel level, Vec3 position, Predicate<ServerContraption> predicate) {
 		int i = this.order == ORDER_ARBITRARY ? this.maxResults : Integer.MAX_VALUE;
 		if (list.size() < i) {
-			list.addAll(Contraption.fromShipListLevelFiltered(level, PhysicUtility.getLoadedContraptions(level)).stream().filter(predicate).toList());
+			List<ServerContraption> list2 = ContraptionUtility.getAllContraptions(level, true);
+			list.addAll(list2.stream().filter(predicate).toList());
 		}
 	}
 	
-	public List<Contraption> findContraptions(CommandSourceStack source) throws CommandSyntaxException {
+	public List<ServerContraption> findContraptions(CommandSourceStack source) throws CommandSyntaxException {
 		this.checkPermissions(source);
 		
 		if (this.contraptionName != null) {
-			return Lists.newArrayList(Contraption.fromShipList(source.getLevel(), PhysicUtility.getContraptionsWithName(source.getLevel(), this.contraptionName)));
+			return ContraptionUtility.getContraptionsWithName(source.getLevel(), this.contraptionName);
 		} else if (this.contraptionId.isPresent()) {
-			Ship s = PhysicUtility.getContraptionById(source.getLevel(), this.contraptionId.getAsLong());
-			Contraption contraption = s != null ? new Contraption(source.getLevel(), s) : null;
+			ServerContraption contraption = ContraptionUtility.getContraptionById(source.getLevel(), this.contraptionId.getAsLong());
 			return contraption == null ? Collections.emptyList() : Lists.newArrayList(contraption);
 		} else {
 			
 			Vec3 position = this.position.apply(source.getPosition());
-			Predicate<Contraption> predicate = this.getPredicateWithAdditonal(position);
+			Predicate<ServerContraption> predicate = this.getPredicateWithAdditonal(position);
 			
 			if (this.currentContraption) {
-				Ship s = PhysicUtility.getContraptionOfBlock(source.getLevel(), BlockPos.containing(source.getPosition().x, source.getPosition().y, source.getPosition().z));
-				Contraption contraption = s != null ? new Contraption(source.getLevel(), s) : null;
+				ServerContraption contraption = ContraptionUtility.getContraptionOfBlock(source.getLevel(), BlockPos.containing(source.getPosition().x, source.getPosition().y, source.getPosition().z));
 				return contraption == null ? Collections.emptyList() : Lists.newArrayList(contraption);
 			} else {
 				
-				List<Contraption> list = Lists.newArrayList();
+				List<ServerContraption> list = Lists.newArrayList();
 				if (this.isWorldLimited()) {
 					this.addContraptions(list, source.getLevel(), position, predicate);
 				} else {
@@ -216,7 +213,7 @@ public class ContraptionSelector {
 		
 	}
 	
-	private List<Contraption> sortAndLimit(Vec3 position, List<Contraption> contraptions) {
+	private List<ServerContraption> sortAndLimit(Vec3 position, List<ServerContraption> contraptions) {
 		if (contraptions.size() > 1) {
 			this.order.accept(position, contraptions);
 		}

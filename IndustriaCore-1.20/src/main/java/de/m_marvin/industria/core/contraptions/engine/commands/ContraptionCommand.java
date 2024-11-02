@@ -1,11 +1,10 @@
-package de.m_marvin.industria.core.physics.engine.commands;
+package de.m_marvin.industria.core.contraptions.engine.commands;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.api.ships.Ship;
 
 import com.mojang.brigadier.Command;
@@ -16,12 +15,12 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
-import de.m_marvin.industria.core.physics.PhysicUtility;
-import de.m_marvin.industria.core.physics.engine.commands.arguments.contraption.ContraptionArgument;
-import de.m_marvin.industria.core.physics.engine.commands.arguments.vec3relative.Vec3Relative;
-import de.m_marvin.industria.core.physics.engine.commands.arguments.vec3relative.Vec3RelativeArgument;
-import de.m_marvin.industria.core.physics.types.Contraption;
-import de.m_marvin.industria.core.physics.types.ContraptionPosition;
+import de.m_marvin.industria.core.contraptions.ContraptionUtility;
+import de.m_marvin.industria.core.contraptions.engine.commands.arguments.contraption.ContraptionArgument;
+import de.m_marvin.industria.core.contraptions.engine.commands.arguments.vec3relative.Vec3Relative;
+import de.m_marvin.industria.core.contraptions.engine.commands.arguments.vec3relative.Vec3RelativeArgument;
+import de.m_marvin.industria.core.contraptions.engine.types.ContraptionPosition;
+import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.StructureFinder;
 import de.m_marvin.unimat.api.IQuaternionMath.EulerOrder;
@@ -37,6 +36,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -47,11 +47,11 @@ public class ContraptionCommand {
 	public static void offsetSourcePosAndRotationFromCommandSource(CommandSourceStack source, Vec3d sourcePosition, Vec3d sourceRotation) {
 		
 		Vec3d sourceExecutorPos = Vec3d.fromVec(source.getPosition());
-		Ship sourceContraption = PhysicUtility.getContraptionOfBlock(source.getLevel(), MathUtility.toBlockPos(sourceExecutorPos));
+		Ship sourceContraption = ContraptionUtility.getContraptionOfBlock(source.getLevel(), MathUtility.toBlockPos(sourceExecutorPos));
 		if (sourceContraption != null) {
 			ContraptionPosition sourceContraptionPosition = new ContraptionPosition(sourceContraption);
 			sourceRotation.setI(sourceContraptionPosition.getOrientation().euler(EulerOrder.XYZ, true));
-			sourceExecutorPos = PhysicUtility.toWorldPos(sourceContraption.getTransform(), sourceExecutorPos);
+			sourceExecutorPos = ContraptionUtility.toWorldPos(sourceContraption.getTransform(), sourceExecutorPos);
 		}
 		sourcePosition.addI(sourceExecutorPos);
 		
@@ -96,8 +96,7 @@ public class ContraptionCommand {
 								)
 						)
 				)
-		)
-		.then(
+		).then(
 				Commands.literal("remove")
 				.then(
 						Commands.argument("contraption", ContraptionArgument.contraptions())
@@ -225,13 +224,13 @@ public class ContraptionCommand {
 		));
 	}
 	
-	public static int setVelocity(CommandContext<CommandSourceStack> source, Collection<Contraption> contraptions, Vec3Relative velocity, Vec3Relative omega) {
+	public static int setVelocity(CommandContext<CommandSourceStack> source, Collection<ServerContraption> contraptions, Vec3Relative velocity, Vec3Relative omega) {
 
 		Vec3d sourcePosition = new Vec3d();
 		Vec3d sourceRotation = new Vec3d();
 		offsetSourcePosAndRotationFromCommandSource(source.getSource(), sourcePosition, sourceRotation);
 		
-		for (Contraption contraption : contraptions) {
+		for (ServerContraption contraption : contraptions) {
 
 			Vec3d newVelocity = velocity.getPosition(contraption.getVelocityVec(), sourceRotation);
 			Vec3d newOmega = omega != null ? omega.getPosition(contraption.getOmegaVec().mul(MathUtility.ANGULAR_VELOCITY_TO_ROTATIONS_PER_SECOND), sourceRotation) : null; // The angular velocity is like an vector, so we use the position getter here too
@@ -239,7 +238,7 @@ public class ContraptionCommand {
 			ContraptionPosition transform = contraption.getPosition();
 			transform.setVelocity(newVelocity);
 			if (omega != null) transform.setOmega(newOmega.mul(MathUtility.ROTATIONS_PER_SECOND_TO_ANGULAR_VELOCITY));
-			PhysicUtility.teleportContraption(source.getSource().getLevel(), (ServerShip) contraption.getContraption(), transform);
+			ContraptionUtility.teleportContraption(source.getSource().getLevel(), contraption, transform);
 		}
 		
 		source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.velocity.set.success", contraptions.size()), false);
@@ -247,12 +246,12 @@ public class ContraptionCommand {
 		
 	}
 
-	public static int setScale(CommandContext<CommandSourceStack> source, Collection<Contraption> contraptions, double scale) {
+	public static int setScale(CommandContext<CommandSourceStack> source, Collection<ServerContraption> contraptions, double scale) {
 		
-		for (Contraption contraption : contraptions) {
-			ContraptionPosition transform = contraption.getPosition();
-			transform.setScale(scale);
-			PhysicUtility.teleportContraption(source.getSource().getLevel(), (ServerShip) contraption.getContraption(), transform);
+		for (ServerContraption contraption : contraptions) {
+			ContraptionPosition position = contraption.getPosition();
+			position.setScale(scale);
+			ContraptionUtility.teleportContraption(source.getSource().getLevel(), contraption, position);
 		}
 		
 		source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.scale.set.success", contraptions.size(), scale), false);
@@ -260,10 +259,10 @@ public class ContraptionCommand {
 		
 	}
 	
-	public static int setStatic(CommandContext<CommandSourceStack> source, Collection<Contraption> contraptions, boolean state) {
+	public static int setStatic(CommandContext<CommandSourceStack> source, Collection<ServerContraption> contraptions, boolean state) {
 		
-		for (Contraption contaption : contraptions) {
-			((ServerShip) contaption.getContraption()).setStatic(state);
+		for (ServerContraption contaption : contraptions) {
+			contaption.setStatic(state);
 		}
 		
 		source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.static.set." + (state ? "static" : "dynamic"), contraptions.size()), false);
@@ -271,16 +270,16 @@ public class ContraptionCommand {
 		
 	}
 	
-	public static int setName(CommandContext<CommandSourceStack> source, Contraption contraption, String name) {
+	public static int setName(CommandContext<CommandSourceStack> source, ServerContraption contraption, String name) {
 		
-		((ServerShip) contraption.getContraption()).setSlug(name);
+		contraption.setName(name);
 		
 		source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.name.set", name), true);
 		return Command.SINGLE_SUCCESS;
 		
 	}
 	
-	public static int editTags(CommandContext<CommandSourceStack> source, Collection<Contraption> contraptions, int add_remove_list, String tag) {
+	public static int editTags(CommandContext<CommandSourceStack> source, Collection<ServerContraption> contraptions, int add_remove_list, String tag) {
 		
 		if (add_remove_list == 0) {
 			
@@ -289,8 +288,8 @@ public class ContraptionCommand {
 				return 0;
 			}
 			
-			for (Contraption contraption : contraptions) {
-				PhysicUtility.addContraptionTag(contraption.getLevel(), contraption.getContraption(), tag);
+			for (ServerContraption contraption : contraptions) {
+				contraption.addTag(tag);
 			}
 			
 			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.tags.set.success", tag, contraptions.size()), true);
@@ -303,8 +302,8 @@ public class ContraptionCommand {
 				return 0;
 			}
 			
-			for (Contraption contraption : contraptions) {
-				PhysicUtility.removeContraptionTag(contraption.getLevel(), contraption.getContraption(), tag);
+			for (ServerContraption contraption : contraptions) {
+				contraption.addTag(tag);
 			}
 			
 			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.tags.remove.success", tag, contraptions.size()), true);
@@ -317,9 +316,9 @@ public class ContraptionCommand {
 				return 0;
 			}
 			
-			Contraption contraption = contraptions.iterator().next();
+			ServerContraption contraption = contraptions.iterator().next();
 			
-			Set<String> tags = PhysicUtility.getContraptionTags(contraption.getLevel(), contraption.getContraption());
+			Set<String> tags = contraption.getTags();
 			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.tags.listhead", contraption.getDisplayString(), tags.size()), true);
 			
 			for (String tagstring : tags) {
@@ -332,7 +331,7 @@ public class ContraptionCommand {
 		
 	}
 	
-	public static int findContraption(CommandContext<CommandSourceStack> source, Contraption contraption, Entity entityToTeleport) {
+	public static int findContraption(CommandContext<CommandSourceStack> source, ServerContraption contraption, Entity entityToTeleport) {
 		
 		Vec3d contraptionPosition = contraption.getPosition().getPosition();
 		
@@ -368,19 +367,19 @@ public class ContraptionCommand {
 		
 	}
 	
-	public static int teleportContraption(CommandContext<CommandSourceStack> source, Collection<Contraption> contraptions, Vec3Relative position, Vec3Relative rotation) {
+	public static int teleportContraption(CommandContext<CommandSourceStack> source, Collection<ServerContraption> contraptions, Vec3Relative position, Vec3Relative rotation) {
 		
 		Vec3d sourcePosition = new Vec3d();
 		Vec3d sourceRotation = new Vec3d();
 		offsetSourcePosAndRotationFromCommandSource(source.getSource(), sourcePosition, sourceRotation);
 		
 		ServerLevel level = source.getSource().getLevel();
-		String dimension = PhysicUtility.getDimensionId(level);
+		ResourceLocation dimension = level.dimension().location();
 		
 		Vec3d newPosition = position.getPosition(sourcePosition, sourceRotation);
 		Vec3d newRotation = rotation != null ? rotation.getRotation(sourceRotation, sourceRotation) : null;
 		
-		for (Contraption contraption : contraptions) {
+		for (ServerContraption contraption : contraptions) {
 			
 			ContraptionPosition contraptionPos = contraption.getPosition();
 			
@@ -388,7 +387,7 @@ public class ContraptionCommand {
 			contraptionPos.setDimension(dimension);
 			if (rotation != null) contraptionPos.setOrientation(new Quaterniond(newRotation, EulerOrder.XYZ, true));
 			
-			PhysicUtility.teleportContraption(source.getSource().getLevel(), (ServerShip) contraption.getContraption(), contraptionPos);
+			ContraptionUtility.teleportContraption(source.getSource().getLevel(), contraption, contraptionPos);
 			
 		}
 		
@@ -410,7 +409,7 @@ public class ContraptionCommand {
 			return 0;
 		}
 		
-		boolean success = PhysicUtility.convertToContraption(source.getSource().getLevel(), bounds, true, scale);
+		boolean success = ContraptionUtility.convertToContraption(source.getSource().getLevel(), bounds, true, scale);
 		
 		BlockPos minCorner = MathUtility.getMinCorner(pos1, pos2);
 		
@@ -426,7 +425,7 @@ public class ContraptionCommand {
 	
 	public static int assembleContraption(CommandContext<CommandSourceStack> source, BlockPos startPos, float scale) {
 		
-		Optional<List<BlockPos>> structureBlocks = StructureFinder.findStructure(source.getSource().getLevel(), startPos, 16 * 16 * 16, PhysicUtility::isValidContraptionBlock);
+		Optional<List<BlockPos>> structureBlocks = StructureFinder.findStructure(source.getSource().getLevel(), startPos, 16 * 16 * 16, ContraptionUtility::isValidContraptionBlock);
 		
 		if (structureBlocks.isEmpty()) {
 			
@@ -435,7 +434,7 @@ public class ContraptionCommand {
 			
 		}
 		
-		boolean success = PhysicUtility.assembleToContraption(source.getSource().getLevel(), structureBlocks.get(), true, scale);
+		boolean success = ContraptionUtility.assembleToContraption(source.getSource().getLevel(), structureBlocks.get(), true, scale);
 		
 		if (success) {
 			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.assemble.success", startPos.getX(), startPos.getY(), startPos.getZ(), startPos), true);
@@ -447,20 +446,21 @@ public class ContraptionCommand {
 		
 	}
 	
-	public static int removeContraption(CommandContext<CommandSourceStack> source, Collection<Contraption> contraptions) {
+	public static int removeContraption(CommandContext<CommandSourceStack> source, Collection<ServerContraption> contraptions) {
 		int removed = 0;
-		for (Contraption contraption : contraptions) {
-			if (PhysicUtility.removeContraption(source.getSource().getLevel(), contraption.getContraption())) removed++;
+		
+		for (ServerContraption contraption : contraptions) {
+			if (ContraptionUtility.removeContraption(source.getSource().getLevel(), contraption)) removed++;
 		}
 		
 		if (contraptions.size() == 1) {
-			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.remove.success", contraptions.iterator().next().getDisplayString()), true);
+			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.remove.success"), true);
 		} else {
 			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.remove.success_multiple", contraptions.size()), true);
 		}
 		
 		return removed;
 	}
-	
+
 }
 

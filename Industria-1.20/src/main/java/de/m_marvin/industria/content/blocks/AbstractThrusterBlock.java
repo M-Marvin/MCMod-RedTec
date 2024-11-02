@@ -5,16 +5,15 @@ import java.util.Map.Entry;
 
 import org.joml.Vector3d;
 import org.valkyrienskies.core.api.ships.PhysShip;
-import org.valkyrienskies.core.api.ships.ServerShip;
-import org.valkyrienskies.core.api.ships.Ship;
 
-import de.m_marvin.industria.core.physics.PhysicUtility;
-import de.m_marvin.industria.core.physics.engine.ForcesInducer;
+import de.m_marvin.industria.core.contraptions.ContraptionUtility;
+import de.m_marvin.industria.core.contraptions.engine.ForcesInducer;
+import de.m_marvin.industria.core.contraptions.engine.types.Contraption;
+import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.univec.impl.Vec3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -61,9 +60,9 @@ public abstract class AbstractThrusterBlock extends BaseEntityBlock {
 	@Override
 	public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
 		super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
-		Ship contraption = PhysicUtility.getContraptionOfBlock(pLevel, pPos);
-		if (contraption instanceof ServerShip serverContraption) {
-			ThrusterInducer forceInducer = PhysicUtility.getOrCreateForceInducer((ServerLevel) pLevel, serverContraption, ThrusterInducer.class);
+		Contraption contraption = ContraptionUtility.getContraptionOfBlock(pLevel, pPos);
+		if (contraption instanceof ServerContraption serverContraption) {
+			ThrusterInducer forceInducer = serverContraption.getOrCreateAttachment(ThrusterInducer.class);
 			forceInducer.setThruster(pPos, 0);
 		}
 	}
@@ -72,11 +71,11 @@ public abstract class AbstractThrusterBlock extends BaseEntityBlock {
 	@Override
 	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
 		super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
-		Ship contraption = PhysicUtility.getContraptionOfBlock(pLevel, pPos);
-		if (contraption instanceof ServerShip serverContraption) {
-			ThrusterInducer forceInducer = PhysicUtility.getOrCreateForceInducer((ServerLevel) pLevel, serverContraption, ThrusterInducer.class);
+		Contraption contraption = ContraptionUtility.getContraptionOfBlock(pLevel, pPos);
+		if (contraption instanceof ServerContraption serverContraption) {
+			ThrusterInducer forceInducer = serverContraption.getOrCreateAttachment(ThrusterInducer.class);
 			forceInducer.removeThruster(pPos);
-			if (forceInducer.getThrusters().isEmpty()) PhysicUtility.removeAttachment(serverContraption, ThrusterInducer.class);
+			if (forceInducer.getThrusters().isEmpty()) serverContraption.removeAttachment(ThrusterInducer.class);
 		}
 	}
 	
@@ -105,7 +104,7 @@ public abstract class AbstractThrusterBlock extends BaseEntityBlock {
 			
 			if (getLevel() != null) {
 
-				Vec3d massCenter = PhysicUtility.toContraptionPos(contraption.getTransform(), Vec3d.fromVec(contraption.getTransform().getPositionInWorld()));
+				Vec3d massCenter = ContraptionUtility.toContraptionPos(contraption.getTransform(), Vec3d.fromVec(contraption.getTransform().getPositionInWorld()));
 				
 				for (Entry<Long, Double> thruster : thrusters.entrySet()) {
 					

@@ -5,6 +5,7 @@ import java.util.Optional;
 import de.m_marvin.industria.core.conduits.engine.network.CChangeConduitPlacementLengthPackage;
 import de.m_marvin.industria.core.conduits.engine.network.SCConduitPackage;
 import de.m_marvin.industria.core.conduits.engine.network.SSyncConduitPackage;
+import de.m_marvin.industria.core.contraptions.engine.VS2MassSyncPatch.SSyncVS2BlockInfoPackage;
 import de.m_marvin.industria.core.electrics.engine.network.CEditPowerSourcePackage;
 import de.m_marvin.industria.core.electrics.engine.network.CPlayerSwitchNetworkPackage;
 import de.m_marvin.industria.core.electrics.engine.network.CUpdateJunctionLanesPackage;
@@ -15,7 +16,6 @@ import de.m_marvin.industria.core.magnetism.engine.network.SMagneticInfluencePac
 import de.m_marvin.industria.core.magnetism.engine.network.SSyncMagneticPackage;
 import de.m_marvin.industria.core.magnetism.engine.network.SUpdateMagneticFieldPackage;
 import de.m_marvin.industria.core.parametrics.engine.network.SSyncParametricsPackage;
-import de.m_marvin.industria.core.physics.engine.VS2MassSyncPatch.SSyncVS2BlockInfoPackage;
 import de.m_marvin.industria.core.scrollinput.engine.network.CScrollInputPackage;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.simple.SimpleChannel;

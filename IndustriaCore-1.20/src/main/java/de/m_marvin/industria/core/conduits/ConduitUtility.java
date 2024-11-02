@@ -10,7 +10,7 @@ import de.m_marvin.industria.core.conduits.types.ConduitHitResult;
 import de.m_marvin.industria.core.conduits.types.ConduitPos;
 import de.m_marvin.industria.core.conduits.types.conduits.Conduit;
 import de.m_marvin.industria.core.conduits.types.conduits.ConduitEntity;
-import de.m_marvin.industria.core.physics.PhysicUtility;
+import de.m_marvin.industria.core.contraptions.ContraptionUtility;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
 import de.m_marvin.industria.core.util.MathUtility;
@@ -31,8 +31,8 @@ public class ConduitUtility {
 		if (handler.placeConduit(position, conduit, length) && !level.isClientSide()) {
 			// This is just to make sure events are triggered on both side
 			BlockPos middlePos = MathUtility.getMiddleBlock(
-					PhysicUtility.ensureWorldBlockCoordinates(level, position.getNodeApos(), position.getNodeApos()), 
-					PhysicUtility.ensureWorldBlockCoordinates(level, position.getNodeBpos(), position.getNodeBpos()));
+					ContraptionUtility.ensureWorldBlockCoordinates(level, position.getNodeApos(), position.getNodeApos()), 
+					ContraptionUtility.ensureWorldBlockCoordinates(level, position.getNodeBpos(), position.getNodeBpos()));
 			IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(middlePos)), new SCConduitPackage.SCPlaceConduitPackage(position, conduit, length));
 			return true;
 		}
@@ -44,8 +44,8 @@ public class ConduitUtility {
 		if (handler.breakConduit(position, dropItems) && !level.isClientSide()) {
 			// This is just to make sure events are triggered on both side
 			BlockPos middlePos = MathUtility.getMiddleBlock(
-					PhysicUtility.ensureWorldBlockCoordinates(level, position.getNodeApos(), position.getNodeApos()), 
-					PhysicUtility.ensureWorldBlockCoordinates(level, position.getNodeBpos(), position.getNodeBpos()));
+					ContraptionUtility.ensureWorldBlockCoordinates(level, position.getNodeApos(), position.getNodeApos()), 
+					ContraptionUtility.ensureWorldBlockCoordinates(level, position.getNodeBpos(), position.getNodeBpos()));
 			IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(middlePos)), new SCConduitPackage.SCBreakConduitPackage(position, dropItems));
 			return true;
 		}
@@ -72,11 +72,16 @@ public class ConduitUtility {
 		return handler.getConduitsAtBlock(position);
 	}
 	
-	public static List<ConduitEntity> getConduitsInChunk(Level level, ChunkPos chunk) {
+	public static List<ConduitEntity> getConduitsInChunk(Level level, ChunkPos chunk, boolean includeExternal) {
 		ConduitHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONDUIT_HANDLER_CAPABILITY);
-		return handler.getConduitsInChunk(chunk);
+		return handler.getConduitsInChunk(chunk, includeExternal);
 	}
 
+	public static List<ConduitEntity> getConduitsInBounds(Level level, BlockPos pos1, BlockPos pos2, boolean includeExternal) {
+		ConduitHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONDUIT_HANDLER_CAPABILITY);
+		return handler.getConduitsInBounds(pos1, pos2, includeExternal);
+	}
+	
 	public static ConduitHitResult clipConduits(Level level, ClipContext context, boolean skipBlockClip) {
 		ConduitHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONDUIT_HANDLER_CAPABILITY);
 		ConduitHitResult cResult = handler.clipConduits(context);

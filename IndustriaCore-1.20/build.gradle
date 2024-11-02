@@ -123,17 +123,42 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
 	mavenCentral()
 	maven {
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+        content {
+        	includeGroup "org.spongepowered"
+        }
+    }
+    maven {
+        name = "ParchmentMC"
+        url = "https://maven.parchmentmc.org"
+    }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    mavenLocal()
+    maven {
+        url = 'https://maven.valkyrienskies.org' // For VS-Core
+        content {
+        	//excludeGroup "org.valkyrienskies.core"
+        }
+    }
+    maven {
+        url = 'https://thedarkcolour.github.io/KotlinForForge/' // Kotlin for Forge
+        content {
+        	includeGroup "net.minecraftforge"
+        }
+    }
+	maven {
 		url 'https://maven.pkg.github.com/m-marvin/library-electronflow'
 		credentials {
             username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
             password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
         }
-	}
-	maven {
-		url 'https://maven.pkg.github.com/m-marvin/library-archiveutility'
-		credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        content {
+        	includeGroup "de.m_marvin.electronflow"
         }
 	}
 	maven {
@@ -142,32 +167,20 @@ repositories {
             username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
             password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
         }
+        content {
+        	includeGroup "de.m_marvin.univec"
+        }
 	}
 	maven {
-		url 'https://modmaven.dev/'
-	}
-	    maven {
-        url = 'https://repo.spongepowered.org/repository/maven-public/'
-    }
-    maven {
-        name = "Valkyrien Skies Internal"
-        url = 'https://maven.valkyrienskies.org'
-    }
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
+		url 'https://maven.pkg.github.com/valkyrienskies/valkyrien-skies-2'
+		credentials {
+		    username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+		}
+		content {
+        	includeGroup "org.valkyrienskies"
         }
-    }
-    maven {
-        name = "ParchmentMC"
-        url = "https://maven.parchmentmc.org"
-    }
-    maven {
-        name = 'Kotlin for Forge'
-        url = 'https://thedarkcolour.github.io/KotlinForForge/'
-    }
-    mavenLocal()
+	}
 }
 
 configurations {
@@ -187,20 +200,15 @@ dependencies {
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 	
 	// Valkyrien Skies 2
-    implementation fg.deobf("org.valkyrienskies:valkyrienskies-120-forge:${rootProject.vs2_version}") { transitive = false }
+	implementation fg.deobf("org.valkyrienskies:valkyrienskies-120-forge:${vs2_version}")
 	
-    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:$mixin_extras_version"))
-    implementation(jarJar("io.github.llamalad7:mixinextras-forge:$mixin_extras_version")) {
-        jarJar.ranged(it, "[$mixin_extras_version,)")
-    }
-
-    implementation("org.valkyrienskies.core:api:$vs_core_version")
+	// Valkyrien Skies Core API
+	implementation("org.valkyrienskies.core:api:$vs_core_version")
     implementation("org.valkyrienskies.core:api-game:$vs_core_version")
-    implementation("org.valkyrienskies.core:util:$vs_core_version")
-    implementation("org.valkyrienskies.core:impl:$vs_core_version")
-	implementation fg.deobf("curse.maven:kotlinforforge-351264:$forge_kotlin_version")
-    implementation "com.fasterxml.jackson.core:jackson-annotations:2.13.3"
     
+	// Kotlin for Forge (required by VS2)
+	runtimeOnly fg.deobf("curse.maven:kotlinforforge-351264:$forge_kotlin_version")
+	
  	// ElectronFlow
 	shade("de.m_marvin.electronflow:jelectronflow:${electronflow_version}")
 	minecraftLibrary("de.m_marvin.electronflow:jelectronflow:${electronflow_version}")
@@ -210,11 +218,6 @@ dependencies {
 	shade("de.m_marvin.univec:univec:${univec_version}")
 	minecraftLibrary("de.m_marvin.univec:univec:${univec_version}")
 	api("de.m_marvin.univec:univec:${univec_version}")
-	
-	// ArchiveUtility
-	shade("de.m_marvin.archiveutility:archiveutility:${archutil_version}")
-	minecraftLibrary("de.m_marvin.archiveutility:archiveutility:${archutil_version}")
-	api("de.m_marvin.archiveutility:archiveutility:${archutil_version}")
 	
 }
 

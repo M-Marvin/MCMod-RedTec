@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.m_marvin.industria.core.util.types.Direction2d;
@@ -290,6 +291,17 @@ public class MathUtility {
 		}
 		
 		return chunks;
+	}
+	
+	public static List<ChunkPos> getChunksBetweenBounds(ChunkPos a, ChunkPos b) {
+		int lx = Math.min(a.x, b.x);
+		int lz = Math.min(a.z, b.z);
+		int hx = Math.max(a.x, b.x);
+		int hz = Math.max(a.z, b.z);
+		return IntStream.range(lx, hx).mapToObj(Integer::valueOf)
+				.flatMap(x -> IntStream.range(lz, hz)
+				.mapToObj(z -> new ChunkPos(x, z)))
+				.toList();
 	}
 	
 	public static Vec3d[] lineInfinityIntersection(Vec3d lineA1, Vec3d lineA2, Vec3d lineB1, Vec3d lineB2) {

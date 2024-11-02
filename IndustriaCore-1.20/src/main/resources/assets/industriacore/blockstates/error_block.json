@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "industriacore:block/error_block" }
+  }
+}

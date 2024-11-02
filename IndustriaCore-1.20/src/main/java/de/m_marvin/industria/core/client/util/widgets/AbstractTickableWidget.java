@@ -7,7 +7,6 @@ public abstract class AbstractTickableWidget extends AbstractWidget {
 
 	public AbstractTickableWidget(int pX, int pY, int pWidth, int pHeight, Component pMessage) {
 		super(pX, pY, pWidth, pHeight, pMessage);
-		// TODO Auto-generated constructor stub
 	}
 
 	public abstract void tick();

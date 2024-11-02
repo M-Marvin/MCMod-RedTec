@@ -7,10 +7,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.client.physics.ClientPhysicsUtility;
 import de.m_marvin.industria.core.client.util.GraphicsUtility;
+import de.m_marvin.industria.core.contraptions.ContraptionUtility;
 import de.m_marvin.industria.core.magnetism.engine.MagnetismHandlerCapability;
 import de.m_marvin.industria.core.magnetism.types.MagneticField;
 import de.m_marvin.industria.core.magnetism.types.MagneticFieldInfluence;
-import de.m_marvin.industria.core.physics.PhysicUtility;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.univec.impl.Vec3d;
@@ -88,7 +88,7 @@ public class MagneticFieldRenderer {
 				
 				BlockPos pos = influence.getPos();
 				
-				double distance = playerPosition.dist(PhysicUtility.ensureWorldCoordinates(clientLevel, pos, Vec3d.fromVec(pos)));
+				double distance = playerPosition.dist(ContraptionUtility.ensureWorldCoordinates(clientLevel, pos, Vec3d.fromVec(pos)));
 				if (distance < renderDistance * renderDistance) drawMangeticInfluence(clientLevel, bufferSource, matrixStack, influence, partialTicks);
 				
 			}
@@ -97,7 +97,7 @@ public class MagneticFieldRenderer {
 				
 				BlockPos pos = MathUtility.getMiddleBlock(field.getMinPos(), field.getMaxPos());
 				
-				double distance = playerPosition.dist(Vec3i.fromVec(PhysicUtility.ensureWorldBlockCoordinates(clientLevel, pos, pos)));
+				double distance = playerPosition.dist(Vec3i.fromVec(ContraptionUtility.ensureWorldBlockCoordinates(clientLevel, pos, pos)));
 				
 				try {
 					if (distance < renderDistance * renderDistance) drawMagneticField(clientLevel, bufferSource, matrixStack, field, partialTicks);

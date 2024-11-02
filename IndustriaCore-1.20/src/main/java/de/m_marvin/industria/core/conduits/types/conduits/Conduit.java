@@ -7,7 +7,6 @@ import java.util.OptionalInt;
 import javax.annotation.Nullable;
 
 import org.joml.Vector3d;
-import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.apigame.constraints.VSConstraint;
 import org.valkyrienskies.core.apigame.constraints.VSRopeConstraint;
 
@@ -19,7 +18,8 @@ import de.m_marvin.industria.core.conduits.types.ConduitNode.NodeType;
 import de.m_marvin.industria.core.conduits.types.ConduitPos;
 import de.m_marvin.industria.core.conduits.types.ConduitType;
 import de.m_marvin.industria.core.conduits.types.blocks.IConduitConnector;
-import de.m_marvin.industria.core.physics.PhysicUtility;
+import de.m_marvin.industria.core.contraptions.ContraptionUtility;
+import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
 import de.m_marvin.industria.core.registries.Conduits;
 import de.m_marvin.industria.core.registries.ParticleTypes;
 import de.m_marvin.industria.core.util.GameUtility;
@@ -104,8 +104,8 @@ public class Conduit {
 	
 	public void onPlace(Level level, ConduitPos position, ConduitEntity conduitState) {
 		
-		Vec3d nodeA = Vec3d.fromVec(PhysicUtility.ensureWorldBlockCoordinates(level, conduitState.getPosition().getNodeApos(), conduitState.getPosition().getNodeApos()));
-		Vec3d nodeB = Vec3d.fromVec(PhysicUtility.ensureWorldBlockCoordinates(level, conduitState.getPosition().getNodeBpos(), conduitState.getPosition().getNodeBpos()));
+		Vec3d nodeA = Vec3d.fromVec(ContraptionUtility.ensureWorldBlockCoordinates(level, conduitState.getPosition().getNodeApos(), conduitState.getPosition().getNodeApos()));
+		Vec3d nodeB = Vec3d.fromVec(ContraptionUtility.ensureWorldBlockCoordinates(level, conduitState.getPosition().getNodeBpos(), conduitState.getPosition().getNodeBpos()));
 		Vec3d middle = nodeA.sub(nodeB).mul(0.5).add(nodeB);
 		
 		level.playLocalSound(middle.x, middle.y, middle.z, this.getSoundType().getBreakSound(), SoundSource.BLOCKS, this.getSoundType().getVolume(), this.getSoundType().getPitch(), false);
@@ -114,8 +114,8 @@ public class Conduit {
 	
 	public void onBreak(Level level, ConduitPos position, ConduitEntity conduitState, boolean dropItems) {
 		
-		Vec3d nodeA = Vec3d.fromVec(PhysicUtility.ensureWorldBlockCoordinates(level, conduitState.getPosition().getNodeApos(), conduitState.getPosition().getNodeApos()));
-		Vec3d nodeB = Vec3d.fromVec(PhysicUtility.ensureWorldBlockCoordinates(level, conduitState.getPosition().getNodeBpos(), conduitState.getPosition().getNodeBpos()));
+		Vec3d nodeA = Vec3d.fromVec(ContraptionUtility.ensureWorldBlockCoordinates(level, conduitState.getPosition().getNodeApos(), conduitState.getPosition().getNodeApos()));
+		Vec3d nodeB = Vec3d.fromVec(ContraptionUtility.ensureWorldBlockCoordinates(level, conduitState.getPosition().getNodeBpos(), conduitState.getPosition().getNodeBpos()));
 		Vec3d middle = nodeA.sub(nodeB).mul(0.5).add(nodeB);
 		Vec3d nodeOrigin = MathUtility.getMinCorner(nodeA, nodeB);
 		
@@ -126,11 +126,13 @@ public class Conduit {
 			}
 		}
 		
-		level.playLocalSound(middle.x, middle.y, middle.z, this.getSoundType().getBreakSound(), SoundSource.BLOCKS, this.getSoundType().getVolume(), this.getSoundType().getPitch(), false);
-		
-		if (!level.isClientSide()) {
-			for (Vec3d node : conduitState.getShape().nodes) {
-				((ServerLevel) level).sendParticles(new ConduitParticleOption(ParticleTypes.CONDUIT.get(), conduitState.getConduit()), node.x + nodeOrigin.x, node.y + nodeOrigin.y, node.z + nodeOrigin.z, 10, 0.2F, 0.2F, 0.2F, 1);
+		if (dropItems) {
+			level.playLocalSound(middle.x, middle.y, middle.z, this.getSoundType().getBreakSound(), SoundSource.BLOCKS, this.getSoundType().getVolume(), this.getSoundType().getPitch(), false);
+			
+			if (!level.isClientSide()) {
+				for (Vec3d node : conduitState.getShape().nodes) {
+					((ServerLevel) level).sendParticles(new ConduitParticleOption(ParticleTypes.CONDUIT.get(), conduitState.getConduit()), node.x + nodeOrigin.x, node.y + nodeOrigin.y, node.z + nodeOrigin.z, 10, 0.2F, 0.2F, 0.2F, 1);
+				}
 			}
 		}
 		
@@ -139,7 +141,7 @@ public class Conduit {
 	public void dismantleShape(Level level, ConduitEntity conduit) {
 		
 		ConduitShape shape = conduit.getShape();
- 		if (shape.constraint.isPresent() && !level.isClientSide()) PhysicUtility.removeConstraint(level, shape.constraint.getAsInt());
+ 		if (shape.constraint.isPresent() && !level.isClientSide()) ContraptionUtility.removeConstraint(level, shape.constraint.getAsInt());
 		
 	}
 	
@@ -301,16 +303,16 @@ public class Conduit {
 				// Create constraint if not already existing
 				if (!level.isClientSide() && shape.constraint.isEmpty()) {
 					
-					shape.contraptionA = (ServerShip) PhysicUtility.getContraptionOfBlock(level, nodeApos);
-					shape.contraptionB = (ServerShip) PhysicUtility.getContraptionOfBlock(level, nodeBpos);
+					shape.contraptionA = ContraptionUtility.getContraptionOfBlock(level, nodeApos);
+					shape.contraptionB = ContraptionUtility.getContraptionOfBlock(level, nodeBpos);
 					
-					long contraptionIdA = shape.contraptionA == null ? PhysicUtility.getGroundBodyId(level) : shape.contraptionA.getId();
-					long contraptionIdB = shape.contraptionB == null ? PhysicUtility.getGroundBodyId(level) : shape.contraptionB.getId();
+					long contraptionIdA = shape.contraptionA == null ? ContraptionUtility.getGroundBodyId(level) : shape.contraptionA.getId();
+					long contraptionIdB = shape.contraptionB == null ? ContraptionUtility.getGroundBodyId(level) : shape.contraptionB.getId();
 					
 					double comp = 1e-10;
 					double force = 1e10;
 					VSConstraint constraint = new VSRopeConstraint(contraptionIdA, contraptionIdB, comp, shape.contraptionNodeA.writeTo(new Vector3d()), shape.contraptionNodeB.writeTo(new Vector3d()), force, conduit.getLength() + 1);
- 					shape.constraint = OptionalInt.of(PhysicUtility.addConstraint(level, constraint));
+ 					shape.constraint = OptionalInt.of(ContraptionUtility.addConstraint(level, constraint));
 					
 				}
 				
@@ -327,8 +329,8 @@ public class Conduit {
 		
 		// Temporary data that gets not saved
 		public OptionalInt constraint = OptionalInt.empty();
-		public ServerShip contraptionA;
-		public ServerShip contraptionB;
+		public ServerContraption contraptionA;
+		public ServerContraption contraptionB;
 		public Vec3d contraptionNodeA = new Vec3d();
 		public Vec3d contraptionNodeB = new Vec3d();
 		public Vec3d shapeNodeA = new Vec3d();

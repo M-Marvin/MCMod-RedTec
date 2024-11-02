@@ -19,6 +19,7 @@ public class Blocks {
 		BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 	
+	public static final RegistryObject<Block> ERROR_BLOCK =		BLOCKS.register("error_block", () -> new Block(Properties.of().noParticlesOnBreak().mapColor(MapColor.COLOR_RED).strength(0F, 3600000F).noLootTable().noOcclusion()));
 	public static final RegistryObject<Block> POWER_SOURCE = 	BLOCKS.register("power_source", () -> new PowerSourceBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
 	public static final RegistryObject<Block> MAGNET = 			BLOCKS.register("magnet", () -> new MagnetBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
 	public static final RegistryObject<Block> WIRE_HOLDER =		BLOCKS.register("wire_holder", () -> new WireHolderBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));

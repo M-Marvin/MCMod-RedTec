@@ -6,8 +6,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.client.physics.ClientPhysicsUtility;
+import de.m_marvin.industria.core.contraptions.ContraptionUtility;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetworkHandlerCapability;
-import de.m_marvin.industria.core.physics.PhysicUtility;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.univec.impl.Vec3d;
 import net.minecraft.client.Minecraft;
@@ -81,7 +81,7 @@ public class ElectricComponentRenderer {
 					
 					BlockPos pos = (BlockPos) component.pos();
 					
-					double distance = playerPosition.dist(PhysicUtility.ensureWorldCoordinates(clientLevel, pos, Vec3d.fromVec(pos)));
+					double distance = playerPosition.dist(ContraptionUtility.ensureWorldCoordinates(clientLevel, pos, Vec3d.fromVec(pos)));
 					if (distance < renderDistance * renderDistance) drawElectricFrame(clientLevel, bufferSource, matrixStack, pos, partialTicks);
 					
 				}

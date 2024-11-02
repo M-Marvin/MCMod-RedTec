@@ -1,19 +1,24 @@
 package de.m_marvin.industria.core.magnetism.engine;
 
 import org.valkyrienskies.core.api.ships.PhysShip;
-import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+
+import de.m_marvin.industria.core.contraptions.ContraptionUtility;
+import de.m_marvin.industria.core.contraptions.engine.ForcesInducer;
+import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
 import de.m_marvin.industria.core.magnetism.types.MagneticField;
-import de.m_marvin.industria.core.physics.PhysicUtility;
-import de.m_marvin.industria.core.physics.engine.ForcesInducer;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 
+@JsonIncludeProperties({})
 public class MagneticForceInducer extends ForcesInducer {
 	
+	@JsonIgnore
 	protected LongOpenHashSet fields = new LongOpenHashSet();
 	
 	public void addField(long fieldId) {
@@ -34,7 +39,7 @@ public class MagneticForceInducer extends ForcesInducer {
 		if (getLevel() == null) return;
 		MagnetismHandlerCapability handler = GameUtility.getLevelCapability(this.getLevel(), Capabilities.MAGNETISM_HANDLER_CAPABILITY);
 
-		ServerShip contraption = (ServerShip) PhysicUtility.getContraptionById(level, contraptionPhysics.getId());
+		ServerContraption contraption = ContraptionUtility.getContraptionById(getLevel(), contraptionPhysics.getId());
 		if (contraption == null) return;
 		
 		for (Long field1id : this.fields) {
@@ -44,7 +49,7 @@ public class MagneticForceInducer extends ForcesInducer {
 			
 			synchronized (handler.getMagneticFields()) {
 				for (MagneticField field2 : handler.getMagneticFields()) {
-					if (field2 != field1 && field1.isInEffectiveLinearRange(this.level, field2))
+					if (field2 != field1 && field1.isInEffectiveLinearRange(getLevel(), field2))
 						field1.accumulateForces(getLevel(), (PhysShipImpl) contraptionPhysics, contraption, field2);
 				}
 			}

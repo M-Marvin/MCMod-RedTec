@@ -1,4 +1,4 @@
-package de.m_marvin.industria.core.physics.engine.commands.arguments.contraption;
+package de.m_marvin.industria.core.contraptions.engine.commands.arguments.contraption;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +22,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import de.m_marvin.industria.core.physics.types.Contraption;
+import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.univec.impl.Vec3d;
 import net.minecraft.advancements.critereon.MinMaxBounds;
@@ -54,17 +54,17 @@ public class ContraptionSelectorParser {
 		return builder.buildFuture();
 	};
 	
-	public static final BiConsumer<Vec3, List<? extends Contraption>> ORDER_NEAREST = (pos, sort) -> {
+	public static final BiConsumer<Vec3, List<? extends ServerContraption>> ORDER_NEAREST = (pos, sort) -> {
 		sort.sort((a, b) -> {
 			return Doubles.compare(a.distanceToSqr(pos), b.distanceToSqr(pos));
 		});
 	};
-	public static final BiConsumer<Vec3, List<? extends Contraption>> ORDER_FURTHEST = (pos, sort) -> {
+	public static final BiConsumer<Vec3, List<? extends ServerContraption>> ORDER_FURTHEST = (pos, sort) -> {
 		sort.sort((a, b) -> {
 			return Doubles.compare(b.distanceToSqr(pos), a.distanceToSqr(pos));
 		});
 	};
-	public static final BiConsumer<Vec3, List<? extends Contraption>> ORDER_RANDOM = (pos, sort) -> {
+	public static final BiConsumer<Vec3, List<? extends ServerContraption>> ORDER_RANDOM = (pos, sort) -> {
 		Collections.shuffle(sort);
 	};
 			
@@ -104,10 +104,10 @@ public class ContraptionSelectorParser {
 	private WrappedMinMaxBounds rotX = WrappedMinMaxBounds.ANY;
 	private WrappedMinMaxBounds rotY = WrappedMinMaxBounds.ANY;
 	private WrappedMinMaxBounds rotZ = WrappedMinMaxBounds.ANY;
-	private Predicate<Contraption> predicate = (contraption) -> {
+	private Predicate<ServerContraption> predicate = (contraption) -> {
 		return true;
 	};
-	private BiConsumer<Vec3, List<? extends Contraption>> order = ContraptionSelector.ORDER_ARBITRARY;
+	private BiConsumer<Vec3, List<? extends ServerContraption>> order = ContraptionSelector.ORDER_ARBITRARY;
 	private boolean currentContraption;
 	@Nullable
 	private String contraptionName;
@@ -166,7 +166,7 @@ public class ContraptionSelectorParser {
 		this.hasNameNotEquals = pHasNameNotEquals;
 	}
 
-	public void addPredicate(Predicate<Contraption> pPredicate) {
+	public void addPredicate(Predicate<ServerContraption> pPredicate) {
 		this.predicate = this.predicate.and(pPredicate);
 	}
 
@@ -352,11 +352,11 @@ public class ContraptionSelectorParser {
 		this.maxResults = pMaxResults;
 	}
 
-	public BiConsumer<Vec3, List<? extends Contraption>> getOrder() {
+	public BiConsumer<Vec3, List<? extends ServerContraption>> getOrder() {
 		return this.order;
 	}
 
-	public void setOrder(BiConsumer<Vec3, List<? extends Contraption>> pOrder) {
+	public void setOrder(BiConsumer<Vec3, List<? extends ServerContraption>> pOrder) {
 		this.order = pOrder;
 	}
 
@@ -432,41 +432,41 @@ public class ContraptionSelectorParser {
 	
 	public void finalizePredicates() {
 		if (this.rotX != WrappedMinMaxBounds.ANY) {
-			this.predicate = this.predicate.and(this.createRotationPredicate(this.rotX, Contraption::getXRot));
+			this.predicate = this.predicate.and(this.createRotationPredicate(this.rotX, ServerContraption::getXRot));
 		}
 
 		if (this.rotY != WrappedMinMaxBounds.ANY) {
-			this.predicate = this.predicate.and(this.createRotationPredicate(this.rotY, Contraption::getYRot));
+			this.predicate = this.predicate.and(this.createRotationPredicate(this.rotY, ServerContraption::getYRot));
 		}
 
 		if (this.rotZ != WrappedMinMaxBounds.ANY) {
-			this.predicate = this.predicate.and(this.createRotationPredicate(this.rotZ, Contraption::getZRot));
+			this.predicate = this.predicate.and(this.createRotationPredicate(this.rotZ, ServerContraption::getZRot));
 		}
 
 		if (this.velocity != MinMaxBounds.Doubles.ANY) {
-			this.predicate = this.predicate.and(this.createVelocityPredicate(this.velocity, Contraption::getVelocity));
+			this.predicate = this.predicate.and(this.createVelocityPredicate(this.velocity, ServerContraption::getVelocity));
 		}
 
 		if (this.velocity_x != MinMaxBounds.Doubles.ANY || this.velocity_y != MinMaxBounds.Doubles.ANY || this.velocity_z != MinMaxBounds.Doubles.ANY) {
-			this.predicate = this.predicate.and(this.createVelocityPredicateXYZ(this.velocity_x, this.velocity_y, this.velocity_z, Contraption::getVelocityVec));
+			this.predicate = this.predicate.and(this.createVelocityPredicateXYZ(this.velocity_x, this.velocity_y, this.velocity_z, ServerContraption::getVelocityVec));
 		}
 
 		if (this.omega != MinMaxBounds.Doubles.ANY) {
-			this.predicate = this.predicate.and(this.createVelocityPredicate(this.omega, Contraption::getOmega));
+			this.predicate = this.predicate.and(this.createVelocityPredicate(this.omega, ServerContraption::getOmega));
 		}
 
 		if (this.omega_x != MinMaxBounds.Doubles.ANY || this.omega_y != MinMaxBounds.Doubles.ANY || this.omega_z != MinMaxBounds.Doubles.ANY) {
-			this.predicate = this.predicate.and(this.createVelocityPredicateXYZ(this.omega_x, this.omega_y, this.omega_z, Contraption::getOmegaVec));
+			this.predicate = this.predicate.and(this.createVelocityPredicateXYZ(this.omega_x, this.omega_y, this.omega_z, ServerContraption::getOmegaVec));
 		}
 	}
 	
-	private Predicate<Contraption> createVelocityPredicate(MinMaxBounds.Doubles velocityBounds, ToDoubleFunction<Contraption> velocityFunction) {
+	private Predicate<ServerContraption> createVelocityPredicate(MinMaxBounds.Doubles velocityBounds, ToDoubleFunction<ServerContraption> velocityFunction) {
 		return (contraption) -> {
 			return velocityBounds.matches(Math.toDegrees(velocityFunction.applyAsDouble(contraption)));
 		};
 	}
 	
-	private Predicate<Contraption> createVelocityPredicateXYZ(MinMaxBounds.Doubles velocityBoundsX, MinMaxBounds.Doubles velocityBoundsY, MinMaxBounds.Doubles velocityBoundsZ, Function<Contraption, Vec3d> velocityFunction) {
+	private Predicate<ServerContraption> createVelocityPredicateXYZ(MinMaxBounds.Doubles velocityBoundsX, MinMaxBounds.Doubles velocityBoundsY, MinMaxBounds.Doubles velocityBoundsZ, Function<ServerContraption, Vec3d> velocityFunction) {
 		return (contraption) -> {
 			Vec3d velocity = velocityFunction.apply(contraption);
 			return	velocityBoundsX.matches(velocity.x * MathUtility.ANGULAR_VELOCITY_TO_ROTATIONS_PER_SECOND) &&
@@ -475,7 +475,7 @@ public class ContraptionSelectorParser {
 		};
 	}
 	
-	private Predicate<Contraption> createRotationPredicate(WrappedMinMaxBounds pAngleBounds, ToDoubleFunction<Contraption> pAngleFunction) {
+	private Predicate<ServerContraption> createRotationPredicate(WrappedMinMaxBounds pAngleBounds, ToDoubleFunction<ServerContraption> pAngleFunction) {
 		double d0 = (double)Mth.wrapDegrees(pAngleBounds.getMin() == null ? 0.0F : pAngleBounds.getMin());
 		double d1 = (double)Mth.wrapDegrees(pAngleBounds.getMax() == null ? 359.0F : pAngleBounds.getMax());
 		return (contraption) -> {
@@ -487,7 +487,7 @@ public class ContraptionSelectorParser {
 			}
 		};
 	}
-		
+	
 	public ContraptionSelector parse() throws CommandSyntaxException {
 		this.startPosition = this.reader.getCursor();
 		this.suggestions = this::suggestNameOrSelector;
@@ -515,7 +515,7 @@ public class ContraptionSelectorParser {
 		String s = this.reader.readString();
 		if (s.isEmpty()) s = this.reader.readStringUntil('}');
 		
-		this.contraptionID = Contraption.parseIdString(s);
+		this.contraptionID = ServerContraption.parseIdString(s);
 		if (this.contraptionID.isEmpty()) {
 			if (s.isEmpty()) {
 				this.reader.setCursor(i);

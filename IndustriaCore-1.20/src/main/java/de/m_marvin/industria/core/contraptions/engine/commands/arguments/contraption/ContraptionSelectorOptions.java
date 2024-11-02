@@ -1,4 +1,4 @@
-package de.m_marvin.industria.core.physics.engine.commands.arguments.contraption;
+package de.m_marvin.industria.core.contraptions.engine.commands.arguments.contraption;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +14,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import de.m_marvin.industria.core.physics.types.Contraption;
+import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.WrappedMinMaxBounds;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -241,7 +241,7 @@ public class ContraptionSelectorOptions {
 				parser.setSuggestions((builder, consumer) -> {
 					return SharedSuggestionProvider.suggest(Arrays.asList("nearest", "furthest", "random", "arbitrary"), builder);
 				});
-				BiConsumer<Vec3, List<? extends Contraption>> biconsumer;
+				BiConsumer<Vec3, List<? extends ServerContraption>> biconsumer;
 				switch (s) {
 					case "nearest":
 						biconsumer = ContraptionSelectorParser.ORDER_NEAREST;

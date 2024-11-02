@@ -100,7 +100,7 @@ public class ConduitHandlerCapability implements ICapabilitySerializable<ListTag
 		ServerLevel level = event.getLevel();
 		ConduitHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONDUIT_HANDLER_CAPABILITY);
 		
-		List<ConduitEntity> conduits = handler.getConduitsInChunk(event.getPos());	
+		List<ConduitEntity> conduits = handler.getConduitsInChunk(event.getPos(), true);	
 		if (conduits.size() > 0) {
 			IndustriaCore.NETWORK.send(PacketDistributor.PLAYER.with(() -> event.getPlayer()), new SSyncConduitPackage(conduits, event.getPos(), SyncRequestType.ADDED));
 			for (ConduitEntity conduitState : conduits) {
@@ -114,7 +114,7 @@ public class ConduitHandlerCapability implements ICapabilitySerializable<ListTag
 		ServerLevel level = event.getLevel();
 		ConduitHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONDUIT_HANDLER_CAPABILITY);
 		
-		List<ConduitEntity> conduits = handler.getConduitsInChunk(event.getPos());	
+		List<ConduitEntity> conduits = handler.getConduitsInChunk(event.getPos(), true);	
 		if (conduits.size() > 0) {
 			IndustriaCore.NETWORK.send(PacketDistributor.PLAYER.with(() -> event.getPlayer()), new SSyncConduitPackage(conduits, event.getPos(), SyncRequestType.REMOVED));
 			for (ConduitEntity conduitState : conduits) {
@@ -161,7 +161,7 @@ public class ConduitHandlerCapability implements ICapabilitySerializable<ListTag
 		}
 		if (conduitToRemove != null) {
 			
-			Event event = new ConduitBreakEvent(this.level, position, conduitToRemove);
+			Event event = new ConduitBreakEvent(this.level, position, conduitToRemove, dropItems);
 			MinecraftForge.EVENT_BUS.post(event);
 			
 			if (!event.isCanceled()) {
@@ -212,10 +212,12 @@ public class ConduitHandlerCapability implements ICapabilitySerializable<ListTag
 				return false;
 			}
 			conduitState.getConduit().onPlace(level, position, conduitState);
-			
-			// Send package to server just to make sure it is up to date, should already be the case if placed trough an player.
-			BlockPos middle = MathUtility.getMiddleBlock(nodeApos, nodeBpos);
-			IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(middle)), new SSyncConduitPackage(conduitState, level.getChunkAt(middle).getPos(), SyncRequestType.ADDED));
+
+			if (!this.level.isClientSide()) {
+				// Send package to client just to make sure it is up to date, should already be the case if placed trough an player.
+				BlockPos middle = MathUtility.getMiddleBlock(nodeApos, nodeBpos);
+				IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(middle)), new SSyncConduitPackage(conduitState, level.getChunkAt(middle).getPos(), SyncRequestType.ADDED));
+			}
 			return true;
 		}
 		
@@ -230,11 +232,14 @@ public class ConduitHandlerCapability implements ICapabilitySerializable<ListTag
 		if (level.isLoaded(conduitState.getPosition().getNodeApos()) && level.isLoaded(conduitState.getPosition().getNodeBpos())) {
 			if (conduits.contains(conduitState)) {
 				if (this.conduits.remove(conduitState)) {
-					conduitState.dismantle(level);
 					
-					// Send package to server just to make sure it is up to date, should already be the case if removed trough an player.
-					BlockPos middle = MathUtility.getMiddleBlock(conduitState.getPosition().getNodeApos(), conduitState.getPosition().getNodeBpos());
-					IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(middle)), new SSyncConduitPackage(conduitState, level.getChunkAt(middle).getPos(), SyncRequestType.REMOVED));
+					if (!this.level.isClientSide()) {
+						// Send package to client just to make sure it is up to date, should already be the case if removed trough an player.
+						BlockPos middle = MathUtility.getMiddleBlock(conduitState.getPosition().getNodeApos(), conduitState.getPosition().getNodeBpos());
+						IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(middle)), new SSyncConduitPackage(conduitState, level.getChunkAt(middle).getPos(), SyncRequestType.REMOVED));
+					}
+					
+					conduitState.dismantle(level);
 					return true;
 				}
 			}
@@ -260,10 +265,29 @@ public class ConduitHandlerCapability implements ICapabilitySerializable<ListTag
 	/*
 	 * Get all conduits with nodes in the given chunk
 	 */
-	public List<ConduitEntity> getConduitsInChunk(ChunkPos chunk) {
+	public List<ConduitEntity> getConduitsInChunk(ChunkPos chunk, boolean includeExternal) {
 		List<ConduitEntity> conduits = new ArrayList<ConduitEntity>();
  		for (ConduitEntity con : this.conduits) {
-			if (MathUtility.isInChunk(chunk, con.getPosition().getNodeApos()) || MathUtility.isInChunk(chunk, con.getPosition().getNodeBpos())) {
+ 			boolean na = MathUtility.isInChunk(chunk, con.getPosition().getNodeApos());
+ 			boolean nb = MathUtility.isInChunk(chunk, con.getPosition().getNodeBpos());
+			if (includeExternal ? na || nb : na && nb) {
+				conduits.add(con);
+			}
+		}
+ 		return conduits;
+	}
+	
+	/*
+	 * Get all conduits with **both** nodes within the bounds
+	 */
+	public List<ConduitEntity> getConduitsInBounds(BlockPos pos1, BlockPos pos2, boolean includeExternal) {
+		BlockPos min = MathUtility.getMinCorner(pos1, pos2);
+		BlockPos max = MathUtility.getMaxCorner(pos1, pos2);
+		List<ConduitEntity> conduits = new ArrayList<ConduitEntity>();
+ 		for (ConduitEntity con : this.conduits) {
+ 			boolean na = MathUtility.isBetweenInclusive(min, max, con.getPosition().getNodeApos());
+ 			boolean nb = MathUtility.isBetweenInclusive(min, max, con.getPosition().getNodeBpos());
+			if (includeExternal ? na || nb : na && nb) {
 				conduits.add(con);
 			}
 		}

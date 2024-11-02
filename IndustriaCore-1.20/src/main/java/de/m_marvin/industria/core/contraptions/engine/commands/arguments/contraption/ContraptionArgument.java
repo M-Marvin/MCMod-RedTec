@@ -1,4 +1,4 @@
-package de.m_marvin.industria.core.physics.engine.commands.arguments.contraption;
+package de.m_marvin.industria.core.contraptions.engine.commands.arguments.contraption;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,7 +13,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import de.m_marvin.industria.core.physics.types.Contraption;
+import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -41,12 +41,12 @@ public class ContraptionArgument implements ArgumentType<ContraptionSelector> {
 		return new ContraptionArgument(false);
 	}
 
-	public static Contraption getContraption(CommandContext<CommandSourceStack> pContext, String pName) throws CommandSyntaxException {
+	public static ServerContraption getContraption(CommandContext<CommandSourceStack> pContext, String pName) throws CommandSyntaxException {
 		return pContext.getArgument(pName, ContraptionSelector.class).findSingleContraption(pContext.getSource());
 	}
 
-	public static Collection<Contraption> getContraptions(CommandContext<CommandSourceStack> pContext, String pName) throws CommandSyntaxException {
-		Collection<Contraption> collection = getOptionalContraptions(pContext, pName);
+	public static Collection<ServerContraption> getContraptions(CommandContext<CommandSourceStack> pContext, String pName) throws CommandSyntaxException {
+		Collection<ServerContraption> collection = getOptionalContraptions(pContext, pName);
 		if (collection.isEmpty()) {
 			throw NO_CONTRAPTIONS_FOUND.create();
 		} else {
@@ -54,7 +54,7 @@ public class ContraptionArgument implements ArgumentType<ContraptionSelector> {
 		}
 	}
 
-	public static Collection<Contraption> getOptionalContraptions(CommandContext<CommandSourceStack> pContext, String pName) throws CommandSyntaxException {
+	public static Collection<ServerContraption> getOptionalContraptions(CommandContext<CommandSourceStack> pContext, String pName) throws CommandSyntaxException {
 		return pContext.getArgument(pName, ContraptionSelector.class).findContraptions(pContext.getSource());
 	}
 
