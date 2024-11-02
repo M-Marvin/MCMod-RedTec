@@ -93,6 +93,7 @@
 "industriacore.argument.contraption.options.tag.description":		"Apparaten met tag",
 "industriacore.argument.conduit.id.invalid":				"Onbekende lijn '%s'",
 
+"block.industriacore.error_block":			"Foutblok",
 "block.industriacore.power_source": 			"Voltage bron",
 "block.industriacore.magnet": 				"Magneet",
 "block.industriacore.wire_holder":			"Kabelhouder",

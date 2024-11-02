@@ -93,6 +93,7 @@
 "industriacore.argument.contraption.options.tag.description":		"Dispozitive cu un anumit tag",
 "industriacore.argument.conduit.id.invalid":				"Linie necunoscută: \"%s\"",
 
+"block.industriacore.error_block":			"Bloc de eroare",
 "block.industriacore.power_source": 			"Sursa de tensiune",
 "block.industriacore.magnet": 				"Magnet",
 "block.industriacore.wire_holder":			"Suport cablu",

@@ -10,7 +10,7 @@
 "industriacore.commands.setconduit.success":			"Leitung beginnend bei %1$s %2$s %3$s geändert",
 "industriacore.commands.setconduit.failure":			"Platzieren der Leitung nicht möglich!",
 "industriacore.commands.contraption.remove.success":		"Vorrichtung entfernt",
-"industriacore.commands.contraption.remove.success_multiple":	"%1$s Vorrichtungen entfernt",
+"industriacore.commands.contraption.remove.success_multiple":	"Vorrichtungen entfernt",
 "industriacore.commands.contraption.create.failed":		"Erzeugen der Vorrichtung fehlgeschlagen!",
 "industriacore.commands.contraption.create.success": 		"Vorrichtung aus Blöcken bei %1$s %2$s %3$s erzeugt",
 "industriacore.commands.contraption.create.toLarge": 		"Ausgewählter Bereich zu groß: %1$sx%2$sx%3$s (max. %4$sx%5$sx%6$s)!",
@@ -93,6 +93,7 @@
 "industriacore.argument.contraption.options.tag.description":		"Vorrichtungen mit Tag",
 "industriacore.argument.conduit.id.invalid":				"Leitung '%s' unbekannt!",
 
+"block.industriacore.error_block":			"Fehlerblock",
 "block.industriacore.power_source": 			"Spannungsquelle",
 "block.industriacore.magnet": 				"Magnet",
 "block.industriacore.wire_holder":			"Kabelhalter",

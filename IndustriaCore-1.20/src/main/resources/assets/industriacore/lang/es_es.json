@@ -93,6 +93,7 @@
 "industriacore.argument.contraption.options.tag.description":		"Dispositivos con etiqueta",
 "industriacore.argument.conduit.id.invalid":				"¡Conducto '%s' desconocido!",
 
+"block.industriacore.error_block":			"Bloque de error",
 "block.industriacore.power_source": 			"Fuente de voltaje",
 "block.industriacore.magnet": 				"Imán",
 "block.industriacore.wire_holder":			"Colgador de cables",
