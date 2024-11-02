@@ -399,8 +399,10 @@ public class MathUtility {
 	}
 	
 	public static Vec2f[] makeBezierVectors2D(Vec2f p1, Vec2f v1, Vec2f p2, Vec2f v2, float vecmaxlen) {
-		Vec2f p1b = p2.sub(p1).mul(v1.abs()).add(p1);
-		Vec2f p2b = p1.sub(p2).mul(v2.abs()).add(p2);
+		float dist = p1.dist(p2);
+		
+		Vec2f p1b = p1.add(v1.mul(dist / 2)); // p2.sub(p1).mul(v1.abs()).add(p1);
+		Vec2f p2b = p2.add(v2.mul(dist / 2)); // p1.sub(p2).mul(v2.abs()).add(p2);
 		Vec2f[] points = new Vec2f[] {p1, p1b, p2b, p2};
 		float distance = p1.dist(p2);
 		Vec2f[] vecs = new Vec2f[Math.round(distance / vecmaxlen)];

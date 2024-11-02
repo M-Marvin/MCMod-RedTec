@@ -73,9 +73,11 @@ public abstract class AbstractThrusterBlock extends BaseEntityBlock {
 		super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
 		Contraption contraption = ContraptionUtility.getContraptionOfBlock(pLevel, pPos);
 		if (contraption instanceof ServerContraption serverContraption) {
-			ThrusterInducer forceInducer = serverContraption.getOrCreateAttachment(ThrusterInducer.class);
-			forceInducer.removeThruster(pPos);
-			if (forceInducer.getThrusters().isEmpty()) serverContraption.removeAttachment(ThrusterInducer.class);
+			ThrusterInducer forceInducer = serverContraption.getAttachment(ThrusterInducer.class);
+			if (forceInducer != null) {
+				forceInducer.removeThruster(pPos);
+				if (forceInducer.getThrusters().isEmpty()) serverContraption.removeAttachment(ThrusterInducer.class);
+			}
 		}
 	}
 	

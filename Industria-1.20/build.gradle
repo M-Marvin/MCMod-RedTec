@@ -94,11 +94,17 @@ minecraft {
         client {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
+            
+            property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
         }
 
         server {
             property 'forge.enabledGameTestNamespaces', mod_id
             args '--nogui'
+            
+            property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -169,10 +175,6 @@ configurations {
     implementation.extendsFrom shade
 }
 
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
 dependencies {
 
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
@@ -193,6 +195,11 @@ dependencies {
     // Industria Core
  	implementation "de.m_marvin.industria:IndustriaCore-1.20:${industriacore_version}:mojmap"
  	
+}
+
+mixin {
+	add sourceSets.main, 'mixins.industriacore.refmap.json'
+	config 'mixins.industriacore.json'
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

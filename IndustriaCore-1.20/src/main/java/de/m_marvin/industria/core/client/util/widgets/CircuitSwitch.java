@@ -77,10 +77,8 @@ public class CircuitSwitch extends AbstractWidget {
 	}
 	
 	public void onLeverChanges() {
-		System.out.println(!this.leverState);
-		
 		if (!this.leverState) {
-			ConditionalExecutor.CLIENT_TICK_EXECUTOR.executeAfterDelay(() -> IndustriaCore.NETWORK.sendToServer(new CPlayerSwitchNetworkPackage(this.componentPos, !this.leverState)), 40);
+			ConditionalExecutor.CLIENT_TICK_EXECUTOR.executeAfterDelay(() -> IndustriaCore.NETWORK.sendToServer(new CPlayerSwitchNetworkPackage(this.componentPos, this.leverState)), 40);
 		} else {
 			IndustriaCore.NETWORK.sendToServer(new CPlayerSwitchNetworkPackage(this.componentPos, !this.leverState));
 		}
