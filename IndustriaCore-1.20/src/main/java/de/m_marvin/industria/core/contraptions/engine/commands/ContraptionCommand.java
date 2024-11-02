@@ -21,7 +21,7 @@ import de.m_marvin.industria.core.contraptions.engine.commands.arguments.contrap
 import de.m_marvin.industria.core.contraptions.engine.commands.arguments.vec3relative.Vec3Relative;
 import de.m_marvin.industria.core.contraptions.engine.commands.arguments.vec3relative.Vec3RelativeArgument;
 import de.m_marvin.industria.core.contraptions.engine.types.ContraptionPosition;
-import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.ServerContraption;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.StructureFinder;
 import de.m_marvin.unimat.api.IQuaternionMath.EulerOrder;

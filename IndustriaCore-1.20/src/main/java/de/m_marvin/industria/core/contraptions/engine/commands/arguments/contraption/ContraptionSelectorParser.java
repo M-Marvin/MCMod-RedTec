@@ -22,7 +22,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.ServerContraption;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.univec.impl.Vec3d;
 import net.minecraft.advancements.critereon.MinMaxBounds;

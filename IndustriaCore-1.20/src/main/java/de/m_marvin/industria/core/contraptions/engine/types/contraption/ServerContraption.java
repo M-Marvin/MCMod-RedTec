@@ -1,13 +1,17 @@
-package de.m_marvin.industria.core.contraptions.engine.types;
+package de.m_marvin.industria.core.contraptions.engine.types.contraption;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
+import org.valkyrienskies.core.api.ships.LoadedServerShip;
 import org.valkyrienskies.core.api.ships.ServerShip;
+import org.valkyrienskies.core.api.world.ServerShipWorld;
+import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
 import de.m_marvin.industria.IndustriaCore;
-import de.m_marvin.industria.core.contraptions.engine.ContraptionAttachment;
+import de.m_marvin.industria.core.contraptions.engine.types.attachment.ContraptionAttachment;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -50,18 +54,29 @@ public class ServerContraption extends Contraption {
 	}
 	
 	public <T> T getAttachment(Class<T> attachmentClass) {
-		T attachment = getShip().getAttachment(attachmentClass);
-		return attachment;
+		return getShip().getAttachment(attachmentClass);
+	}
+	
+	protected <T> void saveAttachment(Class<T> clazz, T value) {
+		// This is a workaround to the broken Ship#saveAttachement() method on all Ship instances, except the LoadedServerShip
+		ServerShipWorld shipWorld = VSGameUtilsKt.getShipObjectWorld(getLevel());
+		Optional<LoadedServerShip> loadedShip = shipWorld.getLoadedShips().stream().filter(s -> s.getId() == getId()).findAny();
+		if (loadedShip.isEmpty()) {
+			getShip().saveAttachment(clazz, value);
+			IndustriaCore.LOGGER.warn("unable to get LoadedServerShip instance of contraption " + getId());
+			return;
+		}
+		loadedShip.get().saveAttachment(clazz, value);
 	}
 	
 	public <T extends ContraptionAttachment> void removeAttachment(Class<T> attachmentClass) {
-		getShip().saveAttachment(attachmentClass, null);
+		saveAttachment(attachmentClass, null);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <T> void setAttachment(T attachment) {
 		if (attachment instanceof ContraptionAttachment att) att.setContraption(this);
-		getShip().saveAttachment((Class<T>) attachment.getClass(), attachment);
+		saveAttachment((Class<T>) attachment.getClass(), attachment);
 	}
 	
 	public <T> T getOrCreateAttachment(Class<T> attachmentClass) {

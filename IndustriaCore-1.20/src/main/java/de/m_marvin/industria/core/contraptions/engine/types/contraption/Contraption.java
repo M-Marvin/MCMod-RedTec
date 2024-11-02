@@ -1,4 +1,4 @@
-package de.m_marvin.industria.core.contraptions.engine.types;
+package de.m_marvin.industria.core.contraptions.engine.types.contraption;
 
 import java.util.HashSet;
 import java.util.OptionalLong;
@@ -11,6 +11,7 @@ import org.valkyrienskies.core.api.ships.Ship;
 import org.valkyrienskies.core.api.world.LevelYRange;
 
 import de.m_marvin.industria.core.contraptions.engine.ContraptionHandlerCapability;
+import de.m_marvin.industria.core.contraptions.engine.types.ContraptionPosition;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
 import de.m_marvin.unimat.api.IQuaternionMath.EulerOrder;

@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import de.m_marvin.industria.core.contraptions.ContraptionUtility;
-import de.m_marvin.industria.core.contraptions.engine.types.Contraption;
 import de.m_marvin.industria.core.contraptions.engine.types.ContraptionHitResult;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.Contraption;
 import de.m_marvin.univec.impl.Vec3d;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.SharedSuggestionProvider;

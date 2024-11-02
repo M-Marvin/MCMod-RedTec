@@ -19,7 +19,7 @@ import de.m_marvin.industria.core.conduits.types.ConduitPos;
 import de.m_marvin.industria.core.conduits.types.ConduitType;
 import de.m_marvin.industria.core.conduits.types.blocks.IConduitConnector;
 import de.m_marvin.industria.core.contraptions.ContraptionUtility;
-import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.ServerContraption;
 import de.m_marvin.industria.core.registries.Conduits;
 import de.m_marvin.industria.core.registries.ParticleTypes;
 import de.m_marvin.industria.core.util.GameUtility;

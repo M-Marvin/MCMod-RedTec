@@ -3,9 +3,8 @@ package de.m_marvin.industria.core.magnetism.engine;
 import org.valkyrienskies.core.api.ships.PhysShip;
 import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
 
-import de.m_marvin.industria.core.contraptions.ContraptionUtility;
-import de.m_marvin.industria.core.contraptions.engine.ForcesInducer;
-import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
+import de.m_marvin.industria.core.contraptions.engine.types.attachment.ForcesInducer;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.ServerContraption;
 import de.m_marvin.industria.core.magnetism.types.MagneticField;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
@@ -34,9 +33,9 @@ public class MagneticForceInducer extends ForcesInducer {
 		if (getLevel() == null) return;
 		MagnetismHandlerCapability handler = GameUtility.getLevelCapability(this.getLevel(), Capabilities.MAGNETISM_HANDLER_CAPABILITY);
 
-		ServerContraption contraption = ContraptionUtility.getContraptionById(getLevel(), contraptionPhysics.getId());
+		ServerContraption contraption = getContraption();
 		if (contraption == null) return;
-		
+
 		for (Long field1id : this.fields) {
 
 			MagneticField field1 = handler.getField(field1id);

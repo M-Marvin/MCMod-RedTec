@@ -10,7 +10,7 @@ import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
 
 import de.m_marvin.industria.core.Config;
 import de.m_marvin.industria.core.contraptions.ContraptionUtility;
-import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.ServerContraption;
 import de.m_marvin.industria.core.magnetism.engine.MagneticForceInducer;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.NBTUtility;

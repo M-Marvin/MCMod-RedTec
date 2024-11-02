@@ -13,11 +13,11 @@ import org.valkyrienskies.mod.common.BlockStateInfo;
 
 import de.m_marvin.industria.core.contraptions.engine.ContraptionHandlerCapability;
 import de.m_marvin.industria.core.contraptions.engine.VS2MassSyncPatch;
-import de.m_marvin.industria.core.contraptions.engine.types.ClientContraption;
-import de.m_marvin.industria.core.contraptions.engine.types.Contraption;
 import de.m_marvin.industria.core.contraptions.engine.types.ContraptionHitResult;
 import de.m_marvin.industria.core.contraptions.engine.types.ContraptionPosition;
-import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.ClientContraption;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.Contraption;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.ServerContraption;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
 import de.m_marvin.industria.core.util.MathUtility;

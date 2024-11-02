@@ -1,4 +1,4 @@
-package de.m_marvin.industria.core.contraptions.engine.types;
+package de.m_marvin.industria.core.contraptions.engine.types.contraption;
 
 import org.valkyrienskies.core.api.ships.ClientShip;
 

@@ -14,6 +14,7 @@ import org.valkyrienskies.core.apigame.ShipTeleportData;
 import org.valkyrienskies.core.impl.game.ShipTeleportDataImpl;
 
 import de.m_marvin.industria.core.contraptions.ContraptionUtility;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.ServerContraption;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.unimat.impl.Quaterniond;
 import de.m_marvin.univec.impl.Vec3d;

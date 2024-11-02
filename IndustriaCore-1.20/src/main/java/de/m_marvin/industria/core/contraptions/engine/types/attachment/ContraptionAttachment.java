@@ -1,4 +1,4 @@
-package de.m_marvin.industria.core.contraptions.engine;
+package de.m_marvin.industria.core.contraptions.engine.types.attachment;
 
 import java.util.Optional;
 
@@ -11,7 +11,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import de.m_marvin.industria.IndustriaCore;
-import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
+import de.m_marvin.industria.core.contraptions.engine.ContraptionHandlerCapability;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.ServerContraption;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
 import net.minecraft.server.level.ServerLevel;
@@ -40,6 +41,7 @@ public class ContraptionAttachment {
 	public ServerContraption getContraption() {
 		if (this.contraption == null) {
 			
+			if (ContraptionHandlerCapability.getStaticServer() == null) return null;
 			ShipWorldCore shipWorld = VSGameUtilsKt.getShipObjectWorld(ContraptionHandlerCapability.getStaticServer());
 			Optional<Ship> ship = shipWorld.getAllShips().stream().filter(s -> s.getId() == contraptionId).findAny();
 			if (ship.isPresent() && ship.get() instanceof ServerShip sship) {

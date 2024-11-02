@@ -1,5 +1,6 @@
 package de.m_marvin.industria.core.contraptions.engine.types;
 
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.Contraption;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;

@@ -23,11 +23,11 @@ import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.contraptions.ContraptionUtility;
-import de.m_marvin.industria.core.contraptions.engine.types.ClientContraption;
-import de.m_marvin.industria.core.contraptions.engine.types.Contraption;
 import de.m_marvin.industria.core.contraptions.engine.types.ContraptionHitResult;
 import de.m_marvin.industria.core.contraptions.engine.types.ContraptionPosition;
-import de.m_marvin.industria.core.contraptions.engine.types.ServerContraption;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.ClientContraption;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.Contraption;
+import de.m_marvin.industria.core.contraptions.engine.types.contraption.ServerContraption;
 import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
@@ -61,6 +61,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -123,6 +125,11 @@ public class ContraptionHandlerCapability implements ICapabilitySerializable<Com
 	}
 	
 	/* Event handling */
+	
+	@SubscribeEvent
+	public static void onServerStartup(ServerStartedEvent event) {
+		staticServer = event.getServer();
+	}
 	
 	/* End of events */
 	

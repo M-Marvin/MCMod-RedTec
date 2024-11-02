@@ -1,4 +1,4 @@
-package de.m_marvin.industria.core.contraptions.engine;
+package de.m_marvin.industria.core.contraptions.engine.types.attachment;
 
 import org.valkyrienskies.core.api.ships.ShipForcesInducer;
 
