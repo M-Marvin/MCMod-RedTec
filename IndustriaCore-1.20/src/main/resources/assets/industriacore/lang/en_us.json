@@ -22,7 +22,7 @@
 "industriacore.commands.contraption.find.teleported":					"Teleported to contraption at %1$s %2$s %3$s",
 "industriacore.commands.contraption.find.noplayer":						"Teleportation only possible for players!",
 "industriacore.commands.contraption.find.found":						"Contraption located at %1$s",
-"industriacore.commands.contraption.name.set":							"Name of Contraption set to '%1$s'",
+"industriacore.commands.contraption.name.set":							"Name of contraption set to '%1$s'",
 "industriacore.commands.contraption.static.set.static":					"%1$s contraptions set to static",
 "industriacore.commands.contraption.static.set.dynamic":				"%1$s contraptions set to dynamic",
 "industriacore.commands.contraption.scale.set.success":					"Set scale of %1$s contraptions to %2$s",
@@ -45,7 +45,7 @@
 
 "industriacore.commands.template.loaded":								"Template '%s' loaded and placed",
 "industriacore.commands.template.notfound":								"Template '%s' not found",
-"industriacore.commands.template.loadfailed":							"Could not load template '%s'",
+"industriacore.commands.template.loadfailed":							"Loading template '%s' failed",
 "industriacore.commands.template.saved":								"Template '%s' saved",
 
 "industriacore.argument.rotation.invalid":								"Invalid rotation: '%s'",
@@ -86,7 +86,7 @@
 "industriacore.argument.contraption.options.z_omega.description":		"Contraption's angular z velocity",
 "industriacore.argument.contraption.options.omega.description":			"Contraption's total angular velocity",
 "industriacore.argument.contraption.options.size.description":			"Number of blocks in the contraption",
-"industriacore.argument.contraption.options.static.description":			"Status of the contraption as 'static'",
+"industriacore.argument.contraption.options.static.description":		"Status of the contraption as 'static'",
 "industriacore.argument.contraption.options.mass.description":			"Mass of the contraption",
 "industriacore.argument.contraption.options.limit.description":			"Maximum number of contraptions to return",
 "industriacore.argument.contraption.options.sort.description":			"Sort contraptions",

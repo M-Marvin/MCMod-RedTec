@@ -10,7 +10,7 @@
 "industriacore.commands.setconduit.success":    		"Linka na %1$s %2$s %3$s bola zmenená",
 "industriacore.commands.setconduit.failure":    		"Linka nebola možná umiestniť!",
 "industriacore.commands.contraption.remove.success":		"Zariadenie bolo odstránené",
-"industriacore.commands.contraption.remove.success_multiple":	"%1$s zariadenia/í boli/o odstránené/ých",
+"industriacore.commands.contraption.remove.success_multiple":	"Zariadenia/í boli/o odstránené/ých",
 "industriacore.commands.contraption.create.failed":		"Vytvorenie zariadenia zlyhalo!",
 "industriacore.commands.contraption.create.success": 		"Zariadenie bolo vytvorené z kociek o %1$s %2$s %3$s",
 "industriacore.commands.contraption.create.toLarge": 		"Príliš veľka zvolená oblasť: %1$sx%2$sx%3$s (max. %4$sx%5$sx%6$s)!",
@@ -42,6 +42,14 @@
 "industriacore.commands.debug.node_voltages.node":		"ID: %d",
 "industriacore.commands.debug.node_voltages.lane":		"→ %d \"%s\": %d V",
 "industriacore.commands.debug.circuit_copied":			"Zoznam obvodových sietí bol skopírovaný do schránky",
+
+"industriacore.commands.template.loaded":								"Šablóna '%s' bola načítaná a umiestnená",
+"industriacore.commands.template.notfound":								"Šablóna '%s' sa nenašla",
+"industriacore.commands.template.loadfailed":							"Načítanie šablóny '%s' zlyhalo",
+"industriacore.commands.template.saved":								"Šablóna '%s' bola uložená",
+
+"industriacore.argument.rotation.invalid":								"Neplatné striedanie: '%s'",
+"industriacore.argument.mirror.invalid":								"Neplatné zrkadlenie osi: '%s'",
 
 "industriacore.argument.contraption.options.unknown":			"Neznáma možnosť \"%s\"",
 "industriacore.argument.contraption.options.inapplicable":		"Možnosť \"%s\" sa v tomto prípade nedá použiť",

@@ -17,6 +17,14 @@ FLUCH DES VERFALLS
 => Schwert(, Dreizack)
 
 
+MAGNET-ABSCHIRMUNG (I-III)
+-Eisenrüstung wird weniger von Magneten beeinflusst
+
+
+MAGNET-TRIEBWERK (I-III)
+-Elytren werden von Magnetischen Blöcken beeinflusst, man kann damit beschleunigen oder wird von ihnen angezogen.
+
+
 EFFEKTE:
 ========
 TAUBHEIT

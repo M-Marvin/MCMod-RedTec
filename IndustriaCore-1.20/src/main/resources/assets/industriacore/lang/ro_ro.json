@@ -10,7 +10,7 @@
 "industriacore.commands.setconduit.success":			"A fost schimbată linea care începe de la %1$s %2$s %3$s",
 "industriacore.commands.setconduit.failure":			"Plasarea liniei imposiblă!",
 "industriacore.commands.contraption.remove.success":		"A fost scus dispozitiv",
-"industriacore.commands.contraption.remove.success_multiple":	"Au fost scoase %1$s dispozitive",
+"industriacore.commands.contraption.remove.success_multiple":	"Au fost scoase dispozitive",
 "industriacore.commands.contraption.create.failed":		"A eșuat crearea liniei!",
 "industriacore.commands.contraption.create.success": 		"A fost creat dispzitivul din blocuri la %1$s %2$s %3$s",
 "industriacore.commands.contraption.create.toLarge": 		"Zona selectată prea mare: %1$sx%2$sx%3$s (max. %4$sx%5$sx%6$s)!",
@@ -42,6 +42,14 @@
 "industriacore.commands.debug.node_voltages.node":		"ID: %d",
 "industriacore.commands.debug.node_voltages.lane":		"→ %d \"%s\": %d V",
 "industriacore.commands.debug.circuit_copied":			"Lista rețelelor de circuite a fost copiată în clipboard",
+
+"industriacore.commands.template.loaded":								"A fost încărcat și plasat șablonul '%s'",
+"industriacore.commands.template.notfound":								"A fost găsit șablonul '%s'",
+"industriacore.commands.template.loadfailed":							"Încărcarea șablonului '%s' nu a reușit",
+"industriacore.commands.template.saved":								"A fost salavt șablonul '%s'",
+
+"industriacore.argument.rotation.invalid":								"Rotire nevalidă: '%s'",
+"industriacore.argument.mirror.invalid":								"Oglindire a axei nevalidă: '%s'",
 
 "industriacore.argument.contraption.options.unknown":			"Opțiune necunoscută: \"%s\"",
 "industriacore.argument.contraption.options.inapplicable":		"Opțiunea \"%s\" nu se aplică aici",
