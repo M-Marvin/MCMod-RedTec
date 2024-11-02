@@ -17,7 +17,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 @Mod("industria")
 public class Industria {
-
+	
 	public static final String MODID = "industria";
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final SimpleChannel NETWORK = NetworkRegistry.newSimpleChannel(new ResourceLocation(MODID, "main"), () -> NetworkPackages.PROTOCOL_VERSION, NetworkPackages.PROTOCOL_VERSION::equals, NetworkPackages.PROTOCOL_VERSION::equals);
