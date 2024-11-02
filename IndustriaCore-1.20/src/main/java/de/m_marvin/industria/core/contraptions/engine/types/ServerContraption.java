@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.valkyrienskies.core.api.ships.ServerShip;
-import org.valkyrienskies.mod.common.util.SplittingDisablerAttachment;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.contraptions.engine.ContraptionAttachment;
