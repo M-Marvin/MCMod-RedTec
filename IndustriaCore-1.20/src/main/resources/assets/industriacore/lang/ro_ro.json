@@ -16,7 +16,6 @@
 "industriacore.commands.contraption.create.invalidstructure": 		"Zona selectată prea mare: %1$s (max. %2$s)",
 "industriacore.commands.contraption.teleport.success":		"Dispozitiv teleportat la %1$s %2$s %3$s",
 "industriacore.commands.contraption.teleport.success_multiple":	"%1$s dispozitive teleportate la %2$s %3$s %4$s",
-"industriacore.commands.contraption.assemble.toLarge":		"Numărul de blocuri prea mare! (max. %1$s)",
 "industriacore.commands.contraption.assemble.failed":		"A eșuat construcția dispozitivului",
 "industriacore.commands.contraption.assemble.success":		"A fost construit dispzitivul din %1$s blocuri",
 "industriacore.commands.contraption.assemble.invalidstructure":		"Numărul de blocuri zero sau prea mare (max. %1$s)",
