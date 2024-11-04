@@ -4,5 +4,6 @@
 	"mixins": [
 		"StructureTemplateExtender"
 	],
-	"refmap": "mixins.industriacore.refmap.json"
+	"refmap": "mixins.industriacore.refmap.json",
+	"minVersion": "0.8"
 }

@@ -1,5 +1,9 @@
 [
   {
+    "block": "industriacore:error_block",
+    "mass": 500.0
+  },
+  {
     "block": "industriacore:power_source",
     "mass": 10.0
   },
