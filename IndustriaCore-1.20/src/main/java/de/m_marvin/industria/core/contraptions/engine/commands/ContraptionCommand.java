@@ -249,7 +249,7 @@ public class ContraptionCommand {
 			ContraptionPosition transform = contraption.getPosition();
 			transform.setVelocity(newVelocity);
 			if (omega != null) transform.setOmega(newOmega.mul(MathUtility.ROTATIONS_PER_SECOND_TO_ANGULAR_VELOCITY));
-			ContraptionUtility.teleportContraption(source.getSource().getLevel(), contraption, transform);
+			ContraptionUtility.teleportContraption(contraption, transform);
 		}
 		
 		source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.velocity.set.success", contraptions.size()), false);
@@ -262,7 +262,7 @@ public class ContraptionCommand {
 		for (ServerContraption contraption : contraptions) {
 			ContraptionPosition position = contraption.getPosition();
 			position.setScale(scale);
-			ContraptionUtility.teleportContraption(source.getSource().getLevel(), contraption, position);
+			ContraptionUtility.teleportContraption(contraption, position);
 		}
 		
 		source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.scale.set.success", contraptions.size(), scale), false);
@@ -401,6 +401,7 @@ public class ContraptionCommand {
 		Vec3d newPosition = position.getPosition(sourcePosition, sourceRotation);
 		Vec3d newRotation = rotation != null ? rotation.getRotation(sourceRotation, sourceRotation) : null;
 		
+		int teleported = 0;
 		for (ServerContraption contraption : contraptions) {
 			
 			ContraptionPosition contraptionPos = contraption.getPosition();
@@ -409,16 +410,13 @@ public class ContraptionCommand {
 			contraptionPos.setDimension(dimension);
 			if (rotation != null) contraptionPos.setOrientation(new Quaterniond(newRotation, EulerOrder.XYZ, true));
 			
-			ContraptionUtility.teleportContraption(source.getSource().getLevel(), contraption, contraptionPos);
+			if (ContraptionUtility.teleportContraption(contraption, contraptionPos)) teleported++;
 			
 		}
 		
-		if (contraptions.size() == 1) {
-			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.teleport.success", String.format("%.2f", newPosition.x()), String.format("%.2f", newPosition.y()), String.format("%.2f", newPosition.z())), true);
-		} else {
-			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.teleport.success_multiple", contraptions.size(), String.format("%.2f", newPosition.x()), String.format("%.2f", newPosition.y()), String.format("%.2f", newPosition.z())), true);
-		}
-		return Command.SINGLE_SUCCESS;
+		int teleportedF = teleported;
+		source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.teleport.success", teleportedF, String.format("%.2f", newPosition.x()), String.format("%.2f", newPosition.y()), String.format("%.2f", newPosition.z())), true);
+		return teleported;
 		
 	}
 	
@@ -471,14 +469,11 @@ public class ContraptionCommand {
 		int removed = 0;
 		
 		for (ServerContraption contraption : contraptions) {
-			if (ContraptionUtility.removeContraption(source.getSource().getLevel(), contraption)) removed++;
+			if (ContraptionUtility.removeContraption(contraption)) removed++;
 		}
 		
-		if (contraptions.size() == 1) {
-			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.remove.success"), true);
-		} else {
-			source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.remove.success_multiple", contraptions.size()), true);
-		}
+		int removedF = removed;
+		source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.contraption.remove.success", removedF), true);
 		
 		return removed;
 	}

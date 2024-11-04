@@ -156,13 +156,13 @@ public class ContraptionUtility {
 		return optionalContraptionTransform(level, referencePos, ContraptionUtility::toContraptionVector, vector);
 	}
 	
-	public static void teleportContraption(ServerLevel level, ServerContraption contraption, ContraptionPosition position) {
-		ContraptionHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONTRAPTION_HANDLER_CAPABILITY);
-		handler.teleportContraption(contraption, position, true);
+	public static boolean teleportContraption(ServerContraption contraption, ContraptionPosition position) {
+		ContraptionHandlerCapability handler = GameUtility.getLevelCapability(contraption.getLevel(), Capabilities.CONTRAPTION_HANDLER_CAPABILITY);
+		return handler.teleportContraption(contraption, position, true);
 	}
 
-	public static void teleportContraption(ServerLevel level, ServerContraption contraption, ContraptionPosition position, boolean useGeometricCenter) {
-		ContraptionHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONTRAPTION_HANDLER_CAPABILITY);
+	public static void teleportContraption(ServerContraption contraption, ContraptionPosition position, boolean useGeometricCenter) {
+		ContraptionHandlerCapability handler = GameUtility.getLevelCapability(contraption.getLevel(), Capabilities.CONTRAPTION_HANDLER_CAPABILITY);
 		handler.teleportContraption(contraption, position, useGeometricCenter);
 	}
 	
@@ -183,8 +183,8 @@ public class ContraptionUtility {
 		return handler.createContraptionAt(position, scale);
 	}
 	
-	public static boolean removeContraption(ServerLevel level, ServerContraption contraption) {
-		ContraptionHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONTRAPTION_HANDLER_CAPABILITY);
+	public static boolean removeContraption(ServerContraption contraption) {
+		ContraptionHandlerCapability handler = GameUtility.getLevelCapability(contraption.getLevel(), Capabilities.CONTRAPTION_HANDLER_CAPABILITY);
 		return handler.removeContraption(contraption);
 	}
 	
