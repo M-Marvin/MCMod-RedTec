@@ -3,20 +3,29 @@ package de.m_marvin.industria.core.client.util.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import de.m_marvin.industria.IndustriaCore;
+import de.m_marvin.industria.core.client.electrics.events.ElectricNetworkEvent;
 import de.m_marvin.industria.core.client.util.GraphicsUtility;
 import de.m_marvin.industria.core.electrics.ElectricUtility;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
 import de.m_marvin.industria.core.electrics.engine.network.CPlayerSwitchNetworkPackage;
 import de.m_marvin.industria.core.util.ConditionalExecutor;
 import de.m_marvin.industria.core.util.GameUtility;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
+@Mod.EventBusSubscriber(modid = IndustriaCore.MODID, bus = Bus.FORGE, value = Dist.CLIENT)
 public class CircuitSwitch extends AbstractWidget {
 
 	protected final ResourceLocation texture = GraphicsUtility.UTILITY_WIDGETS_TEXTURE;
@@ -40,6 +49,37 @@ public class CircuitSwitch extends AbstractWidget {
 		ElectricNetwork network = ElectricUtility.getNetworkAt(this.level, this.componentPos);
 		updateLeverState(network != null ? network.isOnline() : false);
 	}
+
+	@SubscribeEvent
+	public static final void onFuseTripped(ElectricNetworkEvent.FuseTripedEvent event) {
+		if (!event.getLevel().isClientSide()) return;
+		
+		@SuppressWarnings("resource")
+		Screen screen = Minecraft.getInstance().screen;
+		
+		if (screen != null) {
+			for (GuiEventListener widget : screen.children()) {
+				if (widget instanceof CircuitSwitch cswitch) {
+					
+					BlockPos switchComponent = cswitch.getComponentPos();
+					boolean b = event.getNetwork().getComponents().stream()
+						.filter(c -> c.pos().equals(switchComponent))
+						.count() > 0;
+					
+					if (b) {
+						cswitch.resetLeverLever();
+						break;
+					}
+					
+				}
+			}
+		}
+		
+	}
+	
+	public BlockPos getComponentPos() {
+		return componentPos;
+	}
 	
 	@Override
 	protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
@@ -54,7 +94,7 @@ public class CircuitSwitch extends AbstractWidget {
 		
 		// Status Lamps
 		float lm = (float) Math.sin(this.time % 15 / 15F * Math.PI * 2);
-		int ns = network.isTripped() ? 3 : (network.isOnline() != this.leverState ? 2 : (this.leverState ? 1 : 0));
+		int ns = network.isOnline() != this.leverState ? 2 : (network.isTripped() ? 3 : (this.leverState ? 1 : 0));
 		if (lm <= 0.0F || ns == 1) this.lampState = ns;
 		renderLamps(pGuiGraphics, this.lampState, this.lampState == 1 ? 1F : lm);
 		
@@ -76,6 +116,17 @@ public class CircuitSwitch extends AbstractWidget {
 
 	}
 	
+	public void resetLeverLever() {
+		this.leverState = false;
+		releaseLever();
+	}
+	
+	public void releaseLever() {
+		this.leverGrabbed = false;
+		this.leverReleasePosition = this.leverPosition;
+		this.leverReleaseTime = this.time;
+	}
+	
 	public void onLeverChanges() {
 		if (!this.leverState) {
 			ConditionalExecutor.CLIENT_TICK_EXECUTOR.executeAfterDelay(() -> IndustriaCore.NETWORK.sendToServer(new CPlayerSwitchNetworkPackage(this.componentPos, this.leverState)), 40);
@@ -92,9 +143,7 @@ public class CircuitSwitch extends AbstractWidget {
 	@Override
 	public void onRelease(double pMouseX, double pMouseY) {
 		super.onRelease(pMouseX, pMouseY);
-		this.leverGrabbed = false;
-		this.leverReleasePosition = this.leverPosition;
-		this.leverReleaseTime = this.time;
+		releaseLever();
 	}
 	
 	@Override

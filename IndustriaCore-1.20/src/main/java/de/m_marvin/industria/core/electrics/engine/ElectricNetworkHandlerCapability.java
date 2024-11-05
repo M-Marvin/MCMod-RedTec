@@ -540,10 +540,10 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 	 */
 	public <P> void updateNetworkState(P position, ElectricNetwork.State state) {
 		ElectricNetwork network = getNetworkAt(position);
-		MinecraftForge.EVENT_BUS.post(new ElectricNetworkEvent.StateChangeEvent(network, state));
+		MinecraftForge.EVENT_BUS.post(new ElectricNetworkEvent.StateChangeEvent(this.level, network, state));
 		network.setState(state);
 		if (state == State.FAILED) {
-			MinecraftForge.EVENT_BUS.post(new ElectricNetworkEvent.FuseTripedEvent(network));
+			MinecraftForge.EVENT_BUS.post(new ElectricNetworkEvent.FuseTripedEvent(this.level, network));
 		}
 		triggerUpdates(network);
 	}
@@ -583,7 +583,7 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 			getSimulationProcessor().processNetwork(circuit).thenAccept(state -> {
 				if (!state) {
 					circuitFinalized.tripFuse();
-					MinecraftForge.EVENT_BUS.post(new ElectricNetworkEvent.FuseTripedEvent(circuitFinalized));
+					MinecraftForge.EVENT_BUS.post(new ElectricNetworkEvent.FuseTripedEvent(this.level, circuitFinalized));
 				}
 				triggerUpdates(circuitFinalized);
 			});

@@ -12,6 +12,7 @@ public class FuseBlowNotification {
 
 	@SubscribeEvent
 	public static final void onFuseTripped(ElectricNetworkEvent.FuseTripedEvent event) {
+		if (!event.getLevel().isClientSide()) return;
 		
 		System.err.println("FUSE TRIPPED !!!!!!!!!!!!!!");
 		System.err.println("FUSE TRIPPED !!!!!!!!!!!!!!");
