@@ -1,0 +1,18 @@
+- Produktion -
+Miner
+Erzwäsche
+Raffinerie
+Mixer
+Schredder/Mahlwerk
+Presse
+Zentrifuge
+Gießerei
+Induktion-Schmelze
+Hochofen
+Montageanlage/Autocrafter
+
+- Logistik -
+Fließband
+Rohr
+Schlauch
+Kabel

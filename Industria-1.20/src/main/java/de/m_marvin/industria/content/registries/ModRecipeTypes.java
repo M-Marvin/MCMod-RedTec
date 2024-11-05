@@ -3,7 +3,7 @@ package de.m_marvin.industria.content.registries;
 import de.m_marvin.industria.content.Industria;
 import de.m_marvin.industria.content.recipes.GeneratorFuelRecipeType;
 import de.m_marvin.industria.content.recipes.WireCoilWindingRecipeType;
-import de.m_marvin.industria.core.util.recipes.UniversalRecipeSerializer;
+import de.m_marvin.industria.core.util.types.UniversalRecipeSerializer;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;

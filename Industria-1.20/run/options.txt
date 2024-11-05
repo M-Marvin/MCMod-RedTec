@@ -120,7 +120,7 @@ key_key.hotbar.8:key.keyboard.8
 key_key.hotbar.9:key.keyboard.9
 key_key.valkyrienskies.ship_down:key.keyboard.v
 key_key.valkyrienskies.ship_cruise:key.keyboard.c
-soundCategory_master:1.0
+soundCategory_master:0.4031456953642384
 soundCategory_music:0.0
 soundCategory_record:1.0
 soundCategory_weather:1.0
