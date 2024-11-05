@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "de.m_marvin.industria.core.util.mixin",
+	"package": "de.m_marvin.industria.core.ssdplugins.engine.mixin",
 	"mixins": [
 		"StructureTemplateExtender"
 	],

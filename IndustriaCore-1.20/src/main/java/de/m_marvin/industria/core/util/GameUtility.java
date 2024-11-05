@@ -1,6 +1,5 @@
 package de.m_marvin.industria.core.util;
 
-import java.awt.Color;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
@@ -15,15 +14,12 @@ import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.registries.IndustriaTags;
 import de.m_marvin.univec.impl.Vec3d;
 import de.m_marvin.univec.impl.Vec3f;
-import de.m_marvin.univec.impl.Vec4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +30,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -46,40 +41,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.NetworkHooks;
 
 public class GameUtility {
-	
-	public static Direction.Axis rotate(Rotation rotation, Direction.Axis axis) {
-		switch (rotation) {
-		  case COUNTERCLOCKWISE_90:
-		  case CLOCKWISE_90:
-			  switch (axis) {
-				  case X:
-					  return Direction.Axis.Z;
-				  case Z:
-					  return Direction.Axis.X;
-				  default:
-					  return axis;
-			  }
-		  default:
-			  return axis;
-		}
-	}
-	
-	public static int toIntegerColor(int r, int g, int b, int a) {
-		return new Color(r, g, b, a).getRGB();
-	}
-	
-	public static int toIntegerColor(float r, float g, float b, float a) {
-		return new Color(r, g, b, a).getRGB();
-	}
-	
-	public static int toIntegerColor(Vec4f color) {
-		return new Color(color.x, color.y, color.z, color.w).getRGB();
-	}
-	
-	public static Vec4f toVecColor(int color) {
-		Color colorc = new Color(color);
-		return new Vec4f(colorc.getRed() / 255F, colorc.getGreen() / 255F, colorc.getBlue() / 255F, colorc.getAlpha() / 255F);
-	}
 	
 	public static <T extends BlockEntity & IJunctionEdit> AbstractContainerMenu openJunctionScreenOr(T blockEntity, int containerId, Player player, Inventory inventory, Supplier<AbstractContainerMenu> container) {
 		return player.getItemInHand(InteractionHand.MAIN_HAND).is(IndustriaTags.Items.SCREW_DRIVERS) ? new JunctionBoxContainer<T>(containerId, inventory, blockEntity) : container.get();
@@ -105,11 +66,6 @@ public class GameUtility {
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.SUCCESS;
-	}
-	
-	public static Direction getFacingDirection(Entity entity) {
-		Vec3d viewVec = Vec3d.fromVec(entity.getViewVector(1));
-		return MathUtility.getVecDirection(viewVec);
 	}
 	
 	public static Vec3f getWorldGravity(BlockGetter level) {

@@ -261,7 +261,7 @@ public class ConduitRenderer {
 		
 		Vec3d position = node.getWorldRenderPosition(level, pos);
 		int colori = node.getType().getColor().getColor();
-		Vec4f color = GameUtility.toVecColor(colori);
+		Vec4f color = MathUtility.toVecColor(colori);
 		double halfSize = 1.5 / 16.0;
 		Vec3d boxMin = position.sub(halfSize, halfSize, halfSize);
 		Vec3d boxMax = position.add(halfSize, halfSize, halfSize);
@@ -302,7 +302,7 @@ public class ConduitRenderer {
 		
 		Vec3d position = node.getWorldRenderPosition(level, pos);
 		int colori = node.getType().getColor().getColor();
-		Vec4f color = GameUtility.toVecColor(colori);
+		Vec4f color = MathUtility.toVecColor(colori);
 		double halfSize = 1.5 / 16.0;
 		Vec3d boxMin = position.sub(halfSize, halfSize, halfSize);
 		Vec3d boxMax = position.add(halfSize, halfSize, halfSize);

@@ -1,9 +1,9 @@
-package de.m_marvin.industria.core.util.recipes;
+package de.m_marvin.industria.core.util.types;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 

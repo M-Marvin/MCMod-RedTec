@@ -30,9 +30,9 @@ import de.m_marvin.industria.core.contraptions.engine.types.contraption.Contrapt
 import de.m_marvin.industria.core.contraptions.engine.types.contraption.ServerContraption;
 import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.registries.Capabilities;
+import de.m_marvin.industria.core.ssdplugins.engine.StructureTemplateExtended;
 import de.m_marvin.industria.core.util.GameUtility;
 import de.m_marvin.industria.core.util.MathUtility;
-import de.m_marvin.industria.core.util.StructureTemplateExtended;
 import de.m_marvin.unimat.impl.Quaterniond;
 import de.m_marvin.univec.impl.Vec3d;
 import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
@@ -459,8 +459,8 @@ public class ContraptionHandlerCapability implements ICapabilitySerializable<Com
 		if (!hasSolids) return false;
 		
 		// Copy original blocks and conduits
-		StructureTemplate template = new StructureTemplate();
-		BlockPos templateOrigin = ((StructureTemplateExtended) template).fillFromLevelPosIterable(level, blocks, null);
+		StructureTemplateExtended template = new StructureTemplateExtended();
+		BlockPos templateOrigin = template.fillFromLevelPosIterable(level, blocks, null);
 		
 		// Create new contraption at min corner
 		Vec3d shipPos = Vec3d.fromVec(templateOrigin).addI(Vec3d.fromVec(template.getSize()).div(2.0));

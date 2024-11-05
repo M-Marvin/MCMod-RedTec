@@ -1,6 +1,6 @@
 package de.m_marvin.industria.core.magnetism.types.blocks;
 
-import de.m_marvin.industria.core.util.GameUtility;
+import de.m_marvin.industria.core.util.MathUtility;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
@@ -17,7 +17,7 @@ public class MagnetBlock extends Block implements IMagneticBlock {
 
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-		return defaultBlockState().setValue(BlockStateProperties.FACING, GameUtility.getFacingDirection(pContext.getPlayer()).getOpposite());
+		return defaultBlockState().setValue(BlockStateProperties.FACING, MathUtility.getFacingDirection(pContext.getPlayer()).getOpposite());
 	}
 	
 	@Override

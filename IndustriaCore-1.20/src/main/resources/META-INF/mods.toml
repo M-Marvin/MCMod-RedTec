@@ -11,7 +11,7 @@ license="All Rights Reserved"
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]]
 modId="industriacore" #mandatory
-version="0.1" #mandatory
+version="0.2.0" #mandatory
 displayName="Industria Core" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://docs.minecraftforge.net/en/latest/misc/updatechecker/
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional

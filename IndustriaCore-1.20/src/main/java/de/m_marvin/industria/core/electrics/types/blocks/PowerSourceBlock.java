@@ -16,6 +16,7 @@ import de.m_marvin.industria.core.parametrics.engine.BlockParametricsManager;
 import de.m_marvin.industria.core.registries.Circuits;
 import de.m_marvin.industria.core.registries.NodeTypes;
 import de.m_marvin.industria.core.util.GameUtility;
+import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.items.ITooltipAdditionsModifier;
 import de.m_marvin.univec.impl.Vec3i;
 import net.minecraft.core.BlockPos;
@@ -52,7 +53,7 @@ public class PowerSourceBlock extends BaseEntityBlock implements IElectricBlock,
 	
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-		return defaultBlockState().setValue(BlockStateProperties.FACING, GameUtility.getFacingDirection(pContext.getPlayer()).getOpposite());
+		return defaultBlockState().setValue(BlockStateProperties.FACING, MathUtility.getFacingDirection(pContext.getPlayer()).getOpposite());
 	}
 	
 	@Override

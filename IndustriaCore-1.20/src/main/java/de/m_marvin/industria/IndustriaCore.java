@@ -16,6 +16,7 @@ import de.m_marvin.industria.core.registries.Items;
 import de.m_marvin.industria.core.registries.MenuTypes;
 import de.m_marvin.industria.core.registries.NetworkPackages;
 import de.m_marvin.industria.core.registries.ParticleTypes;
+import de.m_marvin.industria.core.registries.StructureDataPlugins;
 import de.m_marvin.univec.VectorParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
@@ -55,6 +56,7 @@ public class IndustriaCore {
 		Items.register();
 		BlockEntityTypes.register();
 		CommandArguments.register();
+		StructureDataPlugins.register();
 		
 	}
 	

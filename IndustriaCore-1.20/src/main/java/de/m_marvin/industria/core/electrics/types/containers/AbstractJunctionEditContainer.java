@@ -5,7 +5,7 @@ import de.m_marvin.industria.core.conduits.types.ConduitPos.NodePos;
 import de.m_marvin.industria.core.electrics.ElectricUtility;
 import de.m_marvin.industria.core.electrics.engine.network.CUpdateJunctionLanesPackage;
 import de.m_marvin.industria.core.electrics.types.blockentities.IJunctionEdit;
-import de.m_marvin.industria.core.util.GameUtility;
+import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.container.AbstractBlockEntityContainerBase;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -41,7 +41,7 @@ public abstract class AbstractJunctionEditContainer<T extends BlockEntity & IJun
 	}
 	
 	public NodePos[] getCableNodes() {
-		return this.blockEntity.getEditCableNodes(GameUtility.getFacingDirection(this.playerInv.player), this.playerInv.player.getDirection());
+		return this.blockEntity.getEditCableNodes(MathUtility.getFacingDirection(this.playerInv.player), this.playerInv.player.getDirection());
 	}
 
 	public String[] getInternalLabels(int id) {

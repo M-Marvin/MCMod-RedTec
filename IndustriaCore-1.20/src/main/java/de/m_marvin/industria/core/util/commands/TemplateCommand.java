@@ -13,10 +13,10 @@ import de.m_marvin.industria.core.electrics.ElectricUtility;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetworkHandlerCapability;
 import de.m_marvin.industria.core.registries.Capabilities;
+import de.m_marvin.industria.core.ssdplugins.engine.IStructureTemplateExtended;
 import de.m_marvin.industria.core.util.GameUtility;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.StructureFinder;
-import de.m_marvin.industria.core.util.StructureTemplateExtended;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -121,7 +121,7 @@ public class TemplateCommand {
 		
 		StructureTemplateManager manager = source.getSource().getLevel().getStructureManager();
 		StructureTemplate template = manager.getOrCreate(name);
-		((StructureTemplateExtended) template).fillFromLevelPosIterable(source.getSource().getLevel(), blocks.get(), null);
+		((IStructureTemplateExtended) template).fillFromLevelPosIterable(source.getSource().getLevel(), blocks.get(), null);
 		manager.save(name);
 		
 		source.getSource().sendSuccess(() -> Component.translatable("industriacore.commands.template.saved", name.toString()), false);
