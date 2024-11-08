@@ -34,7 +34,15 @@ public class Config {
 		/** common configuration - server and client **/
 		
 		ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+		CONFIG_COMMON = BUILDER.build();
+		
+		/** server configuration - only on server **/
+		
+		BUILDER = new ForgeConfigSpec.Builder();
 		BUILDER.comment("Industria Core utility settings").push(CATEGORY_UTIL);
+		MAX_SELECTION_BLOCKS = BUILDER
+				.comment("Maximum number of blocks selectable (/template /contraption assemble)")
+				.defineInRange("max_assemble_blocks", 16 * 16 * 16, 1, Integer.MAX_VALUE);
 		BUILDER.pop();
 		
 		BUILDER.comment("Industria Core electrics settings").push(CATEGORY_ELECTIRCS);
@@ -47,15 +55,6 @@ public class Config {
 		ELECTRIC_SIMULATION_COMMANDS = BUILDER
 				.comment("Simulation engine execution commands '|' seperated.")
 				.define("simulation_exec_command", "options reltol=2|op");
-		CONFIG_COMMON = BUILDER.build();
-		
-		/** server configuration - only on server **/
-		
-		BUILDER = new ForgeConfigSpec.Builder();
-		BUILDER.comment("Industria Core utility settings").push(CATEGORY_UTIL);
-		MAX_SELECTION_BLOCKS = BUILDER
-				.comment("Maximum number of blocks selectable (/template /contraption assemble)")
-				.defineInRange("max_assemble_blocks", 16 * 16 * 16, 1, Integer.MAX_VALUE);
 		BUILDER.pop();
 		
 		BUILDER.comment("Physics related settings").push(CATEGORY_PHYSICS);

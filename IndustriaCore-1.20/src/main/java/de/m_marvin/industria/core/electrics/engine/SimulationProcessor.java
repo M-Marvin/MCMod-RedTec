@@ -34,7 +34,7 @@ public class SimulationProcessor {
 		private boolean init() {
 			try {
 				solver = new Solver();
-				solver.attachElectronFlow(Config.EF_DEBUG_LOGGING.get() ? (s) -> { IndustriaCore.LOGGER.debug(s); } : (s) -> {});
+				solver.attachElectronFlow(Config.EF_DEBUG_LOGGING.get() ? (s) -> { IndustriaCore.LOGGER.info(s); } : (s) -> {});
 				return true;
 			} catch (Error e) {
 				solver = null;
@@ -99,7 +99,7 @@ public class SimulationProcessor {
 		}
 		
 		private boolean processNetList(String netList) {
-			if (Config.EF_DEBUG_LOGGING.get()) IndustriaCore.LOGGER.debug("Load spice circuit:\n" + netList);
+			if (Config.EF_DEBUG_LOGGING.get()) IndustriaCore.LOGGER.info("Load spice circuit:\n" + netList);
 			
 			if (!this.solver.upload(netList)) {
 				IndustriaCore.LOGGER.warn("Failed to upload network to solver!");
