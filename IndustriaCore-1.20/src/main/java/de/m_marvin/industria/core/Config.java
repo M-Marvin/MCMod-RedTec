@@ -27,30 +27,52 @@ public class Config {
 	
 	public static final String CATEGORY_ELECTIRCS = "electrics";
 	public static ForgeConfigSpec.IntValue ELECTIRC_SIMULATION_THREADS;
-	public static ForgeConfigSpec.ConfigValue<String> ELECTRIC_SIMULATION_COMMAND;
+	public static ForgeConfigSpec.ConfigValue<String> ELECTRIC_SIMULATION_COMMANDS;
 	
 	static {
+		
+		/** common configuration - server and client **/
+		
 		ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 		BUILDER.comment("Industria Core utility settings").push(CATEGORY_UTIL);
-		EF_DEBUG_LOGGING = BUILDER.comment("If true, the native lib will print simmulation data (and some other things) from the electric networks into the logs.").define("simulation_debug_logging", false);
 		BUILDER.pop();
 		
 		BUILDER.comment("Industria Core electrics settings").push(CATEGORY_ELECTIRCS);
-		ELECTIRC_SIMULATION_THREADS = BUILDER.comment("Number of paralell running EPT's").defineInRange("simulation_threads", 1, 1, 16);
-		ELECTRIC_SIMULATION_COMMAND = BUILDER.comment("Simulation engine execution command.").define("simulation_exec_command", "op");
+		EF_DEBUG_LOGGING = BUILDER
+				.comment("If true, the native lib will print simmulation data (and some other things) from the electric networks into the logs.")
+				.define("simulation_debug_logging", false);
+		ELECTIRC_SIMULATION_THREADS = BUILDER
+				.comment("Number of paralell running EPT's")
+				.defineInRange("simulation_threads", 1, 1, 16);
+		ELECTRIC_SIMULATION_COMMANDS = BUILDER
+				.comment("Simulation engine execution commands '|' seperated.")
+				.define("simulation_exec_command", "options reltol=2|op");
 		CONFIG_COMMON = BUILDER.build();
+		
+		/** server configuration - only on server **/
 		
 		BUILDER = new ForgeConfigSpec.Builder();
 		BUILDER.comment("Industria Core utility settings").push(CATEGORY_UTIL);
-		MAX_SELECTION_BLOCKS = BUILDER.comment("Maximum number of blocks selectable (/template /contraption assemble)").defineInRange("max_assemble_blocks", 16 * 16 * 16, 1, Integer.MAX_VALUE);
+		MAX_SELECTION_BLOCKS = BUILDER
+				.comment("Maximum number of blocks selectable (/template /contraption assemble)")
+				.defineInRange("max_assemble_blocks", 16 * 16 * 16, 1, Integer.MAX_VALUE);
 		BUILDER.pop();
 		
 		BUILDER.comment("Physics related settings").push(CATEGORY_PHYSICS);
-		MAGNETIC_FORCE_MULTIPLIER_LINEAR = BUILDER.comment("The field strength of the magnets gets multiplied with this value for the linear force applied to the magnets (double this, double the strength of all magnets)").defineInRange("magnetic_force_multiplier_linear", MagneticField.DEFAULT_LINEAR_FORCE_MULTIPLIER, 0.0, Double.MAX_VALUE);
-		MAGNETIC_FORCE_MULTIPLIER_ANGULAR = BUILDER.comment("The field strength of the magnets gets multiplied with this value for the angular force applied to the magnets (double this, double the strength of all magnets)").defineInRange("magnetic_force_multiplier_angular", MagneticField.DEFAULT_ANGULAR_FORCE_MULTIPLIER, 0.0, Double.MAX_VALUE);
-		MAGNETIC_FIELD_RANGE = BUILDER.comment("The range of magnetic fields in blocks per field strength").defineInRange("magnetic_field_range", MagneticField.DEFAULT_MAGNETIC_FIELD_RANGE_PER_STRENGTH, 0.0, Double.MAX_VALUE);
-		MAGNETIC_FIELD_CHANGE_NOTIFY_LIMIT = BUILDER.comment("The minumum ammount a filed has to change before an update is triggered").defineInRange("magnetic_field_change_notify_limit", MagneticField.DEFAULT_FIELD_CHANGE_NOTIFY_LIMIT, 0.01, Double.MAX_VALUE);
+		MAGNETIC_FORCE_MULTIPLIER_LINEAR = BUILDER
+				.comment("The field strength of the magnets gets multiplied with this value for the linear force applied to the magnets (double this, double the strength of all magnets)")
+				.defineInRange("magnetic_force_multiplier_linear", MagneticField.DEFAULT_LINEAR_FORCE_MULTIPLIER, 0.0, Double.MAX_VALUE);
+		MAGNETIC_FORCE_MULTIPLIER_ANGULAR = BUILDER
+				.comment("The field strength of the magnets gets multiplied with this value for the angular force applied to the magnets (double this, double the strength of all magnets)")
+				.defineInRange("magnetic_force_multiplier_angular", MagneticField.DEFAULT_ANGULAR_FORCE_MULTIPLIER, 0.0, Double.MAX_VALUE);
+		MAGNETIC_FIELD_RANGE = BUILDER
+				.comment("The range of magnetic fields in blocks per field strength")
+				.defineInRange("magnetic_field_range", MagneticField.DEFAULT_MAGNETIC_FIELD_RANGE_PER_STRENGTH, 0.0, Double.MAX_VALUE);
+		MAGNETIC_FIELD_CHANGE_NOTIFY_LIMIT = BUILDER
+				.comment("The minumum ammount a filed has to change before an update is triggered")
+				.defineInRange("magnetic_field_change_notify_limit", MagneticField.DEFAULT_FIELD_CHANGE_NOTIFY_LIMIT, 0.01, Double.MAX_VALUE);
 		CONFIG_SERVER = BUILDER.build();
+		
 	}
 	
 	public static void register() {

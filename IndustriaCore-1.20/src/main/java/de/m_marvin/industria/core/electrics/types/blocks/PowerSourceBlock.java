@@ -114,8 +114,8 @@ public class PowerSourceBlock extends BaseEntityBlock implements IElectricBlock,
 			double shuntVoltage = ElectricUtility.getVoltageBetweenLocal(level, pos, "SHUNT", 1, wireLanes[0], 0).orElse(0.0);
 			double sourceVoltage = ElectricUtility.getVoltageBetweenLocal(level, pos, wireLanes[0], 0, wireLanes[1], 0).orElse(0.0);
 			double sourceCurrent = shuntVoltage / Circuits.SHUNT_RESISTANCE;
-			double powerUsed = sourceVoltage * sourceCurrent;
 			BlockParametrics parametrics = BlockParametricsManager.getInstance().getParametrics(this);
+			double powerUsed = Math.min(sourceVoltage * sourceCurrent, parametrics.getPowerMax());
 			return Math.max(powerUsed > 1.0 ? parametrics.getPowerMin() : 0, powerUsed);
 		}
 		return 0.0;

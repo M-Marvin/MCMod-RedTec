@@ -1,204 +1,788 @@
 ingame-level-circuit
 
-* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[3 -60 12],node=0},B=NodePos{block=[3 -59 12],node=0}}
-
-* Simple resistor for different applications [ r=0.001 ]
-R1_0 node|pos3_~60_12_id0_lid0_lnml| node|pos3_~59_12_id0_lid0_lnml| 0.001
-
-* Simple resistor for different applications [ r=0.001 ]
-R1_1 node|pos3_~60_12_id0_lid1_lnmn| node|pos3_~59_12_id0_lid1_lnmn| 0.001
-
-* Simple resistor for different applications [ r=0.001 ]
-
-* Simple resistor for different applications [ r=0.001 ]
-
-* Simple resistor for different applications [ r=0.001 ]
-
-* Simple resistor for different applications [ r=0.001 ]
-
-* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[4 -60 12],node=0},B=NodePos{block=[3 -60 12],node=0}}
-
-* Simple resistor for different applications [ r=0.001 ]
-R1_6 node|pos4_~60_12_id0_lid0_lnml| node|pos3_~60_12_id0_lid0_lnml| 0.001
-
-* Simple resistor for different applications [ r=0.001 ]
-R1_7 node|pos4_~60_12_id0_lid1_lnmn| node|pos3_~60_12_id0_lid1_lnmn| 0.001
-
-* Simple resistor for different applications [ r=0.001 ]
-
-* Simple resistor for different applications [ r=0.001 ]
-
-* Simple resistor for different applications [ r=0.001 ]
-
-* Simple resistor for different applications [ r=0.001 ]
-
-* Component Block{industria:portable_fuel_generator} BlockPos{x=4, y=-60, z=12}
+* Component Block{industria:brass_floodlight} BlockPos{x=-102737, y=-41, z=1565}
 
 * Junction resistor [ r_fixed=0.015 ]
-R1_12 node|pos4_~60_12_id0_lid0_lnml| intnode|pos4_~60_12_lnml|_0 0.015
+R1_25772 node|pos~102737_~41_1565_id1_lid0_lnml| intnode|pos~102737_~41_1565_lnml|_0 0.015
 
 * Junction resistor [ r_fixed=0.015 ]
-R1_13 node|pos4_~60_12_id0_lid1_lnmn| intnode|pos4_~60_12_lnmn|_0 0.015
-
-* Voltage source [ v_nominal=230, P_max=2000 ]
-R1_14 intnode|pos4_~60_12_lnmshunt|_1 intnode|pos4_~60_12_lnml|_0 1m
-B1_14 intnode|pos4_~60_12_lnmshunt|_1 intnode|pos4_~60_12_lnmn|_0 V=min(230,2000/max(1m,+I(R1_14)))
-
-* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[5 -60 12],node=0},B=NodePos{block=[4 -60 12],node=0}}
-
-* Simple resistor for different applications [ r=0.001 ]
-R1_15 node|pos5_~60_12_id0_lid0_lnml| node|pos4_~60_12_id0_lid0_lnml| 0.001
-
-* Simple resistor for different applications [ r=0.001 ]
-R1_16 node|pos5_~60_12_id0_lid1_lnmn| node|pos4_~60_12_id0_lid1_lnmn| 0.001
-
-* Simple resistor for different applications [ r=0.001 ]
-
-* Simple resistor for different applications [ r=0.001 ]
-
-* Simple resistor for different applications [ r=0.001 ]
-
-* Simple resistor for different applications [ r=0.001 ]
-
-* Component Block{industria:portable_fuel_generator} BlockPos{x=5, y=-60, z=12}
+R1_25773 node|pos~102737_~41_1565_id1_lid1_lnmn| intnode|pos~102737_~41_1565_lnmn|_0 0.015
 
 * Junction resistor [ r_fixed=0.015 ]
-R1_21 node|pos5_~60_12_id0_lid0_lnml| intnode|pos5_~60_12_lnml|_0 0.015
+R1_25774 node|pos~102737_~41_1565_id2_lid0_lnml| intnode|pos~102737_~41_1565_lnml|_0 0.015
 
 * Junction resistor [ r_fixed=0.015 ]
-R1_22 node|pos5_~60_12_id0_lid1_lnmn| intnode|pos5_~60_12_lnmn|_0 0.015
-
-* Voltage source [ v_nominal=230, P_max=2000 ]
-R1_23 intnode|pos5_~60_12_lnmshunt|_1 intnode|pos5_~60_12_lnml|_0 1m
-B1_23 intnode|pos5_~60_12_lnmshunt|_1 intnode|pos5_~60_12_lnmn|_0 V=min(230,2000/max(1m,+I(R1_23)))
-
-* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[5 -60 12],node=0},B=NodePos{block=[9 -60 12],node=1}}
-
-* Simple resistor for different applications [ r=0.004 ]
-R1_24 node|pos5_~60_12_id0_lid0_lnml| node|pos9_~60_12_id1_lid0_lnml| 0.004
-
-* Simple resistor for different applications [ r=0.004 ]
-R1_25 node|pos5_~60_12_id0_lid1_lnmn| node|pos9_~60_12_id1_lid1_lnmn| 0.004
-
-* Simple resistor for different applications [ r=0.004 ]
-
-* Simple resistor for different applications [ r=0.004 ]
-
-* Simple resistor for different applications [ r=0.004 ]
-
-* Simple resistor for different applications [ r=0.004 ]
-
-* Component Block{industria:electro_magnetic_coil} BlockPos{x=9, y=-60, z=12}
-
-* Junction resistor [ r_fixed=0.015 ]
-R1_30 node|pos9_~60_12_id0_lid0_lnml| intnode|pos9_~60_12_lnml|_0 0.015
-
-* Junction resistor [ r_fixed=0.015 ]
-R1_31 node|pos9_~60_12_id0_lid1_lnmn| intnode|pos9_~60_12_lnmn|_0 0.015
-
-* Junction resistor [ r_fixed=0.015 ]
-R1_32 node|pos9_~60_12_id1_lid0_lnml| intnode|pos9_~60_12_lnml|_1 0.015
-
-* Junction resistor [ r_fixed=0.015 ]
-R1_33 node|pos9_~60_12_id1_lid1_lnmn| intnode|pos9_~60_12_lnmn|_1 0.015
-
-* DC Voltage converter [ n_winding_ratio=5.0 ]
-ZT1_34 intnode|pos9_~60_12_lnml|_0 intnode|pos9_~60_12_lnmn|_0 intnode|pos9_~60_12_lnml|_1 intnode|pos9_~60_12_lnmn|_1 H[ 0.0 5.0 5.0 0.0 ]
-R1_34 intnode|pos9_~60_12_lnmn|_0 intnode|pos9_~60_12_lnmn|_1 1G
-
-* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[12 -60 13],node=0},B=NodePos{block=[9 -60 12],node=0}}
-
-* Simple resistor for different applications [ r=0.003 ]
-R1_35 node|pos12_~60_13_id0_lid0_lnml| node|pos9_~60_12_id0_lid0_lnml| 0.003
-
-* Simple resistor for different applications [ r=0.003 ]
-R1_36 node|pos12_~60_13_id0_lid1_lnmn| node|pos9_~60_12_id0_lid1_lnmn| 0.003
-
-* Simple resistor for different applications [ r=0.003 ]
-
-* Simple resistor for different applications [ r=0.003 ]
-
-* Simple resistor for different applications [ r=0.003 ]
-
-* Simple resistor for different applications [ r=0.003 ]
-
-* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[11 -60 15],node=1},B=NodePos{block=[12 -60 13],node=0}}
-
-* Simple resistor for different applications [ r=0.003 ]
-R1_41 node|pos11_~60_15_id1_lid0_lnml| node|pos12_~60_13_id0_lid0_lnml| 0.003
-
-* Simple resistor for different applications [ r=0.003 ]
-R1_42 node|pos11_~60_15_id1_lid1_lnmn| node|pos12_~60_13_id0_lid1_lnmn| 0.003
-
-* Simple resistor for different applications [ r=0.003 ]
-
-* Simple resistor for different applications [ r=0.003 ]
-
-* Simple resistor for different applications [ r=0.003 ]
-
-* Simple resistor for different applications [ r=0.003 ]
-
-* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[11 -60 15],node=1},B=NodePos{block=[9 -60 17],node=0}}
-
-* Simple resistor for different applications [ r=0.003 ]
-R1_47 node|pos11_~60_15_id1_lid0_lnml| node|pos9_~60_17_id0_lid0_lnml| 0.003
-
-* Simple resistor for different applications [ r=0.003 ]
-R1_48 node|pos11_~60_15_id1_lid1_lnmn| node|pos9_~60_17_id0_lid1_lnmn| 0.003
-
-* Simple resistor for different applications [ r=0.003 ]
-
-* Simple resistor for different applications [ r=0.003 ]
-
-* Simple resistor for different applications [ r=0.003 ]
-
-* Simple resistor for different applications [ r=0.003 ]
-
-* Component Block{industria:electro_magnetic_coil} BlockPos{x=9, y=-60, z=17}
-
-* Junction resistor [ r_fixed=0.015 ]
-R1_53 node|pos9_~60_17_id0_lid0_lnml| intnode|pos9_~60_17_lnml|_1 0.015
-
-* Junction resistor [ r_fixed=0.015 ]
-R1_54 node|pos9_~60_17_id0_lid1_lnmn| intnode|pos9_~60_17_lnmn|_1 0.015
-
-* Simple resistor for different applications [ r=100.0 ]
-R1_55 intnode|pos9_~60_17_lnml|_1 intnode|pos9_~60_17_lnmn|_1 100.0
-
-* Component Block{industria:brass_floodlight} BlockPos{x=11, y=-60, z=15}
-
-* Junction resistor [ r_fixed=0.015 ]
-R1_56 node|pos11_~60_15_id1_lid0_lnml| intnode|pos11_~60_15_lnml|_0 0.015
-
-* Junction resistor [ r_fixed=0.015 ]
-R1_57 node|pos11_~60_15_id1_lid1_lnmn| intnode|pos11_~60_15_lnmn|_0 0.015
+R1_25775 node|pos~102737_~41_1565_id2_lid1_lnmn| intnode|pos~102737_~41_1565_lnmn|_0 0.015
 
 * Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
-R1_58 intnode|pos11_~60_15_lnml|_0 intnode|pos11_~60_15_lnmn|_0 R={230/(400/230)}
+R1_25776 intnode|pos~102737_~41_1565_lnml|_0 intnode|pos~102737_~41_1565_lnmn|_0 R={230/(400/230)}
 
-* Component Block{industria:portable_fuel_generator} BlockPos{x=3, y=-60, z=12}
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102737 -41 1564],node=1},B=NodePos{block=[-102737 -41 1565],node=1}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25777 node|pos~102737_~41_1564_id1_lid0_lnml| node|pos~102737_~41_1565_id1_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25778 node|pos~102737_~41_1564_id1_lid1_lnmn| node|pos~102737_~41_1565_id1_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102737, y=-41, z=1564}
 
 * Junction resistor [ r_fixed=0.015 ]
-R1_59 node|pos3_~60_12_id0_lid0_lnml| intnode|pos3_~60_12_lnml|_0 0.015
+R1_25783 node|pos~102737_~41_1564_id1_lid0_lnml| intnode|pos~102737_~41_1564_lnml|_0 0.015
 
 * Junction resistor [ r_fixed=0.015 ]
-R1_60 node|pos3_~60_12_id0_lid1_lnmn| intnode|pos3_~60_12_lnmn|_0 0.015
+R1_25784 node|pos~102737_~41_1564_id1_lid1_lnmn| intnode|pos~102737_~41_1564_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_25785 intnode|pos~102737_~41_1564_lnml|_0 intnode|pos~102737_~41_1564_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102737 -41 1563],node=1},B=NodePos{block=[-102737 -41 1564],node=1}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25786 node|pos~102737_~41_1563_id1_lid0_lnml| node|pos~102737_~41_1564_id1_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25787 node|pos~102737_~41_1563_id1_lid1_lnmn| node|pos~102737_~41_1564_id1_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102737, y=-41, z=1563}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25792 node|pos~102737_~41_1563_id0_lid0_lnml| intnode|pos~102737_~41_1563_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25793 node|pos~102737_~41_1563_id0_lid1_lnmn| intnode|pos~102737_~41_1563_lnmn|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25794 node|pos~102737_~41_1563_id1_lid0_lnml| intnode|pos~102737_~41_1563_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25795 node|pos~102737_~41_1563_id1_lid1_lnmn| intnode|pos~102737_~41_1563_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_25796 intnode|pos~102737_~41_1563_lnml|_0 intnode|pos~102737_~41_1563_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102727 -39 1563],node=2},B=NodePos{block=[-102737 -41 1563],node=0}}
+
+* Simple resistor for different applications [ r=0.01 ]
+R1_25797 node|pos~102727_~39_1563_id2_lid0_lnml| node|pos~102737_~41_1563_id0_lid0_lnml| 0.01
+
+* Simple resistor for different applications [ r=0.01 ]
+R1_25798 node|pos~102727_~39_1563_id2_lid1_lnmn| node|pos~102737_~41_1563_id0_lid1_lnmn| 0.01
+
+* Simple resistor for different applications [ r=0.01 ]
+
+* Simple resistor for different applications [ r=0.01 ]
+
+* Simple resistor for different applications [ r=0.01 ]
+
+* Simple resistor for different applications [ r=0.01 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102727, y=-39, z=1563}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25803 node|pos~102727_~39_1563_id0_lid0_lnml| intnode|pos~102727_~39_1563_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25804 node|pos~102727_~39_1563_id0_lid1_lnmn| intnode|pos~102727_~39_1563_lnmn|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25805 node|pos~102727_~39_1563_id2_lid0_lnml| intnode|pos~102727_~39_1563_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25806 node|pos~102727_~39_1563_id2_lid1_lnmn| intnode|pos~102727_~39_1563_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_25807 intnode|pos~102727_~39_1563_lnml|_0 intnode|pos~102727_~39_1563_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102725 -39 1563],node=2},B=NodePos{block=[-102727 -39 1563],node=0}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25808 node|pos~102725_~39_1563_id2_lid0_lnml| node|pos~102727_~39_1563_id0_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25809 node|pos~102725_~39_1563_id2_lid1_lnmn| node|pos~102727_~39_1563_id0_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102725, y=-39, z=1563}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25814 node|pos~102725_~39_1563_id2_lid0_lnml| intnode|pos~102725_~39_1563_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25815 node|pos~102725_~39_1563_id2_lid1_lnmn| intnode|pos~102725_~39_1563_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_25816 intnode|pos~102725_~39_1563_lnml|_0 intnode|pos~102725_~39_1563_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102737 -41 1565],node=2},B=NodePos{block=[-102737 -41 1570],node=0}}
+
+* Simple resistor for different applications [ r=0.005 ]
+R1_25817 node|pos~102737_~41_1565_id2_lid0_lnml| node|pos~102737_~41_1570_id0_lid0_lnml| 0.005
+
+* Simple resistor for different applications [ r=0.005 ]
+R1_25818 node|pos~102737_~41_1565_id2_lid1_lnmn| node|pos~102737_~41_1570_id0_lid1_lnmn| 0.005
+
+* Simple resistor for different applications [ r=0.005 ]
+
+* Simple resistor for different applications [ r=0.005 ]
+
+* Simple resistor for different applications [ r=0.005 ]
+
+* Simple resistor for different applications [ r=0.005 ]
+
+* Component Block{industria:gold_wire_holder} BlockPos{x=-102737, y=-41, z=1570}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102748 -39 1564],node=0},B=NodePos{block=[-102737 -41 1570],node=0}}
+
+* Simple resistor for different applications [ r=0.013000000000000001 ]
+R1_25823 node|pos~102748_~39_1564_id0_lid0_lnml| node|pos~102737_~41_1570_id0_lid0_lnml| 0.013000000000000001
+
+* Simple resistor for different applications [ r=0.013000000000000001 ]
+R1_25824 node|pos~102748_~39_1564_id0_lid1_lnmn| node|pos~102737_~41_1570_id0_lid1_lnmn| 0.013000000000000001
+
+* Simple resistor for different applications [ r=0.013000000000000001 ]
+
+* Simple resistor for different applications [ r=0.013000000000000001 ]
+
+* Simple resistor for different applications [ r=0.013000000000000001 ]
+
+* Simple resistor for different applications [ r=0.013000000000000001 ]
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102751 -46 1563],node=0},B=NodePos{block=[-102748 -39 1564],node=0}}
+
+* Simple resistor for different applications [ r=0.008 ]
+R1_25829 node|pos~102751_~46_1563_id0_lid0_lnml| node|pos~102748_~39_1564_id0_lid0_lnml| 0.008
+
+* Simple resistor for different applications [ r=0.008 ]
+R1_25830 node|pos~102751_~46_1563_id0_lid1_lnmn| node|pos~102748_~39_1564_id0_lid1_lnmn| 0.008
+
+* Simple resistor for different applications [ r=0.008 ]
+
+* Simple resistor for different applications [ r=0.008 ]
+
+* Simple resistor for different applications [ r=0.008 ]
+
+* Simple resistor for different applications [ r=0.008 ]
+
+* Component Block{industria:gold_wire_holder} BlockPos{x=-102751, y=-46, z=1563}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102751 -46 1576],node=0},B=NodePos{block=[-102751 -46 1563],node=0}}
+
+* Simple resistor for different applications [ r=0.013000000000000001 ]
+R1_25835 node|pos~102751_~46_1576_id0_lid0_lnml| node|pos~102751_~46_1563_id0_lid0_lnml| 0.013000000000000001
+
+* Simple resistor for different applications [ r=0.013000000000000001 ]
+R1_25836 node|pos~102751_~46_1576_id0_lid1_lnmn| node|pos~102751_~46_1563_id0_lid1_lnmn| 0.013000000000000001
+
+* Simple resistor for different applications [ r=0.013000000000000001 ]
+
+* Simple resistor for different applications [ r=0.013000000000000001 ]
+
+* Simple resistor for different applications [ r=0.013000000000000001 ]
+
+* Simple resistor for different applications [ r=0.013000000000000001 ]
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102759 -48 1577],node=0},B=NodePos{block=[-102751 -46 1576],node=0}}
+
+* Simple resistor for different applications [ r=0.009000000000000001 ]
+R1_25841 node|pos~102759_~48_1577_id0_lid0_lnml| node|pos~102751_~46_1576_id0_lid0_lnml| 0.009000000000000001
+
+* Simple resistor for different applications [ r=0.009000000000000001 ]
+R1_25842 node|pos~102759_~48_1577_id0_lid1_lnmn| node|pos~102751_~46_1576_id0_lid1_lnmn| 0.009000000000000001
+
+* Simple resistor for different applications [ r=0.009000000000000001 ]
+
+* Simple resistor for different applications [ r=0.009000000000000001 ]
+
+* Simple resistor for different applications [ r=0.009000000000000001 ]
+
+* Simple resistor for different applications [ r=0.009000000000000001 ]
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102761 -48 1577],node=0},B=NodePos{block=[-102759 -48 1577],node=0}}
+
+* Simple resistor for different applications [ r=0.002 ]
+R1_25847 node|pos~102761_~48_1577_id0_lid0_lnml| node|pos~102759_~48_1577_id0_lid0_lnml| 0.002
+
+* Simple resistor for different applications [ r=0.002 ]
+R1_25848 node|pos~102761_~48_1577_id0_lid1_lnmn| node|pos~102759_~48_1577_id0_lid1_lnmn| 0.002
+
+* Simple resistor for different applications [ r=0.002 ]
+
+* Simple resistor for different applications [ r=0.002 ]
+
+* Simple resistor for different applications [ r=0.002 ]
+
+* Simple resistor for different applications [ r=0.002 ]
+
+* Component Block{industria:gold_wire_holder} BlockPos{x=-102761, y=-48, z=1577}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102765 -51 1577],node=3},B=NodePos{block=[-102761 -48 1577],node=0}}
+
+* Simple resistor for different applications [ r=0.004 ]
+R1_25853 node|pos~102765_~51_1577_id3_lid0_lnml| node|pos~102761_~48_1577_id0_lid0_lnml| 0.004
+
+* Simple resistor for different applications [ r=0.004 ]
+R1_25854 node|pos~102765_~51_1577_id3_lid1_lnmn| node|pos~102761_~48_1577_id0_lid1_lnmn| 0.004
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Component Block{industria:electro_magnetic_coil} BlockPos{x=-102765, y=-51, z=1577}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25859 node|pos~102765_~51_1577_id1_lid0_lnml| intnode|pos~102765_~51_1577_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25860 node|pos~102765_~51_1577_id1_lid1_lnmn| intnode|pos~102765_~51_1577_lnmn|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25861 node|pos~102765_~51_1577_id3_lid0_lnml| intnode|pos~102765_~51_1577_lnml|_1 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25862 node|pos~102765_~51_1577_id3_lid1_lnmn| intnode|pos~102765_~51_1577_lnmn|_1 0.015
+
+* DC Voltage converter [ n_winding_ratio=0.75 ]
+ZT1_25863 intnode|pos~102765_~51_1577_lnml|_0 intnode|pos~102765_~51_1577_lnmn|_0 intnode|pos~102765_~51_1577_lnml|_1 intnode|pos~102765_~51_1577_lnmn|_1 H[ 0.0 0.75 0.75 0.0 ]
+R1_25863 intnode|pos~102765_~51_1577_lnmn|_0 intnode|pos~102765_~51_1577_lnmn|_1 1G
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102768 -48 1577],node=0},B=NodePos{block=[-102765 -51 1577],node=1}}
+
+* Simple resistor for different applications [ r=0.004 ]
+R1_25864 node|pos~102768_~48_1577_id0_lid0_lnml| node|pos~102765_~51_1577_id1_lid0_lnml| 0.004
+
+* Simple resistor for different applications [ r=0.004 ]
+R1_25865 node|pos~102768_~48_1577_id0_lid1_lnmn| node|pos~102765_~51_1577_id1_lid1_lnmn| 0.004
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102768 -48 1580],node=0},B=NodePos{block=[-102768 -48 1577],node=0}}
+
+* Simple resistor for different applications [ r=0.003 ]
+R1_25870 node|pos~102768_~48_1580_id0_lid0_lnml| node|pos~102768_~48_1577_id0_lid0_lnml| 0.003
+
+* Simple resistor for different applications [ r=0.003 ]
+R1_25871 node|pos~102768_~48_1580_id0_lid1_lnmn| node|pos~102768_~48_1577_id0_lid1_lnmn| 0.003
+
+* Simple resistor for different applications [ r=0.003 ]
+
+* Simple resistor for different applications [ r=0.003 ]
+
+* Simple resistor for different applications [ r=0.003 ]
+
+* Simple resistor for different applications [ r=0.003 ]
+
+* Component Block{industria:gold_wire_holder} BlockPos{x=-102768, y=-48, z=1580}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102768 -48 1580],node=0},B=NodePos{block=[-102768 -51 1579],node=0}}
+
+* Simple resistor for different applications [ r=0.003 ]
+R1_25876 node|pos~102768_~48_1580_id0_lid0_lnml| node|pos~102768_~51_1579_id0_lid0_lnml| 0.003
+
+* Simple resistor for different applications [ r=0.003 ]
+R1_25877 node|pos~102768_~48_1580_id0_lid1_lnmn| node|pos~102768_~51_1579_id0_lid1_lnmn| 0.003
+
+* Simple resistor for different applications [ r=0.003 ]
+
+* Simple resistor for different applications [ r=0.003 ]
+
+* Simple resistor for different applications [ r=0.003 ]
+
+* Simple resistor for different applications [ r=0.003 ]
+
+* Component Block{industriacore:power_source} BlockPos{x=-102768, y=-51, z=1579}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25882 node|pos~102768_~51_1579_id0_lid0_lnml| intnode|pos~102768_~51_1579_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25883 node|pos~102768_~51_1579_id0_lid1_lnmn| intnode|pos~102768_~51_1579_lnmn|_0 0.015
+
+* Voltage source [ v_nominal=230, P_max=4000 ]
+R1_25884 intnode|pos~102768_~51_1579_lnmshunt|_1 intnode|pos~102768_~51_1579_lnml|_0 1m
+B1_25884 intnode|pos~102768_~51_1579_lnmshunt|_1 intnode|pos~102768_~51_1579_lnmn|_0 V=min(230,4000/max(1m,+I(R1_25884)))
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102765 -47 1579],node=0},B=NodePos{block=[-102768 -48 1580],node=0}}
+
+* Simple resistor for different applications [ r=0.004 ]
+R1_25885 node|pos~102765_~47_1579_id0_lid0_lnml| node|pos~102768_~48_1580_id0_lid0_lnml| 0.004
+
+* Simple resistor for different applications [ r=0.004 ]
+R1_25886 node|pos~102765_~47_1579_id0_lid1_lnmn| node|pos~102768_~48_1580_id0_lid1_lnmn| 0.004
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102765, y=-47, z=1579}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25891 node|pos~102765_~47_1579_id0_lid0_lnml| intnode|pos~102765_~47_1579_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25892 node|pos~102765_~47_1579_id0_lid1_lnmn| intnode|pos~102765_~47_1579_lnmn|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25893 node|pos~102765_~47_1579_id2_lid0_lnml| intnode|pos~102765_~47_1579_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25894 node|pos~102765_~47_1579_id2_lid1_lnmn| intnode|pos~102765_~47_1579_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_25895 intnode|pos~102765_~47_1579_lnml|_0 intnode|pos~102765_~47_1579_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102763 -47 1579],node=0},B=NodePos{block=[-102765 -47 1579],node=2}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25896 node|pos~102763_~47_1579_id0_lid0_lnml| node|pos~102765_~47_1579_id2_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25897 node|pos~102763_~47_1579_id0_lid1_lnmn| node|pos~102765_~47_1579_id2_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102763, y=-47, z=1579}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25902 node|pos~102763_~47_1579_id0_lid0_lnml| intnode|pos~102763_~47_1579_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25903 node|pos~102763_~47_1579_id0_lid1_lnmn| intnode|pos~102763_~47_1579_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_25904 intnode|pos~102763_~47_1579_lnml|_0 intnode|pos~102763_~47_1579_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102768 -48 1580],node=0},B=NodePos{block=[-102768 -49 1580],node=0}}
+
+* Simple resistor for different applications [ r=0.002 ]
+R1_25905 node|pos~102768_~48_1580_id0_lid0_lnml| node|pos~102768_~49_1580_id0_lid0_lnml| 0.002
+
+* Simple resistor for different applications [ r=0.002 ]
+R1_25906 node|pos~102768_~48_1580_id0_lid1_lnmn| node|pos~102768_~49_1580_id0_lid1_lnmn| 0.002
+
+* Simple resistor for different applications [ r=0.002 ]
+
+* Simple resistor for different applications [ r=0.002 ]
+
+* Simple resistor for different applications [ r=0.002 ]
+
+* Simple resistor for different applications [ r=0.002 ]
+
+* Component Block{industria:portable_coal_generator} BlockPos{x=-102768, y=-49, z=1580}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25911 node|pos~102768_~49_1580_id0_lid0_lnml| intnode|pos~102768_~49_1580_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25912 node|pos~102768_~49_1580_id0_lid1_lnmn| intnode|pos~102768_~49_1580_lnmn|_0 0.015
 
 * Voltage source [ v_nominal=230, P_max=2000 ]
-R1_61 intnode|pos3_~60_12_lnmshunt|_1 intnode|pos3_~60_12_lnml|_0 1m
-B1_61 intnode|pos3_~60_12_lnmshunt|_1 intnode|pos3_~60_12_lnmn|_0 V=min(230,2000/max(1m,+I(R1_61)))
+R1_25913 intnode|pos~102768_~49_1580_lnmshunt|_1 intnode|pos~102768_~49_1580_lnml|_0 1m
+B1_25913 intnode|pos~102768_~49_1580_lnmshunt|_1 intnode|pos~102768_~49_1580_lnmn|_0 V=min(230,2000/max(1m,+I(R1_25913)))
 
-* Component Block{industria:portable_fuel_generator} BlockPos{x=3, y=-59, z=12}
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102768 -50 1580],node=0},B=NodePos{block=[-102768 -49 1580],node=0}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25914 node|pos~102768_~50_1580_id0_lid0_lnml| node|pos~102768_~49_1580_id0_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25915 node|pos~102768_~50_1580_id0_lid1_lnmn| node|pos~102768_~49_1580_id0_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Block{industria:portable_coal_generator} BlockPos{x=-102768, y=-50, z=1580}
 
 * Junction resistor [ r_fixed=0.015 ]
-R1_62 node|pos3_~59_12_id0_lid0_lnml| intnode|pos3_~59_12_lnml|_0 0.015
+R1_25920 node|pos~102768_~50_1580_id0_lid0_lnml| intnode|pos~102768_~50_1580_lnml|_0 0.015
 
 * Junction resistor [ r_fixed=0.015 ]
-R1_63 node|pos3_~59_12_id0_lid1_lnmn| intnode|pos3_~59_12_lnmn|_0 0.015
+R1_25921 node|pos~102768_~50_1580_id0_lid1_lnmn| intnode|pos~102768_~50_1580_lnmn|_0 0.015
 
 * Voltage source [ v_nominal=230, P_max=2000 ]
-R1_64 intnode|pos3_~59_12_lnmshunt|_1 intnode|pos3_~59_12_lnml|_0 1m
-B1_64 intnode|pos3_~59_12_lnmshunt|_1 intnode|pos3_~59_12_lnmn|_0 V=min(230,2000/max(1m,+I(R1_64)))
+R1_25922 intnode|pos~102768_~50_1580_lnmshunt|_1 intnode|pos~102768_~50_1580_lnml|_0 1m
+B1_25922 intnode|pos~102768_~50_1580_lnmshunt|_1 intnode|pos~102768_~50_1580_lnmn|_0 V=min(230,2000/max(1m,+I(R1_25922)))
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102768 -51 1580],node=0},B=NodePos{block=[-102768 -50 1580],node=0}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25923 node|pos~102768_~51_1580_id0_lid0_lnml| node|pos~102768_~50_1580_id0_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25924 node|pos~102768_~51_1580_id0_lid1_lnmn| node|pos~102768_~50_1580_id0_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Block{industria:portable_coal_generator} BlockPos{x=-102768, y=-51, z=1580}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25929 node|pos~102768_~51_1580_id0_lid0_lnml| intnode|pos~102768_~51_1580_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25930 node|pos~102768_~51_1580_id0_lid1_lnmn| intnode|pos~102768_~51_1580_lnmn|_0 0.015
+
+* Voltage source [ v_nominal=230, P_max=2000 ]
+R1_25931 intnode|pos~102768_~51_1580_lnmshunt|_1 intnode|pos~102768_~51_1580_lnml|_0 1m
+B1_25931 intnode|pos~102768_~51_1580_lnmshunt|_1 intnode|pos~102768_~51_1580_lnmn|_0 V=min(230,2000/max(1m,+I(R1_25931)))
+
+* Component Block{industria:gold_wire_holder} BlockPos{x=-102768, y=-48, z=1577}
+
+* Component Block{industria:gold_wire_holder} BlockPos{x=-102759, y=-48, z=1577}
+
+* Component Block{industria:gold_wire_holder} BlockPos{x=-102751, y=-46, z=1576}
+
+* Component Block{industria:gold_wire_holder} BlockPos{x=-102748, y=-39, z=1564}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102737 -41 1574],node=2},B=NodePos{block=[-102737 -41 1570],node=0}}
+
+* Simple resistor for different applications [ r=0.004 ]
+R1_25932 node|pos~102737_~41_1574_id2_lid0_lnml| node|pos~102737_~41_1570_id0_lid0_lnml| 0.004
+
+* Simple resistor for different applications [ r=0.004 ]
+R1_25933 node|pos~102737_~41_1574_id2_lid1_lnmn| node|pos~102737_~41_1570_id0_lid1_lnmn| 0.004
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Simple resistor for different applications [ r=0.004 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102737, y=-41, z=1574}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25938 node|pos~102737_~41_1574_id1_lid0_lnml| intnode|pos~102737_~41_1574_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25939 node|pos~102737_~41_1574_id1_lid1_lnmn| intnode|pos~102737_~41_1574_lnmn|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25940 node|pos~102737_~41_1574_id2_lid0_lnml| intnode|pos~102737_~41_1574_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25941 node|pos~102737_~41_1574_id2_lid1_lnmn| intnode|pos~102737_~41_1574_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_25942 intnode|pos~102737_~41_1574_lnml|_0 intnode|pos~102737_~41_1574_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102737 -41 1574],node=1},B=NodePos{block=[-102737 -41 1575],node=1}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25943 node|pos~102737_~41_1574_id1_lid0_lnml| node|pos~102737_~41_1575_id1_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25944 node|pos~102737_~41_1574_id1_lid1_lnmn| node|pos~102737_~41_1575_id1_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102737 -41 1575],node=1},B=NodePos{block=[-102737 -41 1576],node=1}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25949 node|pos~102737_~41_1575_id1_lid0_lnml| node|pos~102737_~41_1576_id1_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25950 node|pos~102737_~41_1575_id1_lid1_lnmn| node|pos~102737_~41_1576_id1_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102737, y=-41, z=1576}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25955 node|pos~102737_~41_1576_id0_lid0_lnml| intnode|pos~102737_~41_1576_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25956 node|pos~102737_~41_1576_id0_lid1_lnmn| intnode|pos~102737_~41_1576_lnmn|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25957 node|pos~102737_~41_1576_id1_lid0_lnml| intnode|pos~102737_~41_1576_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25958 node|pos~102737_~41_1576_id1_lid1_lnmn| intnode|pos~102737_~41_1576_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_25959 intnode|pos~102737_~41_1576_lnml|_0 intnode|pos~102737_~41_1576_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102737 -41 1576],node=0},B=NodePos{block=[-102736 -41 1577],node=2}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25960 node|pos~102737_~41_1576_id0_lid0_lnml| node|pos~102736_~41_1577_id2_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25961 node|pos~102737_~41_1576_id0_lid1_lnmn| node|pos~102736_~41_1577_id2_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102736, y=-41, z=1577}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25966 node|pos~102736_~41_1577_id1_lid0_lnml| intnode|pos~102736_~41_1577_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25967 node|pos~102736_~41_1577_id1_lid1_lnmn| intnode|pos~102736_~41_1577_lnmn|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25968 node|pos~102736_~41_1577_id2_lid0_lnml| intnode|pos~102736_~41_1577_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25969 node|pos~102736_~41_1577_id2_lid1_lnmn| intnode|pos~102736_~41_1577_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_25970 intnode|pos~102736_~41_1577_lnml|_0 intnode|pos~102736_~41_1577_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102736 -41 1577],node=1},B=NodePos{block=[-102735 -41 1577],node=1}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25971 node|pos~102736_~41_1577_id1_lid0_lnml| node|pos~102735_~41_1577_id1_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25972 node|pos~102736_~41_1577_id1_lid1_lnmn| node|pos~102735_~41_1577_id1_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102735, y=-41, z=1577}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25977 node|pos~102735_~41_1577_id0_lid0_lnml| intnode|pos~102735_~41_1577_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25978 node|pos~102735_~41_1577_id0_lid1_lnmn| intnode|pos~102735_~41_1577_lnmn|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25979 node|pos~102735_~41_1577_id1_lid0_lnml| intnode|pos~102735_~41_1577_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25980 node|pos~102735_~41_1577_id1_lid1_lnmn| intnode|pos~102735_~41_1577_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_25981 intnode|pos~102735_~41_1577_lnml|_0 intnode|pos~102735_~41_1577_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102735 -41 1577],node=0},B=NodePos{block=[-102734 -41 1577],node=1}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25982 node|pos~102735_~41_1577_id0_lid0_lnml| node|pos~102734_~41_1577_id1_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_25983 node|pos~102735_~41_1577_id0_lid1_lnmn| node|pos~102734_~41_1577_id1_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102734, y=-41, z=1577}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25988 node|pos~102734_~41_1577_id0_lid0_lnml| intnode|pos~102734_~41_1577_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25989 node|pos~102734_~41_1577_id0_lid1_lnmn| intnode|pos~102734_~41_1577_lnmn|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25990 node|pos~102734_~41_1577_id1_lid0_lnml| intnode|pos~102734_~41_1577_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_25991 node|pos~102734_~41_1577_id1_lid1_lnmn| intnode|pos~102734_~41_1577_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_25992 intnode|pos~102734_~41_1577_lnml|_0 intnode|pos~102734_~41_1577_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102728 -41 1577],node=0},B=NodePos{block=[-102734 -41 1577],node=0}}
+
+* Simple resistor for different applications [ r=0.006 ]
+R1_25993 node|pos~102728_~41_1577_id0_lid0_lnml| node|pos~102734_~41_1577_id0_lid0_lnml| 0.006
+
+* Simple resistor for different applications [ r=0.006 ]
+R1_25994 node|pos~102728_~41_1577_id0_lid1_lnmn| node|pos~102734_~41_1577_id0_lid1_lnmn| 0.006
+
+* Simple resistor for different applications [ r=0.006 ]
+
+* Simple resistor for different applications [ r=0.006 ]
+
+* Simple resistor for different applications [ r=0.006 ]
+
+* Simple resistor for different applications [ r=0.006 ]
+
+* Component Block{industria:gold_wire_holder} BlockPos{x=-102728, y=-41, z=1577}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102728 -41 1577],node=0},B=NodePos{block=[-102723 -41 1577],node=2}}
+
+* Simple resistor for different applications [ r=0.005 ]
+R1_25999 node|pos~102728_~41_1577_id0_lid0_lnml| node|pos~102723_~41_1577_id2_lid0_lnml| 0.005
+
+* Simple resistor for different applications [ r=0.005 ]
+R1_26000 node|pos~102728_~41_1577_id0_lid1_lnmn| node|pos~102723_~41_1577_id2_lid1_lnmn| 0.005
+
+* Simple resistor for different applications [ r=0.005 ]
+
+* Simple resistor for different applications [ r=0.005 ]
+
+* Simple resistor for different applications [ r=0.005 ]
+
+* Simple resistor for different applications [ r=0.005 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102723, y=-41, z=1577}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_26005 node|pos~102723_~41_1577_id1_lid0_lnml| intnode|pos~102723_~41_1577_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_26006 node|pos~102723_~41_1577_id1_lid1_lnmn| intnode|pos~102723_~41_1577_lnmn|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_26007 node|pos~102723_~41_1577_id2_lid0_lnml| intnode|pos~102723_~41_1577_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_26008 node|pos~102723_~41_1577_id2_lid1_lnmn| intnode|pos~102723_~41_1577_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_26009 intnode|pos~102723_~41_1577_lnml|_0 intnode|pos~102723_~41_1577_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102723 -41 1577],node=1},B=NodePos{block=[-102722 -41 1577],node=1}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_26010 node|pos~102723_~41_1577_id1_lid0_lnml| node|pos~102722_~41_1577_id1_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_26011 node|pos~102723_~41_1577_id1_lid1_lnmn| node|pos~102722_~41_1577_id1_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102722, y=-41, z=1577}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_26016 node|pos~102722_~41_1577_id1_lid0_lnml| intnode|pos~102722_~41_1577_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_26017 node|pos~102722_~41_1577_id1_lid1_lnmn| intnode|pos~102722_~41_1577_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_26018 intnode|pos~102722_~41_1577_lnml|_0 intnode|pos~102722_~41_1577_lnmn|_0 R={230/(400/230)}
+
+* Component Conduit{industria:insulated_copper_wire} ConduitPos{A=NodePos{block=[-102722 -41 1577],node=1},B=NodePos{block=[-102721 -41 1577],node=1}}
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_26019 node|pos~102722_~41_1577_id1_lid0_lnml| node|pos~102721_~41_1577_id1_lid0_lnml| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+R1_26020 node|pos~102722_~41_1577_id1_lid1_lnmn| node|pos~102721_~41_1577_id1_lid1_lnmn| 0.001
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Simple resistor for different applications [ r=0.001 ]
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102721, y=-41, z=1577}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_26025 node|pos~102721_~41_1577_id1_lid0_lnml| intnode|pos~102721_~41_1577_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_26026 node|pos~102721_~41_1577_id1_lid1_lnmn| intnode|pos~102721_~41_1577_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_26027 intnode|pos~102721_~41_1577_lnml|_0 intnode|pos~102721_~41_1577_lnmn|_0 R={230/(400/230)}
+
+* Component Block{industria:brass_floodlight} BlockPos{x=-102737, y=-41, z=1575}
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_26028 node|pos~102737_~41_1575_id1_lid0_lnml| intnode|pos~102737_~41_1575_lnml|_0 0.015
+
+* Junction resistor [ r_fixed=0.015 ]
+R1_26029 node|pos~102737_~41_1575_id1_lid1_lnmn| intnode|pos~102737_~41_1575_lnmn|_0 0.015
+
+* Load-Resistor with fixed power consumption [ power_nominal=400, voltage_nominal=230 ]
+R1_26030 intnode|pos~102737_~41_1575_lnml|_0 intnode|pos~102737_~41_1575_lnmn|_0 R={230/(400/230)}
 
 
-R0GND node|pos3_~60_12_id0_lid0_lnml| 0 1
+R0GND node|pos~102737_~41_1565_id1_lid0_lnml| 0 1

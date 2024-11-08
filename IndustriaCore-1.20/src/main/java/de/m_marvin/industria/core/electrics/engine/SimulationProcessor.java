@@ -105,9 +105,12 @@ public class SimulationProcessor {
 				IndustriaCore.LOGGER.warn("Failed to upload network to solver!");
 				return false;
 			}
-			if (!this.solver.execute(Config.ELECTRIC_SIMULATION_COMMAND.get())) {
-				IndustriaCore.LOGGER.warn("Failed to start electric simulation!");
-				return false;
+			String[] commands = Config.ELECTRIC_SIMULATION_COMMANDS.get().split("\\|");
+			for (String command : commands) {
+				if (!this.solver.execute(command)) {
+					IndustriaCore.LOGGER.warn("Failed to start electric simulation!");
+					return false;
+				}
 			}
 			if (!this.currentTask.network.parseDataList(this.solver.printData())) {
 				IndustriaCore.LOGGER.warn("Failed to get simulation data, simulation probably failed!");
