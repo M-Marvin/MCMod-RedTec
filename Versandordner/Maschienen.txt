@@ -1,18 +1,18 @@
 - Produktion -
-Miner
-Erzwäsche
-Raffinerie
-Mixer
-Schredder/Mahlwerk
-Presse
-Zentrifuge
-Gießerei
-Induktion-Schmelze
-Hochofen
-Montageanlage/Autocrafter
+[ ] Miner
+[ ] Erzwäsche
+[x] Raffinerie
+[x] Mixer
+[ ] Schredder/Mahlwerk
+[x] Presse
+[ ] Zentrifuge
+[ ] Gießerei
+[ ] Induktion-Schmelze
+[ ] Hochofen
+[ ] Montageanlage/Autocrafter
 
 - Logistik -
-Fließband
-Rohr
-Schlauch
-Kabel
+[x] Fließband
+[x] Rohr
+[ ] Schlauch
+[x] Kabel
