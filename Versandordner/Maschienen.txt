@@ -3,9 +3,9 @@
 [ ] Erzwäsche
 [x] Raffinerie
 [x] Mixer
-[ ] Schredder/Mahlwerk
+[x] Schredder/Mahlwerk
 [x] Presse
-[ ] Zentrifuge
+[-] Zentrifuge
 [ ] Gießerei
 [ ] Induktion-Schmelze
 [ ] Hochofen

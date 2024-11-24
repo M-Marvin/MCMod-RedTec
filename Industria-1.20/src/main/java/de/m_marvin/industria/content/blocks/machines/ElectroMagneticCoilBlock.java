@@ -534,7 +534,9 @@ public class ElectroMagneticCoilBlock extends BaseEntityBlock implements IBaseEn
 					
 					if (!drops.isEmpty()) {
 						
-						GameUtility.dropItem(pLevel, drops, Vec3f.fromVec(pPos.relative(pHit.getDirection())).add(0.5F, 0.5F, 0.5F), 0.5F, 0.5F);
+						if (!pPlayer.isCreative()) {
+							GameUtility.dropItem(pLevel, drops, Vec3f.fromVec(pPos.relative(pHit.getDirection())).add(0.5F, 0.5F, 0.5F), 0.5F, 0.5F);
+						}
 						
 						// TODO cutter sound
 //						SoundType soundType = transformerMaster.getWireConduitPrimary().getSoundType();
@@ -551,7 +553,7 @@ public class ElectroMagneticCoilBlock extends BaseEntityBlock implements IBaseEn
 						
 					}
 					
-				} else if (handItem.getCount() >= wiresPerWinding && (transformerMaster.getWindingsPrimary() + transformerMaster.getWindingsSecundary()) < transformer.getMaxWindings()) {
+				} else if ((handItem.getCount() >= wiresPerWinding || pPlayer.isCreative()) && (transformerMaster.getWindingsPrimary() + transformerMaster.getWindingsSecundary()) < transformer.getMaxWindings()) {
 					
 					boolean inserted = false;
 					if (transformerMaster.isValidWireItemPrimary(handItem)) {
