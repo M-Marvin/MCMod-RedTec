@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import de.m_marvin.industria.core.electrics.engine.ClientElectricPackageHandler;
-import de.m_marvin.industria.core.electrics.engine.ElectricNetworkHandlerCapability.Component;
+import de.m_marvin.industria.core.electrics.engine.ElectricHandlerCapability.Component;
 import de.m_marvin.industria.core.util.types.SyncRequestType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

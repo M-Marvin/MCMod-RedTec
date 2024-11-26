@@ -93,7 +93,7 @@
 "industriacore.argument.conduit.id.invalid":				"Linea sconisciuta: %s",
 
 "block.industriacore.error_block":			"Blocco errore",
-"block.industriacore.power_source": 			"Fonte di energia",
+"block.industriacore.voltage_source": 			"Fonte di energia",
 "block.industriacore.magnet": 				"Magnet",
 "block.industriacore.wire_holder":			"Portacavo",
 "item.industriacore.electric_wire":			"Cavo",

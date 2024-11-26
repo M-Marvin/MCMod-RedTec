@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import de.m_marvin.industria.core.conduits.types.ConduitPos.NodePos;
 import de.m_marvin.industria.core.conduits.types.conduits.Conduit;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
-import de.m_marvin.industria.core.electrics.engine.ElectricNetworkHandlerCapability;
+import de.m_marvin.industria.core.electrics.engine.ElectricHandlerCapability;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.registries.Conduits;
 import de.m_marvin.industria.core.util.GameUtility;
@@ -27,7 +27,7 @@ public interface IElectric<I, P, T> {
 	}
 	
 	public default void updateNetwork(Level level, P position) {
-		ElectricNetworkHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_NETWORK_HANDLER_CAPABILITY);
+		ElectricHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_HANDLER_CAPABILITY);
 		handler.updateNetwork(position);
 	}
 	

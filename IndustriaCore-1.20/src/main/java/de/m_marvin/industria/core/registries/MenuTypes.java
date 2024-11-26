@@ -3,7 +3,7 @@ package de.m_marvin.industria.core.registries;
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.electrics.types.blockentities.JunctionBoxBlockEntity;
 import de.m_marvin.industria.core.electrics.types.containers.JunctionBoxContainer;
-import de.m_marvin.industria.core.electrics.types.containers.PowerSourceContainer;
+import de.m_marvin.industria.core.electrics.types.containers.VoltageSourceContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -19,6 +19,6 @@ public class MenuTypes {
 	}
 	
 	public static final RegistryObject<MenuType<JunctionBoxContainer<JunctionBoxBlockEntity>>> JUNCTION_BOX = MENU_TYPES.register("junction_box", () -> IForgeMenuType.create(JunctionBoxContainer::new));
-	public static final RegistryObject<MenuType<PowerSourceContainer>> POWER_SOURCE = MENU_TYPES.register("power_source", () -> IForgeMenuType.create(PowerSourceContainer::new));
+	public static final RegistryObject<MenuType<VoltageSourceContainer>> VOLTAGE_SOURCE = MENU_TYPES.register("voltage_source", () -> IForgeMenuType.create(VoltageSourceContainer::new));
 	
 }

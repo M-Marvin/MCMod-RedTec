@@ -11,7 +11,7 @@ import de.m_marvin.industria.core.contraptions.ContraptionUtility;
 import de.m_marvin.industria.core.electrics.types.blockentities.IJunctionEdit;
 import de.m_marvin.industria.core.electrics.types.containers.JunctionBoxContainer;
 import de.m_marvin.industria.core.registries.Blocks;
-import de.m_marvin.industria.core.registries.IndustriaTags;
+import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.univec.impl.Vec3d;
 import de.m_marvin.univec.impl.Vec3f;
 import net.minecraft.client.Minecraft;
@@ -43,16 +43,16 @@ import net.minecraftforge.network.NetworkHooks;
 public class GameUtility {
 	
 	public static <T extends BlockEntity & IJunctionEdit> AbstractContainerMenu openJunctionScreenOr(T blockEntity, int containerId, Player player, Inventory inventory, Supplier<AbstractContainerMenu> container) {
-		return player.getItemInHand(InteractionHand.MAIN_HAND).is(IndustriaTags.Items.SCREW_DRIVERS) ? new JunctionBoxContainer<T>(containerId, inventory, blockEntity) : container.get();
+		return player.getItemInHand(InteractionHand.MAIN_HAND).is(Tags.Items.SCREW_DRIVERS) ? new JunctionBoxContainer<T>(containerId, inventory, blockEntity) : container.get();
 	}
 
 	public static InteractionResult openJunctionBlockEntityUI(Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand) {
-		if (!pPlayer.getItemInHand(pHand).is(IndustriaTags.Items.SCREW_DRIVERS)) return InteractionResult.PASS;
+		if (!pPlayer.getItemInHand(pHand).is(Tags.Items.SCREW_DRIVERS)) return InteractionResult.PASS;
 		return openBlockEntityUI(pLevel, pPos, pPlayer, pHand);
 	}
 
 	public static InteractionResult openElectricBlockEntityUI(Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand) {
-		if (pPlayer.getItemInHand(pHand).is(IndustriaTags.Items.CONDUITS)) return InteractionResult.PASS;
+		if (pPlayer.getItemInHand(pHand).is(Tags.Items.CONDUITS)) return InteractionResult.PASS;
 		return openBlockEntityUI(pLevel, pPos, pPlayer, pHand);
 	}
 

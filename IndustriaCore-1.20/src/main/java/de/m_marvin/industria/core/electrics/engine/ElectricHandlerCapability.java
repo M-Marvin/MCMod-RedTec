@@ -57,7 +57,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(modid=IndustriaCore.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
-public class ElectricNetworkHandlerCapability implements ICapabilitySerializable<ListTag> {
+public class ElectricHandlerCapability implements ICapabilitySerializable<ListTag> {
 	
 	public static final String CIRCUIT_FILE_NAME = "circuit_";
 	public static final String CIRCUIT_FILE_EXTENSION = ".net";
@@ -65,11 +65,11 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 	
 	/* Capability handling */
 	
-	private LazyOptional<ElectricNetworkHandlerCapability> holder = LazyOptional.of(() -> this);
+	private LazyOptional<ElectricHandlerCapability> holder = LazyOptional.of(() -> this);
 	
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == Capabilities.ELECTRIC_NETWORK_HANDLER_CAPABILITY) {
+		if (cap == Capabilities.ELECTRIC_HANDLER_CAPABILITY) {
 			return holder.cast();
 		}
 		return LazyOptional.empty();
@@ -210,7 +210,7 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 		}
 	}
 	
-	public ElectricNetworkHandlerCapability(Level level) {
+	public ElectricHandlerCapability(Level level) {
 		this.level = level;
 	}
 	
@@ -219,7 +219,7 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 	@SubscribeEvent
 	public static void onBlockStateChange(BlockEvent.NeighborNotifyEvent event) {
 		Level level = (Level) event.getLevel();
-		ElectricNetworkHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_NETWORK_HANDLER_CAPABILITY);
+		ElectricHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_HANDLER_CAPABILITY);
 		
 		if (event.getState().getBlock() instanceof IElectricBlock electric && electric.getConnectorMasterPos(level, event.getPos(), event.getState()).equals(event.getPos())) {
 			if (handler.isInNetwork(event.getPos())) {
@@ -240,7 +240,7 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 	@SubscribeEvent
 	public static void onConduitStateChange(ConduitEvent event) {
 		Level level = (Level) event.getLevel();
-		ElectricNetworkHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_NETWORK_HANDLER_CAPABILITY);
+		ElectricHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_HANDLER_CAPABILITY);
 		if (event.getConduitState().getConduit() instanceof IElectricConduit) {
 			if (event instanceof ConduitPlaceEvent) {
 				if (handler.isInNetwork(event.getPosition())) {
@@ -261,7 +261,7 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 	@SubscribeEvent
 	public static void onClientLoadsChunk(ChunkWatchEvent.Watch event) {
 		Level level = event.getPlayer().level();
-		ElectricNetworkHandlerCapability electricHandler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_NETWORK_HANDLER_CAPABILITY);
+		ElectricHandlerCapability electricHandler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_HANDLER_CAPABILITY);
 		Set<Component<?, ?, ?>> componentsInChunk = electricHandler.findComponentsInChunk(event.getPos());
 		Set<Component<?, ?, ?>> components = electricHandler.findComponentsConnectedWith(componentsInChunk.toArray(i -> new Component[i]));
 		
@@ -277,7 +277,7 @@ public class ElectricNetworkHandlerCapability implements ICapabilitySerializable
 	@SubscribeEvent
 	public static void onClientUnloadsChunk(ChunkWatchEvent.UnWatch event) {
 		Level level = event.getPlayer().level();
-		ElectricNetworkHandlerCapability electricHandler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_NETWORK_HANDLER_CAPABILITY);
+		ElectricHandlerCapability electricHandler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_HANDLER_CAPABILITY);
 		Set<Component<?, ?, ?>> components = electricHandler.findComponentsInChunk(event.getPos());
 		if (!components.isEmpty()) {
 			IndustriaCore.NETWORK.send(PacketDistributor.PLAYER.with(event::getPlayer), new SSyncComponentsPackage(components, event.getPos(), SyncRequestType.REMOVED));

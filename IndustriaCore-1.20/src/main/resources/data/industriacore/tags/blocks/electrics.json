@@ -2,6 +2,6 @@
 	"replace": false,
 	"values": [
 		"industriacore:wire_holder",
-		"industriacore:power_source"
+		"industriacore:voltage_source"
 	]
 }

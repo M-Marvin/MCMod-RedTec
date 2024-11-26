@@ -27,7 +27,7 @@ import de.m_marvin.industria.core.parametrics.BlockParametrics;
 import de.m_marvin.industria.core.parametrics.engine.BlockParametricsManager;
 import de.m_marvin.industria.core.parametrics.properties.DoubleParameter;
 import de.m_marvin.industria.core.registries.Circuits;
-import de.m_marvin.industria.core.registries.IndustriaTags;
+import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.GameUtility;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
@@ -515,7 +515,7 @@ public class ElectroMagneticCoilBlock extends BaseEntityBlock implements IBaseEn
 			
 			if (hitSide) {
 				
-				if (handItem.is(IndustriaTags.Items.CUTTERS) && (transformerMaster.getWindingsPrimary() + transformerMaster.getWindingsSecundary()) > 0) {
+				if (handItem.is(Tags.Items.CUTTERS) && (transformerMaster.getWindingsPrimary() + transformerMaster.getWindingsSecundary()) > 0) {
 					
 					ItemStack drops = ItemStack.EMPTY;
 					if (transformerMaster.getWiresSecundary().getCount() > 0) {

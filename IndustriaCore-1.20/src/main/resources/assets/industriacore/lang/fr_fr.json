@@ -93,7 +93,7 @@
 "industriacore.argument.conduit.id.invalid":				"Conduite inconnue: \"%s\"",
 
 "block.industriacore.error_block":			"Bloc d'erreur",
-"block.industriacore.power_source": 			"Source de voltage",
+"block.industriacore.voltage_source": 			"Source de voltage",
 "block.industriacore.magnet": 				"Aimant",
 "block.industriacore.wire_holder":			"Support de câble",
 "item.industriacore.electric_wire":			"Câble",

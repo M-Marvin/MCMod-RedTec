@@ -12,7 +12,7 @@ import de.m_marvin.industria.core.electrics.types.conduits.ElectricConduit;
 import de.m_marvin.industria.core.magnetism.types.blocks.IMagneticBlock;
 import de.m_marvin.industria.core.parametrics.BlockParametrics;
 import de.m_marvin.industria.core.parametrics.engine.BlockParametricsManager;
-import de.m_marvin.industria.core.registries.IndustriaTags;
+import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.Formatter;
 import de.m_marvin.industria.core.util.items.ITooltipAdditionsModifier;
 import net.minecraft.ChatFormatting;
@@ -71,7 +71,7 @@ public class TooltipAdditions {
 			addPhysicsTooltips(tooltips, block);
 			
 			if (block instanceof IElectricBlock) addElectricTooltips(tooltips, block);
-			if (block.defaultBlockState().is(IndustriaTags.Blocks.MAGNETIC)) addMagnetismTooltips(tooltips, block);
+			if (block.defaultBlockState().is(Tags.Blocks.MAGNETIC)) addMagnetismTooltips(tooltips, block);
 		}
 		
 		if (item instanceof AbstractConduitItem conduitItem) {
@@ -127,7 +127,7 @@ public class TooltipAdditions {
 	
 	public static void addMagnetismTooltips(List<Component> tooltips, Block block) {
 		if (!shouldShow(block, TOOLTIP_MAGNETICS)) return;
-		if (block.defaultBlockState().is(IndustriaTags.Blocks.MAGNETIC)) {
+		if (block.defaultBlockState().is(Tags.Blocks.MAGNETIC)) {
 			
 			if (block instanceof IMagneticBlock magnetic) {
 				addTooltip(tooltips, Component.translatable("industriacore.tooltip.magneticblock.fieldstrength", magnetic.getFieldVector(null, block.defaultBlockState(), BlockPos.ZERO).length()));

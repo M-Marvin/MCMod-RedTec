@@ -11,7 +11,7 @@ import de.m_marvin.industria.core.Config;
 import de.m_marvin.industria.core.conduits.types.ConduitPos.NodePos;
 import de.m_marvin.industria.core.electrics.ElectricUtility;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
-import de.m_marvin.industria.core.electrics.engine.ElectricNetworkHandlerCapability;
+import de.m_marvin.industria.core.electrics.engine.ElectricHandlerCapability;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.ssdplugins.engine.IStructureTemplateExtended;
 import de.m_marvin.industria.core.util.GameUtility;
@@ -155,8 +155,8 @@ public class TemplateCommand {
 	@SuppressWarnings("resource")
 	public static int dumpCircuit(CommandContext<CommandSourceStack> source, BlockPos position) {
 		ServerLevel level = source.getSource().getLevel();
-		ElectricNetworkHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_NETWORK_HANDLER_CAPABILITY);
-		ElectricNetworkHandlerCapability.Component<Object, BlockPos, Object> component = handler.getComponentAt(position);
+		ElectricHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_HANDLER_CAPABILITY);
+		ElectricHandlerCapability.Component<Object, BlockPos, Object> component = handler.getComponentAt(position);
 		if (component == null) return 0;
 		ElectricNetwork network = handler.getCircuitWithComponent(component);
 		if (network == null) return 0;
@@ -170,9 +170,9 @@ public class TemplateCommand {
 	
 	public static int printNodes(CommandContext<CommandSourceStack> source, BlockPos position) {
 		ServerLevel level = source.getSource().getLevel();
-		ElectricNetworkHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_NETWORK_HANDLER_CAPABILITY);
+		ElectricHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_HANDLER_CAPABILITY);
 		
-		ElectricNetworkHandlerCapability.Component<Object, BlockPos, Object> component = handler.getComponentAt(position);
+		ElectricHandlerCapability.Component<Object, BlockPos, Object> component = handler.getComponentAt(position);
 		if (component == null) return 0;
 		NodePos[] nodes = component.getNodes(level);
 		

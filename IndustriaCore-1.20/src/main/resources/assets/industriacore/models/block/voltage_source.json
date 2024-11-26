@@ -1,9 +1,9 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "industriacore:block/power_source",
-		"1": "industriacore:block/power_source_side",
-		"particle": "industriacore:block/power_source"
+		"0": "industriacore:block/voltage_source",
+		"1": "industriacore:block/voltage_source_side",
+		"particle": "industriacore:block/voltage_source"
 	},
 	"elements": [
 		{

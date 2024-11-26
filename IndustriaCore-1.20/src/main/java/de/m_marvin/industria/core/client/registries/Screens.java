@@ -2,7 +2,7 @@ package de.m_marvin.industria.core.client.registries;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.client.electrics.screens.JunctionBoxScreen;
-import de.m_marvin.industria.core.client.electrics.screens.PowerSourceScreen;
+import de.m_marvin.industria.core.client.electrics.screens.VoltageSourceScreen;
 import de.m_marvin.industria.core.electrics.types.blockentities.JunctionBoxBlockEntity;
 import de.m_marvin.industria.core.electrics.types.containers.JunctionBoxContainer;
 import de.m_marvin.industria.core.registries.MenuTypes;
@@ -28,7 +28,7 @@ public class Screens {
 				return new JunctionBoxScreen<JunctionBoxBlockEntity, JunctionBoxContainer<JunctionBoxBlockEntity>>(pMenu, pInventory, pTitle);
 			}
 		});
-		MenuScreens.register(MenuTypes.POWER_SOURCE.get(), PowerSourceScreen::new);
+		MenuScreens.register(MenuTypes.VOLTAGE_SOURCE.get(), VoltageSourceScreen::new);
 	}
 	
 }

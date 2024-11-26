@@ -93,7 +93,7 @@
 "industriacore.argument.conduit.id.invalid":				"Onbekende lijn '%s'",
 
 "block.industriacore.error_block":			"Foutblok",
-"block.industriacore.power_source": 			"Voltage bron",
+"block.industriacore.voltage_source": 			"Voltage bron",
 "block.industriacore.magnet": 				"Magneet",
 "block.industriacore.wire_holder":			"Kabelhouder",
 "item.industriacore.electric_wire":			"Kabel",

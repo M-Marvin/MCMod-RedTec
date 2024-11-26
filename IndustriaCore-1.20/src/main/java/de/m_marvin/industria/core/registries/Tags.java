@@ -8,13 +8,14 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
-public class IndustriaTags {
+public class Tags {
 	
 	public static class Blocks {
 		
 		public static final TagKey<Block> MACHINERY = tag("machinery");
 		public static final TagKey<Block> ELECTRICS = tag("electrics");
 		public static final TagKey<Block> MAGNETIC = tag("magnetic");
+		public static final TagKey<Block> KINETICS = tag("kinetics");
 		
 		private static TagKey<Block> tag(String name) {
 			return BlockTags.create(new ResourceLocation(IndustriaCore.MODID, name));

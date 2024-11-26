@@ -19,7 +19,7 @@ import de.m_marvin.industria.core.magnetism.engine.network.SSyncMagneticPackage;
 import de.m_marvin.industria.core.magnetism.types.MagneticField;
 import de.m_marvin.industria.core.magnetism.types.MagneticFieldInfluence;
 import de.m_marvin.industria.core.registries.Capabilities;
-import de.m_marvin.industria.core.registries.IndustriaTags;
+import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.GameUtility;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.StructureFinder;
@@ -138,7 +138,7 @@ public class MagnetismHandlerCapability implements ICapabilitySerializable<ListT
 		Level level = (Level) event.getLevel();
 		MagnetismHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.MAGNETISM_HANDLER_CAPABILITY);
 		
-		if (event.getState().is(IndustriaTags.Blocks.MAGNETIC)) {
+		if (event.getState().is(Tags.Blocks.MAGNETIC)) {
 			
 			handler.setFieldInfluence(new MagneticFieldInfluence(event.getPos()));
 			
@@ -245,7 +245,7 @@ public class MagnetismHandlerCapability implements ICapabilitySerializable<ListT
 	public Set<MagneticFieldInfluence> makeField(MagneticFieldInfluence influence) {
 		
 		BlockPos startPos = influence.getPos();
-		Optional<List<BlockPos>> fieldBlocks = StructureFinder.findStructureInRange(this.level, startPos, 120000, 48, state -> state.is(IndustriaTags.Blocks.MAGNETIC));
+		Optional<List<BlockPos>> fieldBlocks = StructureFinder.findStructureInRange(this.level, startPos, 120000, 48, state -> state.is(Tags.Blocks.MAGNETIC));
 		
 		if (fieldBlocks.isPresent() && fieldBlocks.get().size() > 0) {
 			

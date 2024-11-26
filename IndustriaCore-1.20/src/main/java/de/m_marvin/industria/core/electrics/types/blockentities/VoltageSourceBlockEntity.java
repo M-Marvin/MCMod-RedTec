@@ -5,7 +5,7 @@ import de.m_marvin.industria.core.electrics.ElectricUtility;
 import de.m_marvin.industria.core.electrics.types.containers.JunctionBoxContainer;
 import de.m_marvin.industria.core.electrics.types.containers.JunctionBoxContainer.ExternalNodeConstructor;
 import de.m_marvin.industria.core.electrics.types.containers.JunctionBoxContainer.InternalNodeConstructor;
-import de.m_marvin.industria.core.electrics.types.containers.PowerSourceContainer;
+import de.m_marvin.industria.core.electrics.types.containers.VoltageSourceContainer;
 import de.m_marvin.industria.core.parametrics.BlockParametrics;
 import de.m_marvin.industria.core.parametrics.engine.BlockParametricsManager;
 import de.m_marvin.industria.core.registries.BlockEntityTypes;
@@ -24,22 +24,22 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class PowerSourceBlockEntity extends BlockEntity implements MenuProvider, IJunctionEdit {
+public class VoltageSourceBlockEntity extends BlockEntity implements MenuProvider, IJunctionEdit {
 	
 	protected String[] nodeLanes = new String[] {"L", "N"};
 	protected int voltage;
 	protected int power;
 	
-	public PowerSourceBlockEntity(BlockPos pPos, BlockState pBlockState) {
-		super(BlockEntityTypes.POWER_SOURCE.get(), pPos, pBlockState);
-		BlockParametrics parametrics = BlockParametricsManager.getInstance().getParametrics(Blocks.POWER_SOURCE.get());
+	public VoltageSourceBlockEntity(BlockPos pPos, BlockState pBlockState) {
+		super(BlockEntityTypes.VOLTAGE_SOURCE.get(), pPos, pBlockState);
+		BlockParametrics parametrics = BlockParametricsManager.getInstance().getParametrics(Blocks.VOLTAGE_SOURCE.get());
 		this.voltage = parametrics.getNominalVoltage();
 		this.power = parametrics.getNominalPower();
 	}
 	
 	@Override
 	public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-		return GameUtility.openJunctionScreenOr(this, pContainerId, pPlayer, pPlayerInventory, () -> new PowerSourceContainer(pContainerId, pPlayerInventory, this));
+		return GameUtility.openJunctionScreenOr(this, pContainerId, pPlayer, pPlayerInventory, () -> new VoltageSourceContainer(pContainerId, pPlayerInventory, this));
 	}
 	
 	public String[] getNodeLanes() {
@@ -58,7 +58,7 @@ public class PowerSourceBlockEntity extends BlockEntity implements MenuProvider,
 	}
 	
 	public void setVoltageAndPower(int voltage, int power) {
-		BlockParametrics parametrics = BlockParametricsManager.getInstance().getParametrics(Blocks.POWER_SOURCE.get());
+		BlockParametrics parametrics = BlockParametricsManager.getInstance().getParametrics(Blocks.VOLTAGE_SOURCE.get());
 		this.power = Math.max(parametrics.getPowerMin(), Math.min(parametrics.getPowerMax(), power));
 		this.voltage = Math.max(parametrics.getVoltageMin(), Math.min(parametrics.getVoltageMax(), voltage));
 		this.setChanged();

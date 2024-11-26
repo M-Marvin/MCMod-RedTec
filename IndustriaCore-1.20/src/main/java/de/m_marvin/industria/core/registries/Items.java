@@ -20,9 +20,10 @@ public class Items {
 	}
 	
 	public static final RegistryObject<BlockItem> ERROR_BLCOK = 	ITEMS.register("error_block", () -> new BlockItem(Blocks.ERROR_BLOCK.get(), new Item.Properties().rarity(Rarity.EPIC)));
-	public static final RegistryObject<BlockItem> POWER_SOURCE = 	ITEMS.register("power_source", () -> new BlockItem(Blocks.POWER_SOURCE.get(), new Item.Properties().rarity(Rarity.EPIC)));
+	public static final RegistryObject<BlockItem> VOLTAGE_SOURCE = 	ITEMS.register("voltage_source", () -> new BlockItem(Blocks.VOLTAGE_SOURCE.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<BlockItem> MAGNET =			ITEMS.register("magnet", () -> new BlockItem(Blocks.MAGNET.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<BlockItem> WIRE_HOLDER = 	ITEMS.register("wire_holder", () -> new BlockItem(Blocks.WIRE_HOLDER.get(), new Item.Properties().rarity(Rarity.EPIC)));
+	public static final RegistryObject<BlockItem> GEAR = 			ITEMS.register("gear", () -> new BlockItem(Blocks.GEAR.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	
 	public static final RegistryObject<AbstractConduitItem> ELECTRIC_WIRE = ITEMS.register("electric_wire", () -> new AbstractConduitItem(new Item.Properties().rarity(Rarity.EPIC), Conduits.ELECTRIC_CONDUIT) {
 		@Override

@@ -4,24 +4,24 @@ import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.client.util.screens.AbstractContainerWidgetScreen;
 import de.m_marvin.industria.core.client.util.widgets.PowerInfo;
 import de.m_marvin.industria.core.electrics.engine.network.CEditPowerSourcePackage;
-import de.m_marvin.industria.core.electrics.types.blockentities.PowerSourceBlockEntity;
+import de.m_marvin.industria.core.electrics.types.blockentities.VoltageSourceBlockEntity;
 import de.m_marvin.industria.core.electrics.types.blocks.IElectricInfoProvider;
 import de.m_marvin.industria.core.electrics.types.blocks.IElectricInfoProvider.ElectricInfo;
-import de.m_marvin.industria.core.electrics.types.containers.PowerSourceContainer;
+import de.m_marvin.industria.core.electrics.types.containers.VoltageSourceContainer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class PowerSourceScreen extends AbstractContainerWidgetScreen<PowerSourceContainer> {
+public class VoltageSourceScreen extends AbstractContainerWidgetScreen<VoltageSourceContainer> {
 
 	protected ElectricInfo electricInfo;
 	protected PowerInfo powerInfo;
 	protected EditBox voltageField;
 	protected EditBox powerField;
 	
-	public PowerSourceScreen(PowerSourceContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
+	public VoltageSourceScreen(VoltageSourceContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
 		super(pMenu, pPlayerInventory, pTitle);
 	}
 
@@ -55,7 +55,7 @@ public class PowerSourceScreen extends AbstractContainerWidgetScreen<PowerSource
 	}
 	
 	public void setPowerSource(int voltage, int power) {
-		PowerSourceBlockEntity powerSource = this.menu.getBlockEntity();
+		VoltageSourceBlockEntity powerSource = this.menu.getBlockEntity();
 		powerSource.setVoltageAndPower(voltage, power);
 		IndustriaCore.NETWORK.sendToServer(new CEditPowerSourcePackage(powerSource.getJunctionBlockPos(), voltage, power));
 	}

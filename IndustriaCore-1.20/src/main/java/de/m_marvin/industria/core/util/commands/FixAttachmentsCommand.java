@@ -15,7 +15,7 @@ import de.m_marvin.industria.core.conduits.types.ConduitPos;
 import de.m_marvin.industria.core.conduits.types.conduits.ConduitEntity;
 import de.m_marvin.industria.core.electrics.types.blocks.IElectricBlock;
 import de.m_marvin.industria.core.electrics.types.conduits.IElectricConduit;
-import de.m_marvin.industria.core.registries.IndustriaTags;
+import de.m_marvin.industria.core.registries.Tags;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
@@ -92,7 +92,7 @@ public class FixAttachmentsCommand {
 	public static void fixBlockAndConduitsAt(Level level, BlockPos pos, Set<BlockPos> fixedBlocks, Set<ConduitPos> fixedConduits) {
 		
 		BlockState state = level.getBlockState(pos);
-		if (state.getBlock() instanceof IElectricBlock || state.is(IndustriaTags.Blocks.MAGNETIC)) {
+		if (state.getBlock() instanceof IElectricBlock || state.is(Tags.Blocks.MAGNETIC)) {
 			
 			if (!fixedBlocks.contains(pos)) {
 				

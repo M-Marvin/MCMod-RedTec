@@ -18,7 +18,7 @@ import de.m_marvin.industria.core.conduits.types.blocks.IConduitConnector;
 import de.m_marvin.industria.core.conduits.types.conduits.Conduit.ConduitShape;
 import de.m_marvin.industria.core.conduits.types.conduits.ConduitEntity;
 import de.m_marvin.industria.core.registries.Capabilities;
-import de.m_marvin.industria.core.registries.IndustriaTags;
+import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.GameUtility;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.unimat.impl.Quaterniond;
@@ -82,7 +82,7 @@ public class ConduitRenderer {
 				
 			}
 
-			if (Minecraft.getInstance().player.getMainHandItem().is(IndustriaTags.Items.CONDUITS)) {
+			if (Minecraft.getInstance().player.getMainHandItem().is(Tags.Items.CONDUITS)) {
 
 				drawConduitSymbols(matrixStack, source, level, event.getPartialTick());
 				drawPlayerFocusedNodeSymbols(matrixStack, source, level, Minecraft.getInstance().player, event.getPartialTick());

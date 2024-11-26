@@ -93,7 +93,7 @@
 "industriacore.argument.conduit.id.invalid":				"Leitung '%s' unbekannt!",
 
 "block.industriacore.error_block":			"Fehlerblock",
-"block.industriacore.power_source": 			"Spannungsquelle",
+"block.industriacore.voltage_source": 			"Spannungsquelle",
 "block.industriacore.magnet": 				"Magnet",
 "block.industriacore.wire_holder":			"Kabelhalter",
 "item.industriacore.electric_wire":			"Kabel",

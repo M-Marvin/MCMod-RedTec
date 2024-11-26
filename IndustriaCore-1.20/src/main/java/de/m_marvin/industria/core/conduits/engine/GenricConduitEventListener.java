@@ -4,7 +4,7 @@ import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.conduits.ConduitUtility;
 import de.m_marvin.industria.core.conduits.types.ConduitHitResult;
 import de.m_marvin.industria.core.conduits.types.conduits.ConduitEntity;
-import de.m_marvin.industria.core.registries.IndustriaTags;
+import de.m_marvin.industria.core.registries.Tags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +27,7 @@ public class GenricConduitEventListener {
 		Player player = event.getEntity();
 		ItemStack itemStack = event.getEntity().getMainHandItem();
 		
-		if (itemStack.is(IndustriaTags.Items.CUTTERS)) {
+		if (itemStack.is(Tags.Items.CUTTERS)) {
 			
 			double range = player.getAttributeValue(ForgeMod.BLOCK_REACH.get());
 			Vec3 viewVec = player.getViewVector(0);

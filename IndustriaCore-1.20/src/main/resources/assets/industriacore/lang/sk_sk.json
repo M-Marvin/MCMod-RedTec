@@ -93,7 +93,7 @@
 "industriacore.argument.conduit.id.invalid":				"Neznáma linka '%s'!",
 
 "block.industriacore.error_block":			"Chybová kocka",
-"block.industriacore.power_source": 			"Zdroj napätia",
+"block.industriacore.voltage_source": 			"Zdroj napätia",
 "block.industriacore.magnet": 				"Magnet",
 "block.industriacore.wire_holder":			"Držiak kábla",
 "item.industriacore.electric_wire":			"Kábel",

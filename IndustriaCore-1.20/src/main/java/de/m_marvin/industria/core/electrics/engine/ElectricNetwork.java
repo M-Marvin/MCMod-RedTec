@@ -18,7 +18,7 @@ import com.google.common.collect.Maps;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.conduits.types.ConduitPos.NodePos;
-import de.m_marvin.industria.core.electrics.engine.ElectricNetworkHandlerCapability.Component;
+import de.m_marvin.industria.core.electrics.engine.ElectricHandlerCapability.Component;
 import de.m_marvin.industria.core.electrics.types.IElectric.ICircuitPlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -55,7 +55,7 @@ public class ElectricNetwork {
 		return level.get();
 	}
 	
-	public CompoundTag saveNBT(ElectricNetworkHandlerCapability handler) {
+	public CompoundTag saveNBT(ElectricHandlerCapability handler) {
 		CompoundTag tag = new CompoundTag();
 		ListTag componentsTag = new ListTag();
 		for (Component<?, ?, ?> component : this.components) {
@@ -78,7 +78,7 @@ public class ElectricNetwork {
 		return tag;
 	}
 	
-	public void loadNBT(ElectricNetworkHandlerCapability handler, CompoundTag tag) {
+	public void loadNBT(ElectricHandlerCapability handler, CompoundTag tag) {
 		ListTag componentsTag = tag.getList("Components", ListTag.TAG_COMPOUND);
 		componentsTag.stream().forEach((componentTag) -> {
 			this.components.add(Component.deserializeNbt((CompoundTag) componentTag));
