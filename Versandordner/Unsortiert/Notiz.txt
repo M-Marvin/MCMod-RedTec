@@ -2,19 +2,27 @@ Kleine Details, die man noch ergänzen könnte:
 
 1. Kleine Flammen-/Rauch-Partikel beim Generator vor dem unteren Gitter, wenn er an ist, wie beim normalen Ofen. Bei den elektrische betriebenen Öfen evtl etwas ähnliches, aber keine Flammen. Vllt rötlich-transparente kleine Wölkchen?
 
-2. Meh... -x-Vanadium-x- ->Palladium! als ganz normales Erz... Es ist so eigenartig, dass man jetzt so viele verschiedene Verfahren zur Gewinnung von Metallen hat (Erz direkt, Ausquetschen, Ausquetschen bei Oxiden, Legieren im Ofen, Hochofen, Lösungen von Alu und Wolfram und dieses seltsame Schlacke-Aussaugen...). Kann man das nicht weglassen? Das brächte mehr Kontinuität und außerdem ist das viel zu genau für ein Spiel, das kann man auf weniger Details runterredizieren und das ersparte auch das komische Aluoxid... Außerdem vermisse ich das Erz und das Rohvanadiumitem und den Block. D:
+2. Meh... -x-Vanadium-x- ->Palladium! als ganz normales Erz... Es ist so eigenartig, dass man jetzt so viele verschiedene Verfahren zur Gewinnung von Metallen hat (Erz direkt, Ausquetschen, Ausquetschen bei Oxiden, Legieren im Ofen, Hochofen, Lösungen von Alu und Wolfram und dieses seltsame Schlacke-Aussaugen...). Kann man das nicht weglassen? Das brächte mehr Kontinuität und außerdem ist das viel zu genau für ein Spiel, das kann man auf weniger Details runterreduzieren und das ersparte auch das komische Aluoxid... Außerdem vermisse ich das Erz und das Rohvanadiumitem und den Block. D:
 
 3. Anpassung Natrium
 
 4. Nebenprodukte der Metallausquetschung
 
-5. -
+5. Jahreszeiten: Im Herbst beginnen unter Laubblättern Laubpartikel herunterzufallen, die auf dem Boden, ähnlich wie Schnee, Laubablagerungen bilden. Diese werden dichter (mehr Laub pro Block), je mehr Laubblöcke über ihnen sind. Bei Wind (dazu Windberechnung nötig) können diese Blöcke weggeblasen werden, sie verschwinden dann und man sieht ein paar trockene Laubpartikel in Windrichtung wegfliegen.
+
+Im Winter werden sie von Schnee überlagert. Laubhaufen werden vom Schneeverteilersystem praktisch wie Luft behandelt.
+
+Schmilzt der Schnee im Frühjahr ab, ist also auch das Laub weg, der Block wird dann wieder Luft.
+
+Damit Laub an wind- oder schneegeschützten Orten nicht bis im Frühjahr / Sommer herumliegt, sollte es mit einer gewissen Wahrscheinlichkeit despawnen, wenn kein Spieler in der Nähe ist.
+
+Laubhaufen, die vom Spieler platziert wurden, werden nicht weggeweht.
 
 6. Düngerbeutel/-sack
 
 7. -
 
-8. Geringere Chance auf Natrium beim termalen Zentrifugieren von Salz, außerdem kleineres Natriumstück beim th Z, Geringere Chance auf Salz und Kalk beim Wasserdestillieren -> Chance von 50% auf Kalkpulver beim Destillieren, 30% auf Salz, 50% auf 3x kleines Salz beim Destillieren, Chance von 50% auf 3x kleines Natrium beim _th Z je Slot_
+8. Geringere Chance auf Natrium beim thermalen Zentrifugieren von Salz, außerdem kleineres Natriumstück beim th Z, Geringere Chance auf Salz und Kalk beim Wasserdestillieren -> Chance von 50% auf Kalkpulver beim Destillieren, 30% auf Salz, 50% auf 3x kleines Salz beim Destillieren, Chance von 50% auf 3x kleines Natrium beim _th Z je Slot_
 
 9. Fluoritmodell -> X, Item anpassen (Glanz)
 
@@ -29,12 +37,14 @@ Kleine Details, die man noch ergänzen könnte:
 14. Wetterbeeinflussung?
 
 15. Für die geplanten "Langzeit-Abbau-Erze" (Möglichkeiten, sie weniger OP zu machen):
-	a) Geben entweder nur sehr langsam Erze ab oder müssen immer eine "Regenerationsperiode" duchlaufen.
+	a) Geben entweder nur sehr langsam Erze ab oder müssen immer eine "Regenerationsperiode" durchlaufen.
 	b) Können nicht abgebaut werden -> wie Spawner beim Abbau zerstört.
 	c) Können nicht mit Bohrern freigelegt werden -> Bohrer (z.B. aus Create) zerstört sie, wie Spawner.
 	d) Abschaltbar bei Weltgenerierung
-	e) Müssen erst mit einem teueren Item/Block nutzbar gemacht werden.
+	e) Müssen erst mit einem teuren Item/Block nutzbar gemacht werden.
 	f) Extraktionsgerät verbraucht viel Energie.
 	g) Gibt es nicht für alle Erze (z.B. nicht für Dia, Smaragd oder Ancient Debris, sondern eher für Metalle wie Eisen, Zinn, Gold usw.)
 	h) Nicht verschiebbar.
         i) Maschine zum Abbau muss mit nachwachsend erzeugbarem Rohstoff versorgt werden, um arbeiten zu können (etwa Schmieröl), also etwa "Fracking" (vgl. Lehm und Schmieröl für Helium in Anno 1800)
+
+16. Aus Windkugeln oder Böenruten hergestellte Bauteile / Treibstoffe, die zum Fliegen benötigt werden.
