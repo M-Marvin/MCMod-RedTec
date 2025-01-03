@@ -44,8 +44,6 @@ public class ElectricNetwork {
 	protected double currentConsumtion;
 	protected double currentProduction;
 
-	protected static Object ngLinkLock = new Object();
-	
 	public ElectricNetwork(Supplier<Level> level, String titleInfo) {
 		this.level = level;
 		this.title = titleInfo;

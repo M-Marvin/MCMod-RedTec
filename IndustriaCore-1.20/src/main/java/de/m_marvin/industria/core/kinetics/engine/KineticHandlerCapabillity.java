@@ -1,8 +1,12 @@
 package de.m_marvin.industria.core.kinetics.engine;
 
 import de.m_marvin.industria.IndustriaCore;
+import de.m_marvin.industria.core.electrics.engine.ElectricHandlerCapability.Component;
+import de.m_marvin.industria.core.electrics.types.blocks.IElectricBlock;
+import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.level.Level;
@@ -61,6 +65,22 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	public static void onBlockStateChange(BlockEvent.NeighborNotifyEvent event) {
 		Level level = (Level) event.getLevel();
 		KineticHandlerCapabillity handler = GameUtility.getLevelCapability(level, Capabilities.KINETIC_HANDLER_CAPABILITY);
+		
+		if (event.getState().getBlock() instanceof IKineticBlock kinetic) {
+//			if (handler.isInNetwork(event.getPos())) {
+//				Component<Object, BlockPos, Object> component = handler.getComponentAt(event.getPos());
+//				if (component.instance(level).equals(event.getState())) return; // No real update, ignore
+//				handler.addToNetwork(component); // The component is already added to the network at this point, this call just ensures that the node maps are up to date
+//				component.setChanged();
+//				handler.updateNetwork(component.pos());
+//			} else {
+//				IElectricBlock block = (IElectricBlock) event.getState().getBlock();
+//				handler.addComponent(event.getPos(), block, event.getState());
+//			}
+		} else {
+//			handler.removeComponent(event.getPos());
+		}
+		
 	}
 	
 	@SubscribeEvent

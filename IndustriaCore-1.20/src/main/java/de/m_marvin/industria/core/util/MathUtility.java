@@ -83,8 +83,14 @@ public class MathUtility {
 		return MathUtility.getVecDirection(viewVec);
 	}
 	
-	public static Direction getPosRelativeFacing(BlockPos pos1, Block pos2) {
+	public static Direction getPosRelativeFacing(BlockPos pos1, BlockPos pos2) {
 		return getVecDirection(Vec3i.fromVec(pos2).sub(Vec3i.fromVec(pos1)));
+	}
+	
+	public static int rasterDistance(BlockPos pos1, BlockPos pos2) {
+		return  Math.abs(pos1.getX() - pos2.getX()) +
+				Math.abs(pos1.getY() - pos2.getY()) +
+				Math.abs(pos1.getZ() - pos2.getZ());
 	}
 	
 	public static BlockPos toBlockPos(double x, double y, double z) {
