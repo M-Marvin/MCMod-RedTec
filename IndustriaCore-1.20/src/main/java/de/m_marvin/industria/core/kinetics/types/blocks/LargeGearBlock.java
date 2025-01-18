@@ -21,34 +21,21 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class GearBlock extends BaseEntityBlock implements IKineticBlock {
-	
+public class LargeGearBlock extends BaseEntityBlock implements IKineticBlock {
+
 	public static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
+
+	public static final VoxelShape SHAPE = Shapes.or(VoxelShapeUtility.box(6, 0, 6, 10, 16, 10), VoxelShapeUtility.box(-4, 6, -4, 20, 10, 20));
 	
-	public static final VoxelShape SHAPE = Shapes.or(VoxelShapeUtility.box(6, 0, 6, 10, 16, 10), VoxelShapeUtility.box(0, 6, 0, 16, 10, 16));
-	
-	public GearBlock(Properties pProperties) {
+	public LargeGearBlock(Properties pProperties) {
 		super(pProperties);
 	}
-	
-	@Override
-	public RenderShape getRenderShape(BlockState pState) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
-	}
 
-	@Override
-	public TransmissionNode[] getTransmitionNodes(Level level, BlockPos pos, BlockState state) {
-		return new TransmissionNode[] {
-				new TransmissionNode(pos, state, this, 1.0, state.getValue(AXIS), SHAFT),
-				new TransmissionNode(pos, state, this, 1.0, state.getValue(AXIS), GEAR)
-		};
-	}
-	
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
 		pBuilder.add(AXIS);
 	}
-	
+
 	@Override
 	public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
 		return VoxelShapeUtility.transformation()
@@ -57,7 +44,7 @@ public class GearBlock extends BaseEntityBlock implements IKineticBlock {
 				.uncentered()
 				.transform(SHAPE);
 	}
-	
+
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
 		Axis axis = pContext.getClickedFace().getAxis();
@@ -71,8 +58,21 @@ public class GearBlock extends BaseEntityBlock implements IKineticBlock {
 	}
 
 	@Override
+	public RenderShape getRenderShape(BlockState pState) {
+		return RenderShape.ENTITYBLOCK_ANIMATED;
+	}
+
+	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
 		return new SimpleKineticBlockEntity(pPos, pState);
+	}
+	
+	@Override
+	public TransmissionNode[] getTransmitionNodes(Level level, BlockPos pos, BlockState state) {
+		return new TransmissionNode[] {
+				new TransmissionNode(pos, state, this, 1.0, state.getValue(AXIS), SHAFT),
+				new TransmissionNode(pos, state, this, 2.0, state.getValue(AXIS), GEAR_DIAG)
+		};
 	}
 	
 }

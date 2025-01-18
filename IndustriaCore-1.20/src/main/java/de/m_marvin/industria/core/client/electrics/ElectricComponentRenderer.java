@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
@@ -33,12 +34,12 @@ public class ElectricComponentRenderer {
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void onWorldRender(RenderLevelStageEvent event) {
-		
+
 		if (event.getStage() == Stage.AFTER_PARTICLES) {
 			
-			animationTicks += event.getPartialTick();
-
-			MultiBufferSource.BufferSource source = Minecraft.getInstance().renderBuffers().bufferSource();
+			animationTicks = event.getRenderTick() + event.getPartialTick();
+			
+			BufferSource source = Minecraft.getInstance().renderBuffers().bufferSource();
 			PoseStack matrixStack = event.getPoseStack();
 			ClientLevel level = Minecraft.getInstance().level;
 			

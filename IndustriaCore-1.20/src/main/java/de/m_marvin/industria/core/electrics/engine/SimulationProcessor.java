@@ -62,7 +62,7 @@ public class SimulationProcessor {
 				if (!init()) {
 					IndustriaCore.LOGGER.log(Level.ERROR, "EPT-" + id + ": Failed to initialize electric network processor!");
 				} else {
-					IndustriaCore.LOGGER.log(Level.INFO, "EPT-" + id + ": Electric netowk processor started");
+					IndustriaCore.LOGGER.log(Level.INFO, "EPT-" + id + ": Electric netowrk processor started");
 					process();
 				}
 			} catch (Throwable e) {

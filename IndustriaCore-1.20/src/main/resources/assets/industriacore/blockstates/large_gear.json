@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "axis=y": { "model": "industriacore:block/large_gear", "x": -90 },
+    "axis=x": { "model": "industriacore:block/large_gear", "y": 90 },
+    "axis=z": { "model": "industriacore:block/large_gear" }
+  }
+}

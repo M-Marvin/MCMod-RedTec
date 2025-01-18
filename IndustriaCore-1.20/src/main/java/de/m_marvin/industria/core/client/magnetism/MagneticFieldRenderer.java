@@ -40,9 +40,9 @@ public class MagneticFieldRenderer {
 	public static void onWorldRender(RenderLevelStageEvent event) {
 		
 		if (event.getStage() == Stage.AFTER_PARTICLES) {
-			
-			animationTicks += event.getPartialTick();
 
+			animationTicks = event.getRenderTick() + event.getPartialTick();
+			
 			MultiBufferSource.BufferSource source = Minecraft.getInstance().renderBuffers().bufferSource();
 			PoseStack matrixStack = event.getPoseStack();
 			ClientLevel level = Minecraft.getInstance().level;

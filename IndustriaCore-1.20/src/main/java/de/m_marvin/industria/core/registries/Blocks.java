@@ -4,6 +4,7 @@ import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.electrics.types.blocks.VoltageSourceBlock;
 import de.m_marvin.industria.core.electrics.types.blocks.WireHolderBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.GearBlock;
+import de.m_marvin.industria.core.kinetics.types.blocks.LargeGearBlock;
 import de.m_marvin.industria.core.magnetism.types.blocks.MagnetBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
@@ -25,5 +26,6 @@ public class Blocks {
 	public static final RegistryObject<Block> MAGNET = 			BLOCKS.register("magnet", () -> new MagnetBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
 	public static final RegistryObject<Block> WIRE_HOLDER =		BLOCKS.register("wire_holder", () -> new WireHolderBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
 	public static final RegistryObject<Block> GEAR =			BLOCKS.register("gear", () -> new GearBlock(Properties.of().mapColor(MapColor.COLOR_ORANGE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
+	public static final RegistryObject<Block> LARGE_GEAR =		BLOCKS.register("large_gear", () -> new LargeGearBlock(Properties.of().mapColor(MapColor.COLOR_ORANGE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
 	
 }

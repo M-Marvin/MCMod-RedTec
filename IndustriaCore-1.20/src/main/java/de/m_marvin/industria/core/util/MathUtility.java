@@ -32,7 +32,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -137,8 +136,41 @@ public class MathUtility {
 		return angle % 360;
 	}
 
-	public static Direction[] getDirectionsAround(Axis nodeAxis) {
-		return Stream.of(Direction.values()).filter(d -> d.getAxis() != nodeAxis).toArray(i -> new Direction[i]);
+	public static Direction[] getDirectionsOrthogonal(Axis axis) {
+		return Stream.of(Direction.values()).filter(d -> d.getAxis() != axis).toArray(Direction[]::new);
+	}
+	
+	public static BlockPos[] getPositionsAroundAxis(BlockPos pos, Axis axis) {
+		return Stream.of(getDirectionsOrthogonal(axis)).map(pos::relative).toArray(BlockPos[]::new);
+	}
+	
+	public static BlockPos[] getDiagonalPositionsAroundAxis(BlockPos pos, Axis axis) {
+		switch (axis) {
+		case X: return new BlockPos[] {
+				pos.relative(Direction.SOUTH),
+				pos.relative(Direction.NORTH),
+				pos.relative(Direction.UP),
+				pos.relative(Direction.DOWN)
+		};
+		case Z: return new BlockPos[] {
+				pos.relative(Direction.EAST),
+				pos.relative(Direction.WEST),
+				pos.relative(Direction.UP),
+				pos.relative(Direction.DOWN)
+		};
+		default:
+		case Y: return new BlockPos[] {
+				pos.relative(Direction.SOUTH),
+				pos.relative(Direction.NORTH),
+				pos.relative(Direction.EAST),
+				pos.relative(Direction.WEST)
+		};
+		}
+	}
+	
+	public static Direction getPosDirection(BlockPos pos1, BlockPos pos2) {
+		if (pos1.equals(pos2)) return null;
+		return getVecDirection(Vec3d.fromVec(pos1.subtract(pos2)).normalize());
 	}
 	
 	public static Vec3i getDirectionVec(Direction d) {
