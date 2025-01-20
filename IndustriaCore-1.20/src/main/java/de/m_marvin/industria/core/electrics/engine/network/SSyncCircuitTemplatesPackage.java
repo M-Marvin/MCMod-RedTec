@@ -11,6 +11,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkEvent;
 
+/**
+ * Tells the client about registered circuit templates
+ */
 public class SSyncCircuitTemplatesPackage {
 	
 	public final Map<ResourceLocation, CircuitTemplate> circuitTemplates;

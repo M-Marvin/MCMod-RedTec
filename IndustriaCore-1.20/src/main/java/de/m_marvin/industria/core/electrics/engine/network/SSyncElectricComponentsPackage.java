@@ -12,19 +12,22 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.network.NetworkEvent.Context;
 
-public class SSyncComponentsPackage {
+/**
+ * Tells the client about the creation or removal of components
+ */
+public class SSyncElectricComponentsPackage {
 	
 	public final ChunkPos chunkPos;
 	public final Set<Component<?, ?, ?>> components;
 	public final SyncRequestType request;
 	
-	public SSyncComponentsPackage(Set<Component<?, ?, ?>> components, ChunkPos targetChunk, SyncRequestType request) {
+	public SSyncElectricComponentsPackage(Set<Component<?, ?, ?>> components, ChunkPos targetChunk, SyncRequestType request) {
 		this.chunkPos = targetChunk;
 		this.components = components;
 		this.request = request;
 	}
 	
-	public SSyncComponentsPackage(Component<?, ?, ?> component, ChunkPos targetChunk, SyncRequestType request) {
+	public SSyncElectricComponentsPackage(Component<?, ?, ?> component, ChunkPos targetChunk, SyncRequestType request) {
 		this.chunkPos = targetChunk;
 		this.components = new HashSet<>();
 		this.components.add(component);
@@ -43,7 +46,7 @@ public class SSyncComponentsPackage {
 		return request;
 	}
 	
-	public static void encode(SSyncComponentsPackage msg, FriendlyByteBuf buff) {
+	public static void encode(SSyncElectricComponentsPackage msg, FriendlyByteBuf buff) {
 		buff.writeInt(msg.components.size());
 		for (Component<?, ?, ?> component : msg.components) {
 			CompoundTag componentTag = new CompoundTag();
@@ -54,7 +57,7 @@ public class SSyncComponentsPackage {
 		buff.writeEnum(msg.request);
 	}
 	
-	public static SSyncComponentsPackage decode(FriendlyByteBuf buff) {
+	public static SSyncElectricComponentsPackage decode(FriendlyByteBuf buff) {
 		int componentCount = buff.readInt();
 		Set<Component<?, ?, ?>> components = new HashSet<>();
 		for (int i = 0; i < componentCount; i++) {
@@ -64,10 +67,10 @@ public class SSyncComponentsPackage {
 		}
 		ChunkPos chunkPos = buff.readChunkPos();
 		SyncRequestType request = buff.readEnum(SyncRequestType.class);
-		return new SSyncComponentsPackage(components, chunkPos, request);
+		return new SSyncElectricComponentsPackage(components, chunkPos, request);
 	}
 	
-	public static void handle(SSyncComponentsPackage msg, Supplier<Context> ctx) {
+	public static void handle(SSyncElectricComponentsPackage msg, Supplier<Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			ClientElectricPackageHandler.handleSyncComponentsServer(msg, ctx.get());
 		});

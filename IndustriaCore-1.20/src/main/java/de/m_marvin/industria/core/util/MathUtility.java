@@ -147,23 +147,23 @@ public class MathUtility {
 	public static BlockPos[] getDiagonalPositionsAroundAxis(BlockPos pos, Axis axis) {
 		switch (axis) {
 		case X: return new BlockPos[] {
-				pos.relative(Direction.SOUTH),
-				pos.relative(Direction.NORTH),
-				pos.relative(Direction.UP),
-				pos.relative(Direction.DOWN)
+				pos.offset(0, -1, -1),
+				pos.offset(0, +1, -1),
+				pos.offset(0, +1, +1),
+				pos.offset(0, -1, +1)
 		};
 		case Z: return new BlockPos[] {
-				pos.relative(Direction.EAST),
-				pos.relative(Direction.WEST),
-				pos.relative(Direction.UP),
-				pos.relative(Direction.DOWN)
+				pos.offset(-1, -1, 0),
+				pos.offset(+1, -1, 0),
+				pos.offset(+1, +1, 0),
+				pos.offset(-1, +1, 0)
 		};
 		default:
 		case Y: return new BlockPos[] {
-				pos.relative(Direction.SOUTH),
-				pos.relative(Direction.NORTH),
-				pos.relative(Direction.EAST),
-				pos.relative(Direction.WEST)
+				pos.offset(-1, 0, -1),
+				pos.offset(+1, 0, -1),
+				pos.offset(+1, 0, +1),
+				pos.offset(-1, 0, +1)
 		};
 		}
 	}

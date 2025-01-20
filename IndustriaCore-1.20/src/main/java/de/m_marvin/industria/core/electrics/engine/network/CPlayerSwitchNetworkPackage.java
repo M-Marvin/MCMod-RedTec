@@ -7,6 +7,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
+/**
+ * Tells the server if the player used the mains switch in the UI of an electric component
+ */
 public class CPlayerSwitchNetworkPackage {
 	
 	BlockPos pos;

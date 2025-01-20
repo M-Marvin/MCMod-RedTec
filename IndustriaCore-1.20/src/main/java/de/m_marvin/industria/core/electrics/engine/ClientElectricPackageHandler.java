@@ -5,8 +5,8 @@ import java.util.Optional;
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.electrics.engine.ElectricHandlerCapability.Component;
 import de.m_marvin.industria.core.electrics.engine.network.SSyncCircuitTemplatesPackage;
-import de.m_marvin.industria.core.electrics.engine.network.SSyncComponentsPackage;
-import de.m_marvin.industria.core.electrics.engine.network.SUpdateNetworkPackage;
+import de.m_marvin.industria.core.electrics.engine.network.SSyncElectricComponentsPackage;
+import de.m_marvin.industria.core.electrics.engine.network.SUpdateElectricNetworkPackage;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
 import de.m_marvin.industria.core.util.types.SyncRequestType;
@@ -23,7 +23,7 @@ public class ClientElectricPackageHandler {
 	/* Handle SSyncComponentsPackage package */
 	
 	@SuppressWarnings("resource")
-	public static void handleSyncComponentsServer(SSyncComponentsPackage msg, NetworkEvent.Context ctx) {
+	public static void handleSyncComponentsServer(SSyncElectricComponentsPackage msg, NetworkEvent.Context ctx) {
 		Level level = Minecraft.getInstance().level;
 		ElectricHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_HANDLER_CAPABILITY);
 		
@@ -46,7 +46,7 @@ public class ClientElectricPackageHandler {
 	/* Handle SUpdateNetworkPackage */
 	
 	@SuppressWarnings("resource")
-	public static void handleUpdateNetwork(SUpdateNetworkPackage msg, Context context) {
+	public static void handleUpdateNetwork(SUpdateElectricNetworkPackage msg, Context context) {
 		
 		Level level = Minecraft.getInstance().level;
 		ElectricHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_HANDLER_CAPABILITY);

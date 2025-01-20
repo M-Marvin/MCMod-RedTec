@@ -70,8 +70,8 @@ public class LargeGearBlock extends BaseEntityBlock implements IKineticBlock {
 	@Override
 	public TransmissionNode[] getTransmitionNodes(Level level, BlockPos pos, BlockState state) {
 		return new TransmissionNode[] {
-				new TransmissionNode(pos, state, this, 1.0, state.getValue(AXIS), SHAFT),
-				new TransmissionNode(pos, state, this, 2.0, state.getValue(AXIS), GEAR_DIAG)
+				new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(AXIS), SHAFT),
+				new TransmissionNode(pos, state, pos, this, 2.0, state.getValue(AXIS), GEAR_DIAG)
 		};
 	}
 	

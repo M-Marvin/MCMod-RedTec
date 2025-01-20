@@ -13,21 +13,21 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
 /*
- * Tells the client that a networks needs to be updated with new node voltages
+ * Tells the client that components need to be updated with new node voltages
  */
-public class SUpdateNetworkPackage {
+public class SUpdateElectricNetworkPackage {
 	
 	public final String dataList;
 	public final Set<Component<?, ?, ?>> components;
 	public final State state;
 	
-	public SUpdateNetworkPackage(ElectricNetwork network) {
+	public SUpdateElectricNetworkPackage(ElectricNetwork network) {
 		this.dataList = network.printDataList();
 		this.components = network.getComponents();
 		this.state = network.getState();;
 	}
 	
-	public SUpdateNetworkPackage(Set<Component<?, ?, ?>> components, String dataList, State state) {
+	public SUpdateElectricNetworkPackage(Set<Component<?, ?, ?>> components, String dataList, State state) {
 		this.dataList = dataList;
 		this.components = components;
 		this.state = state;
@@ -45,7 +45,7 @@ public class SUpdateNetworkPackage {
 		return state;
 	}
 	
-	public static void encode(SUpdateNetworkPackage msg, FriendlyByteBuf buff) {
+	public static void encode(SUpdateElectricNetworkPackage msg, FriendlyByteBuf buff) {
 		buff.writeInt(msg.components.size());
 		for (Component<?, ?, ?> component : msg.components) {
 			CompoundTag componentTag = new CompoundTag();
@@ -56,7 +56,7 @@ public class SUpdateNetworkPackage {
 		buff.writeEnum(msg.state);
 	}
 	
-	public static SUpdateNetworkPackage decode(FriendlyByteBuf buff) {
+	public static SUpdateElectricNetworkPackage decode(FriendlyByteBuf buff) {
 		int componentCount = buff.readInt();
 		Set<Component<?, ?, ?>> components = new HashSet<>();
 		for (int i = 0; i < componentCount; i++) {
@@ -66,10 +66,10 @@ public class SUpdateNetworkPackage {
 		}
 		String dataList = buff.readUtf();
 		State state = buff.readEnum(State.class);
-		return new SUpdateNetworkPackage(components, dataList, state);
+		return new SUpdateElectricNetworkPackage(components, dataList, state);
 	}
 	
-	public static void handle(SUpdateNetworkPackage msg, Supplier<NetworkEvent.Context> ctx) {
+	public static void handle(SUpdateElectricNetworkPackage msg, Supplier<NetworkEvent.Context> ctx) {
 		
 		ctx.get().enqueueWork(() -> {
 			ClientElectricPackageHandler.handleUpdateNetwork(msg, ctx.get());

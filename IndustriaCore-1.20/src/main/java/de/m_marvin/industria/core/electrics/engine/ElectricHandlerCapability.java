@@ -29,8 +29,8 @@ import de.m_marvin.industria.core.conduits.types.ConduitPos;
 import de.m_marvin.industria.core.conduits.types.ConduitPos.NodePos;
 import de.m_marvin.industria.core.electrics.ElectricUtility;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetwork.State;
-import de.m_marvin.industria.core.electrics.engine.network.SSyncComponentsPackage;
-import de.m_marvin.industria.core.electrics.engine.network.SUpdateNetworkPackage;
+import de.m_marvin.industria.core.electrics.engine.network.SSyncElectricComponentsPackage;
+import de.m_marvin.industria.core.electrics.engine.network.SUpdateElectricNetworkPackage;
 import de.m_marvin.industria.core.electrics.types.IElectric;
 import de.m_marvin.industria.core.electrics.types.IElectric.ICircuitPlot;
 import de.m_marvin.industria.core.electrics.types.blocks.IElectricBlock;
@@ -229,8 +229,7 @@ public class ElectricHandlerCapability implements ICapabilitySerializable<ListTa
 				component.setChanged();
 				handler.updateNetwork(component.pos());
 			} else {
-				IElectricBlock block = (IElectricBlock) event.getState().getBlock();
-				handler.addComponent(event.getPos(), block, event.getState());
+				handler.addComponent(event.getPos(), electric, event.getState());
 			}
 		} else {
 			handler.removeComponent(event.getPos());
@@ -267,9 +266,9 @@ public class ElectricHandlerCapability implements ICapabilitySerializable<ListTa
 		
 		if (!components.isEmpty()) {
 			List<ElectricNetwork> networks = components.stream().map(electricHandler.component2circuitMap::get).distinct().toList();
-			IndustriaCore.NETWORK.send(PacketDistributor.PLAYER.with(event::getPlayer), new SSyncComponentsPackage(components, event.getChunk().getPos(), SyncRequestType.ADDED));
+			IndustriaCore.NETWORK.send(PacketDistributor.PLAYER.with(event::getPlayer), new SSyncElectricComponentsPackage(components, event.getChunk().getPos(), SyncRequestType.ADDED));
 			for (ElectricNetwork network : networks) {
-				IndustriaCore.NETWORK.send(ElectricUtility.TRACKING_NETWORK.with(() -> network), new SUpdateNetworkPackage(network));
+				IndustriaCore.NETWORK.send(ElectricUtility.TRACKING_NETWORK.with(() -> network), new SUpdateElectricNetworkPackage(network));
 			}
 		}
 	}
@@ -280,7 +279,7 @@ public class ElectricHandlerCapability implements ICapabilitySerializable<ListTa
 		ElectricHandlerCapability electricHandler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_HANDLER_CAPABILITY);
 		Set<Component<?, ?, ?>> components = electricHandler.findComponentsInChunk(event.getPos());
 		if (!components.isEmpty()) {
-			IndustriaCore.NETWORK.send(PacketDistributor.PLAYER.with(event::getPlayer), new SSyncComponentsPackage(components, event.getPos(), SyncRequestType.REMOVED));
+			IndustriaCore.NETWORK.send(PacketDistributor.PLAYER.with(event::getPlayer), new SSyncElectricComponentsPackage(components, event.getPos(), SyncRequestType.REMOVED));
 		}
 	}
 	
@@ -597,7 +596,7 @@ public class ElectricHandlerCapability implements ICapabilitySerializable<ListTa
 	 */
 	public void triggerUpdates(ElectricNetwork network) {
 		network.getComponents().forEach(c -> c.onNetworkChange(network.getLevel()));
-		IndustriaCore.NETWORK.send(ElectricUtility.TRACKING_NETWORK.with(() -> network), new SUpdateNetworkPackage(network));
+		IndustriaCore.NETWORK.send(ElectricUtility.TRACKING_NETWORK.with(() -> network), new SUpdateElectricNetworkPackage(network));
 	}
 	
 	/**
@@ -625,7 +624,7 @@ public class ElectricHandlerCapability implements ICapabilitySerializable<ListTa
 				}
 				if (!this.level.isClientSide) {
 					ChunkPos chunkPos = component.getAffectedChunk(level);
-					IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunk(chunkPos.x, chunkPos.z)), new SSyncComponentsPackage(component, chunkPos, SyncRequestType.REMOVED));
+					IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunk(chunkPos.x, chunkPos.z)), new SSyncElectricComponentsPackage(component, chunkPos, SyncRequestType.REMOVED));
 				}
 				for (Component<?, ?, ?> comp : componentsToUpdate) {
 					updateNetwork(comp.pos());
@@ -650,7 +649,7 @@ public class ElectricHandlerCapability implements ICapabilitySerializable<ListTa
 		addToNetwork(component2);
 		if (!this.level.isClientSide) {
 			ChunkPos chunkPos = component2.getAffectedChunk(level);
-			IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunk(chunkPos.x, chunkPos.z)), new SSyncComponentsPackage(component2, chunkPos, SyncRequestType.ADDED));
+			IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunk(chunkPos.x, chunkPos.z)), new SSyncElectricComponentsPackage(component2, chunkPos, SyncRequestType.ADDED));
 		}
 
 		updateNetwork(pos);

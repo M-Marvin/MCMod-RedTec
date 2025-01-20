@@ -39,8 +39,8 @@ public class GearBlock extends BaseEntityBlock implements IKineticBlock {
 	@Override
 	public TransmissionNode[] getTransmitionNodes(Level level, BlockPos pos, BlockState state) {
 		return new TransmissionNode[] {
-				new TransmissionNode(pos, state, this, 1.0, state.getValue(AXIS), SHAFT),
-				new TransmissionNode(pos, state, this, 1.0, state.getValue(AXIS), GEAR)
+				new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(AXIS), SHAFT),
+				new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(AXIS), GEAR)
 		};
 	}
 	
