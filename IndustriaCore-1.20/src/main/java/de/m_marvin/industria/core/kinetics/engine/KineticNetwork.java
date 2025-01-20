@@ -1,7 +1,10 @@
 package de.m_marvin.industria.core.kinetics.engine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -18,8 +21,10 @@ public class KineticNetwork {
 	public static record TransmissionJoint(Component a, Component b, double ratio) {}
 	
 	protected final Supplier<Level> level;
-	protected Set<Component> components = ConcurrentHashMap.newKeySet();
-	protected Set<TransmissionJoint> joints = ConcurrentHashMap.newKeySet();
+	protected Set<Component> components = new HashSet<>();
+	protected Map<Component, Double> component2ratioMap = new HashMap<>();
+	protected double speed = 0;
+//	protected Set<TransmissionJoint> joints = ConcurrentHashMap.newKeySet();
 	
 	protected PowerNetState state = PowerNetState.ACTIVE;
 	
@@ -67,9 +72,36 @@ public class KineticNetwork {
 		return components;
 	}
 
-	public Set<TransmissionJoint> getJoints() {
-		return joints;
+	public void addTransmission(Component component1, Component component2, double ratio) {
+		if (ratio == 0.0) return;
+		Double ratio1 = this.component2ratioMap.get(component1);
+		if (ratio1 != null) {
+			this.component2ratioMap.put(component2, ratio1 / ratio);
+		} else {
+			Double ratio2 = this.component2ratioMap.get(component2);
+			if (ratio2 == null) {
+				ratio2 = 1.0;
+				this.component2ratioMap.put(component2, ratio2);
+			}
+			this.component2ratioMap.put(component1, ratio2 * ratio);
+		}
 	}
+	
+	public double getTransmission(Component component) {
+		return this.component2ratioMap.getOrDefault(component, 0.0);
+	}
+	
+	public void setNetworkSpeed(double speed) {
+		this.speed = speed;
+	}
+	
+	public double getSpeed() {
+		return speed;
+	}
+	
+//	public Set<TransmissionJoint> getJoints() {
+//		return joints;
+//	}
 	
 	public void reset() {
 //		this.maxPower = 0;
@@ -77,7 +109,8 @@ public class KineticNetwork {
 //		this.circuitBuilder = new StringBuilder();
 //		this.netList = "";
 //		this.groundNode = null;
-		this.components = ConcurrentHashMap.newKeySet();
+		this.components.clear();
+		this.component2ratioMap.clear();
 	}
 	
 	public boolean isEmpty() {

@@ -4,6 +4,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import de.m_marvin.industria.core.kinetics.types.blockentities.IKineticBlockEntity;
 import de.m_marvin.industria.core.util.MathUtility;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -94,6 +95,25 @@ public interface IKineticBlock {
 		};
 	};
 	
-	public TransmissionNode[] getTransmitionNodes(Level level, BlockPos pos, BlockState state);
+	public TransmissionNode[] getTransmissionNodes(Level level, BlockPos pos, BlockState state);
+	
+	public default int getSourceSpeed(Level level, BlockPos pos, BlockState state) {
+		return 0;
+	}
+	
+	public default double getTorque(Level level, BlockPos pos, BlockState state) {
+		return 0.0;
+	}
+	
+	public default void setRPM(Level level, BlockPos pos, BlockState state, int rpm) {
+		if (level.getBlockEntity(pos) instanceof IKineticBlockEntity kinetic)
+			kinetic.setRPM(rpm);
+	}
+	
+	public default int getRPM(Level level, BlockPos pos, BlockState state) {
+		if (level.getBlockEntity(pos) instanceof IKineticBlockEntity kinetic)
+			return kinetic.getRPM();
+		return 0;
+	}
 	
 }

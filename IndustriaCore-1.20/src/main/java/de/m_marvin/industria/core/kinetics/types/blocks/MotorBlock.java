@@ -16,63 +16,74 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class LargeGearBlock extends BaseEntityBlock implements IKineticBlock {
-
-	public static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
-
-	public static final VoxelShape SHAPE = Shapes.or(VoxelShapeUtility.box(6, 0, 6, 10, 16, 10), VoxelShapeUtility.box(-4, 6, -4, 20, 10, 20));
+public class MotorBlock extends BaseEntityBlock implements IKineticBlock {
+	// TODO incomplete, just for testing
 	
-	public LargeGearBlock(Properties pProperties) {
+	public static final DirectionProperty FACING = BlockStateProperties.FACING;
+	
+	public static final VoxelShape SHAPE = Shapes.or(VoxelShapeUtility.box(6, 0, 6, 10, 16, 10), VoxelShapeUtility.box(3, 3, 1, 13, 15, 13));
+	
+	public MotorBlock(Properties pProperties) {
 		super(pProperties);
 	}
-
-	@Override
-	protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
-		pBuilder.add(AXIS);
-	}
-
-	@Override
-	public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-		return VoxelShapeUtility.transformation()
-				.centered()
-				.rotateFromAxisY(pState.getValue(AXIS))
-				.uncentered()
-				.transform(SHAPE);
-	}
-
-	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-		Axis axis = pContext.getClickedFace().getAxis();
-		for (Direction d : Direction.values()) {
-			BlockState state = pContext.getLevel().getBlockState(pContext.getClickedPos().relative(d));
-			if (state.is(Tags.Blocks.KINETICS)) {
-				// TODO placement helper
-			}
-		}
-		return this.defaultBlockState().setValue(AXIS, axis);
-	}
-
+	
 	@Override
 	public RenderShape getRenderShape(BlockState pState) {
 		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Override
-	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-		return new SimpleKineticBlockEntity(pPos, pState);
+	public TransmissionNode[] getTransmissionNodes(Level level, BlockPos pos, BlockState state) {
+		return new TransmissionNode[] {
+				new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(FACING).getAxis(), SHAFT)
+		};
 	}
 	
 	@Override
-	public TransmissionNode[] getTransmissionNodes(Level level, BlockPos pos, BlockState state) {
-		return new TransmissionNode[] {
-				new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(AXIS), SHAFT),
-				new TransmissionNode(pos, state, pos, this, 2.0, state.getValue(AXIS), GEAR_DIAG)
-		};
+	public double getTorque(Level level, BlockPos pos, BlockState state) {
+		return 100;
+	}
+	
+	@Override
+	public int getSourceSpeed(Level level, BlockPos pos, BlockState state) {
+		return 16;
+	}
+	
+	@Override
+	protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
+		pBuilder.add(FACING);
+	}
+	
+	@Override
+	public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+		return VoxelShapeUtility.transformation()
+				.centered()
+				.rotateFromAxisY(pState.getValue(FACING).getAxis())
+				.uncentered()
+				.transform(SHAPE);
+	}
+	
+	@Override
+	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
+		Direction facing = pContext.getClickedFace();
+		for (Direction d : Direction.values()) {
+			BlockState state = pContext.getLevel().getBlockState(pContext.getClickedPos().relative(d));
+			if (state.is(Tags.Blocks.KINETICS)) {
+				// TODO placement helper
+			}
+		}
+		return this.defaultBlockState().setValue(FACING, facing);
+	}
+
+	@Override
+	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+		return new SimpleKineticBlockEntity(pPos, pState);
 	}
 	
 }

@@ -3,6 +3,8 @@ package de.m_marvin.industria.core.client.kinetics.blockentityrenderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.IKineticBlockEntity;
+import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock;
+import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -35,23 +37,26 @@ public class SimpleKineticBlockEntityRenderer<T extends BlockEntity & IKineticBl
 		int rpm = pBlockEntity.getRPM();
 		double t = pBlockEntity.getLevel().getGameTime() + pPartialTick;
 		float rotation = (float) ((float) (t / 3000 * rpm) * 2 * Math.PI);
-		Axis axis = state.getValue(BlockStateProperties.AXIS);
 		
-		pPoseStack.translate(0.5, 0.5, 0.5);
-		switch (axis) {
-		case X: pPoseStack.mulPose(com.mojang.math.Axis.XP.rotation(rotation)); break;
-		case Y: pPoseStack.mulPose(com.mojang.math.Axis.YP.rotation(rotation)); break;
-		case Z: pPoseStack.mulPose(com.mojang.math.Axis.ZP.rotation(rotation)); break;
+		if (state.getBlock() instanceof IKineticBlock kinetic) {
+			TransmissionNode[] nodes = kinetic.getTransmissionNodes(pBlockEntity.getLevel(), pBlockEntity.getBlockPos(), state);
+			if (nodes.length == 0) return;
+			Axis axis = nodes[0].axis();
+
+			pPoseStack.translate(0.5, 0.5, 0.5);
+			switch (axis) {
+			case X: pPoseStack.mulPose(com.mojang.math.Axis.XP.rotation(rotation)); break;
+			case Y: pPoseStack.mulPose(com.mojang.math.Axis.YP.rotation(rotation)); break;
+			case Z: pPoseStack.mulPose(com.mojang.math.Axis.ZP.rotation(rotation)); break;
+			}
+			pPoseStack.translate(-0.5, -0.5, -0.5);
+			
+			for (net.minecraft.client.renderer.RenderType rt : model.getRenderTypes(state, RandomSource.create(42), data))
+				this.dispatcher.getModelRenderer().renderModel(pPoseStack.last(), pBuffer.getBuffer(net.minecraftforge.client.RenderTypeHelper.getEntityRenderType(rt, false)), state, model, 1F, 1F, 1F, pPackedLight, pPackedOverlay, data, rt);
+			
+			pPoseStack.popPose();
 		}
-		pPoseStack.translate(-0.5, -0.5, -0.5);
-		
-		for (net.minecraft.client.renderer.RenderType rt : model.getRenderTypes(state, RandomSource.create(42), data))
-			this.dispatcher.getModelRenderer().renderModel(pPoseStack.last(), pBuffer.getBuffer(net.minecraftforge.client.RenderTypeHelper.getEntityRenderType(rt, false)), state, model, 1F, 1F, 1F, pPackedLight, pPackedOverlay, data, rt);
-		
-		pPoseStack.popPose();
 		
 	}
-	
-	
 	
 }

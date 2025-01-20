@@ -25,6 +25,7 @@ public class Items {
 	public static final RegistryObject<BlockItem> WIRE_HOLDER = 	ITEMS.register("wire_holder", () -> new BlockItem(Blocks.WIRE_HOLDER.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<BlockItem> GEAR = 			ITEMS.register("gear", () -> new BlockItem(Blocks.GEAR.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<BlockItem> LARGE_GEAR = 		ITEMS.register("large_gear", () -> new BlockItem(Blocks.LARGE_GEAR.get(), new Item.Properties().rarity(Rarity.EPIC)));
+	public static final RegistryObject<BlockItem> MOTOR = 			ITEMS.register("motor", () -> new BlockItem(Blocks.MOTOR.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	
 	public static final RegistryObject<AbstractConduitItem> ELECTRIC_WIRE = ITEMS.register("electric_wire", () -> new AbstractConduitItem(new Item.Properties().rarity(Rarity.EPIC), Conduits.ELECTRIC_CONDUIT) {
 		@Override

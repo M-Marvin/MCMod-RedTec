@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.Queue;
 import java.util.Set;
 
@@ -235,6 +237,22 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 			}
 			return null;
 		}
+		
+		public TransmissionNode[] getTransmissionNodes(Level level) {
+			return this.type.getTransmissionNodes(level, pos, instance);
+		}
+		public int getSourceSpeed(Level level) {
+			return this.type.getSourceSpeed(level, pos, instance);
+		}
+		public double getTorque(Level level) {
+			return this.type.getTorque(level, pos, instance);
+		}
+		public void setRPM(Level level, int rpm) {
+			this.type.setRPM(level, pos, instance, rpm);
+		}
+		public int getRPM(Level level) {
+			return this.type.getRPM(level, pos, instance);
+		}
 	}
 
 	/**
@@ -273,6 +291,49 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 		System.out.println("Update at " + position);
 
 		KineticNetwork network = makeNetwork(position);
+		
+		// TODO implement kinetic solver
+		
+		// Find fastest source-speed in network
+		OptionalDouble maxSpeed = network.getComponents().stream()
+			.filter(c -> c.getSourceSpeed(this.level) > 0)
+			.mapToDouble(c -> c.getSourceSpeed(this.level) * network.getTransmission(c))
+			.max();
+		
+//		Optional<Component> sourceComponent = network.getComponents().stream()
+//			.filter(c -> c.getSourceSpeed(this.level) > 0)
+//			.findAny();
+		
+		network.setNetworkSpeed(maxSpeed.orElse(0.0));
+		
+		System.out.println("Network speed: " + network.getSpeed());
+		
+		for (Component c : network.getComponents()) {
+			
+			int cspeed = (int) Math.round(network.getSpeed() / network.getTransmission(c));
+			
+			c.setRPM(level, cspeed);
+			
+			GameUtility.triggerClientSync(level, c.pos());
+			
+		}
+		
+//		// If no source, all RPMs are zero
+//		if (maxSpeed.isEmpty()) {
+//			network.setNetworkSpeed(0.0);
+//		} else {
+//			
+//			Queue<Component> queue = new ArrayDeque<>();
+//			
+//			queue.add(sourceComponent.get());
+//			
+//			while (queue.size() > 0) {
+//				
+//				
+//				
+//			}
+//			
+//		}
 		
 		
 		
@@ -405,7 +466,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 			
 			if (state1.getBlock() instanceof IKineticBlock kinetic1) {
 				
-				for (TransmissionNode node1 : kinetic1.getTransmitionNodes(level, pos1, state1)) {
+				for (TransmissionNode node1 : kinetic1.getTransmissionNodes(level, pos1, state1)) {
 					
 					BlockPos tpos1 = node1.pos();
 					
@@ -450,7 +511,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 						
 						if (state2.getBlock() instanceof IKineticBlock kinetic2) {
 							
-							for (TransmissionNode node2 : kinetic2.getTransmitionNodes(level, tpos2, state2)) {
+							for (TransmissionNode node2 : kinetic2.getTransmissionNodes(level, tpos2, state2)) {
 								
 								double transmission = node1.type().apply(node1, node2);
 								if (transmission == 0.0) continue;
@@ -463,7 +524,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 									addToNetwork(component1);
 								}
 								
-								network.getJoints().add(new TransmissionJoint(component1, component2, transmission));
+								network.addTransmission(component1, component2, transmission);
 								
 //								System.out.println("Transmission to node at: " + tpos2 + " with ratio " + transmission);
 								
