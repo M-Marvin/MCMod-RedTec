@@ -11,16 +11,16 @@ import com.google.common.base.Predicate;
 
 import de.m_marvin.industria.core.conduits.types.ConduitPos.NodePos;
 import de.m_marvin.industria.core.electrics.engine.CircuitTemplateManager;
-import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
-import de.m_marvin.industria.core.electrics.engine.ElectricNetwork.State;
 import de.m_marvin.industria.core.electrics.engine.ElectricHandlerCapability;
 import de.m_marvin.industria.core.electrics.engine.ElectricHandlerCapability.Component;
+import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
 import de.m_marvin.industria.core.electrics.types.CircuitTemplate.Plotter;
 import de.m_marvin.industria.core.electrics.types.IElectric.ICircuitPlot;
 import de.m_marvin.industria.core.electrics.types.blocks.IElectricBlock;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.registries.Circuits;
 import de.m_marvin.industria.core.util.GameUtility;
+import de.m_marvin.industria.core.util.types.PowerNetState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerChunkCache;
@@ -105,13 +105,13 @@ public class ElectricUtility {
 	 * Changes the state of the network with an component at the given position
 	 * Runs necessary updates and triggers events
 	 */
-	public static void setNetworkState(Level level, Object pos, ElectricNetwork.State state) {
+	public static void setNetworkState(Level level, Object pos, PowerNetState state) {
 		ElectricHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_HANDLER_CAPABILITY);
 		
 		handler.updateNetworkState(pos, state);
 		ElectricNetwork network = handler.getNetworkAt(pos);
 		if (network != null && !level.isClientSide()) {
-			if (state == State.ONLINE) {
+			if (state == PowerNetState.ACTIVE) {
 				handler.updateNetwork(pos);
 			} else {
 				handler.triggerUpdates(network);;
@@ -313,6 +313,7 @@ public class ElectricUtility {
 	 */
 	public static final PacketDistributor<ElectricNetwork> TRACKING_NETWORK = new PacketDistributor<>(ElectricUtility::trackingNetwork, NetworkDirection.PLAY_TO_CLIENT);
 	
+	@SuppressWarnings("resource")
 	private static Consumer<Packet<?>> trackingNetwork(final PacketDistributor<ElectricNetwork> distributor, final Supplier<ElectricNetwork> networkSupplier) {
 		return p -> {
 			ElectricNetwork network = networkSupplier.get();

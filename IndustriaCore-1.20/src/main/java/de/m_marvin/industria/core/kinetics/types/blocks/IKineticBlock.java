@@ -19,6 +19,15 @@ public interface IKineticBlock {
 		public BlockPos[] pos(TransmissionNode n);
 	}
 	
+	/**
+	 * @param pos Position of this node in the world
+	 * @param state State of the main block of this kinetic component (can be different from the block at pos!)
+	 * @param blockPos Position of the main block of this kinetic component (can be different from pos!)
+	 * @param kinetic The Block instance of this kinetic component
+	 * @param ratio The RPM ratio for this transmission node
+	 * @param axis The axis of rotation of this node
+	 * @param type The type of transmission of this node
+	 */
 	public static record TransmissionNode(BlockPos pos, BlockState state, BlockPos blockPos, IKineticBlock kinetic, double ratio, Axis axis, TransmissionType type) {}
 
 	public static final TransmissionType SHAFT = new TransmissionType() {

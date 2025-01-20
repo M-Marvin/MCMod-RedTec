@@ -5,9 +5,9 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import de.m_marvin.industria.core.electrics.engine.ClientElectricPackageHandler;
-import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
-import de.m_marvin.industria.core.electrics.engine.ElectricNetwork.State;
 import de.m_marvin.industria.core.electrics.engine.ElectricHandlerCapability.Component;
+import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
+import de.m_marvin.industria.core.util.types.PowerNetState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -19,7 +19,7 @@ public class SUpdateElectricNetworkPackage {
 	
 	public final String dataList;
 	public final Set<Component<?, ?, ?>> components;
-	public final State state;
+	public final PowerNetState state;
 	
 	public SUpdateElectricNetworkPackage(ElectricNetwork network) {
 		this.dataList = network.printDataList();
@@ -27,7 +27,7 @@ public class SUpdateElectricNetworkPackage {
 		this.state = network.getState();;
 	}
 	
-	public SUpdateElectricNetworkPackage(Set<Component<?, ?, ?>> components, String dataList, State state) {
+	public SUpdateElectricNetworkPackage(Set<Component<?, ?, ?>> components, String dataList, PowerNetState state) {
 		this.dataList = dataList;
 		this.components = components;
 		this.state = state;
@@ -41,7 +41,7 @@ public class SUpdateElectricNetworkPackage {
 		return dataList;
 	}
 	
-	public State getState() {
+	public PowerNetState getState() {
 		return state;
 	}
 	
@@ -65,7 +65,7 @@ public class SUpdateElectricNetworkPackage {
 			components.add(component);
 		}
 		String dataList = buff.readUtf();
-		State state = buff.readEnum(State.class);
+		PowerNetState state = buff.readEnum(PowerNetState.class);
 		return new SUpdateElectricNetworkPackage(components, dataList, state);
 	}
 	

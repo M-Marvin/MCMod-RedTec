@@ -1,6 +1,7 @@
 package de.m_marvin.industria.core.client.electrics.events;
 
 import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
+import de.m_marvin.industria.core.util.types.PowerNetState;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -32,14 +33,14 @@ public class ElectricNetworkEvent extends Event {
     
     public static class StateChangeEvent extends ElectricNetworkEvent {
 
-    	private final ElectricNetwork.State state;
+    	private final PowerNetState state;
     	
-		public StateChangeEvent(Level level, ElectricNetwork network, ElectricNetwork.State newState) {
+		public StateChangeEvent(Level level, ElectricNetwork network, PowerNetState newState) {
 			super(level, network);
 			this.state = newState;
 		}
 		
-		public ElectricNetwork.State getNewState() {
+		public PowerNetState getNewState() {
 			return state;
 		}
     	

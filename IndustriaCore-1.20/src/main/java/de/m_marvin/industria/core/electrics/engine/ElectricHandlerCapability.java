@@ -28,7 +28,6 @@ import de.m_marvin.industria.core.conduits.events.ConduitEvent.ConduitPlaceEvent
 import de.m_marvin.industria.core.conduits.types.ConduitPos;
 import de.m_marvin.industria.core.conduits.types.ConduitPos.NodePos;
 import de.m_marvin.industria.core.electrics.ElectricUtility;
-import de.m_marvin.industria.core.electrics.engine.ElectricNetwork.State;
 import de.m_marvin.industria.core.electrics.engine.network.SSyncElectricComponentsPackage;
 import de.m_marvin.industria.core.electrics.engine.network.SUpdateElectricNetworkPackage;
 import de.m_marvin.industria.core.electrics.types.IElectric;
@@ -37,6 +36,7 @@ import de.m_marvin.industria.core.electrics.types.blocks.IElectricBlock;
 import de.m_marvin.industria.core.electrics.types.conduits.IElectricConduit;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
+import de.m_marvin.industria.core.util.types.PowerNetState;
 import de.m_marvin.industria.core.util.types.SyncRequestType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -537,11 +537,11 @@ public class ElectricHandlerCapability implements ICapabilitySerializable<ListTa
 	 * Changes the state of the network at the given position.
 	 * If the state has actually changed, necessary events are triggered.
 	 */
-	public <P> void updateNetworkState(P position, ElectricNetwork.State state) {
+	public <P> void updateNetworkState(P position, PowerNetState state) {
 		ElectricNetwork network = getNetworkAt(position);
 		MinecraftForge.EVENT_BUS.post(new ElectricNetworkEvent.StateChangeEvent(this.level, network, state));
 		network.setState(state);
-		if (state == State.FAILED) {
+		if (state == PowerNetState.FAILED) {
 			MinecraftForge.EVENT_BUS.post(new ElectricNetworkEvent.FuseTripedEvent(this.level, network));
 		}
 		triggerUpdates(network);

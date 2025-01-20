@@ -20,17 +20,14 @@ import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.conduits.types.ConduitPos.NodePos;
 import de.m_marvin.industria.core.electrics.engine.ElectricHandlerCapability.Component;
 import de.m_marvin.industria.core.electrics.types.IElectric.ICircuitPlot;
+import de.m_marvin.industria.core.util.types.PowerNetState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.level.Level;
 
 public class ElectricNetwork {
-	
-	public static enum State {
-		ONLINE,OFFLINE,FAILED;
-	}
-	
+		
 	protected String title;
 	protected final Supplier<Level> level;
 	protected Set<Component<?, ?, ?>> components = ConcurrentHashMap.newKeySet();
@@ -39,7 +36,7 @@ public class ElectricNetwork {
 	protected String groundNode;
 	protected String netList = "";
 	protected Map<String, Double> nodeVoltages = Maps.newHashMap();
-	protected State state = State.ONLINE;
+	protected PowerNetState state = PowerNetState.ACTIVE;
 	protected double maxPower;
 	protected double currentConsumtion;
 	protected double currentProduction;
@@ -87,7 +84,7 @@ public class ElectricNetwork {
 			this.netList = lists[0];
 			this.parseDataList(lists[1]);
 		}
-		this.state = State.valueOf(tag.getString("State").toUpperCase());
+		this.state = PowerNetState.valueOf(tag.getString("State").toUpperCase());
 	}
 	
 	public Set<Component<?, ?, ?>> getComponents() {
@@ -226,24 +223,24 @@ public class ElectricNetwork {
 	}
 	
 	public void tripFuse() {
-		setState(State.FAILED);
+		setState(PowerNetState.FAILED);
 	}
 	
-	public void setState(State state) {
+	public void setState(PowerNetState state) {
 		this.state = state;
 		recalculateLoads();
 	}
 	
-	public State getState() {
+	public PowerNetState getState() {
 		return state;
 	}
 	
 	public boolean isTripped() {
-		return this.state == State.FAILED;
+		return this.state == PowerNetState.FAILED;
 	}
 	
 	public boolean isOnline() {
-		return this.state == State.ONLINE;
+		return this.state == PowerNetState.ACTIVE;
 	}
 	
 	public String getNetList() {
