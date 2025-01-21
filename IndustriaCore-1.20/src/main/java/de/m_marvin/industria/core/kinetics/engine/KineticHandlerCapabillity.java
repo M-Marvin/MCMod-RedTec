@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.DoubleStream;
 
 import com.google.common.base.Objects;
 
@@ -22,6 +23,7 @@ import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
+import de.m_marvin.industria.core.util.types.PowerNetState;
 import de.m_marvin.industria.core.util.types.SyncRequestType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -288,54 +290,84 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	 */
 	public KineticNetwork updateNetwork(BlockPos position) {
 		
+		KineticNetwork network = makeNetwork(position);
+		if (network == null) return null;
+
 		System.out.println("Update at " + position);
 
-		KineticNetwork network = makeNetwork(position);
-		
-		// TODO implement kinetic solver
-		
-		// Find fastest source-speed in network
-		OptionalDouble maxSpeed = network.getComponents().stream()
-			.filter(c -> c.getSourceSpeed(this.level) > 0)
-			.mapToDouble(c -> c.getSourceSpeed(this.level) * network.getTransmission(c))
-			.max();
-		
-//		Optional<Component> sourceComponent = network.getComponents().stream()
-//			.filter(c -> c.getSourceSpeed(this.level) > 0)
-//			.findAny();
-		
-		network.setNetworkSpeed(maxSpeed.orElse(0.0));
-		
-		System.out.println("Network speed: " + network.getSpeed());
-		
-		for (Component c : network.getComponents()) {
+		// Check for opposite rotations, if so, skip calculations
+		if (network.isTripped()) {
+			network.setNetworkSpeed(0.0);
+			System.out.println("Locked!");
+		} else {
 			
-			int cspeed = (int) Math.round(network.getSpeed() / network.getTransmission(c));
+			// Calculate source speeds
+			double[] sources = network.getComponents().stream()
+				.mapToDouble(c -> c.getSourceSpeed(this.level) * network.getTransmission(c))
+				.distinct()
+				.toArray();
 			
-			c.setRPM(level, cspeed);
+			// Find fastest source-speed in network (in both directions)
+			OptionalDouble maxSpeedH = DoubleStream.of(sources).filter(s -> s > 0).max();
+			OptionalDouble maxSpeedL = DoubleStream.of(sources).filter(s -> s < 0).min();
 			
-			GameUtility.triggerClientSync(level, c.pos());
+			// Check if any source available
+			if (maxSpeedH.isEmpty() && maxSpeedL.isEmpty()) {
+				network.setNetworkSpeed(0.0);
+				network.setState(PowerNetState.INACTIVE);
+				System.out.println("No Sources!");
+			} 
+
+			// Check for reversed sources
+			else if (maxSpeedH.isPresent() && maxSpeedL.isPresent()) {
+				network.setNetworkSpeed(0.0);
+				network.tripFuse();
+				System.out.println("Reversed Sources!");
+			} 
+			
+			else {
+				
+				double speed = maxSpeedL.orElse(maxSpeedH.getAsDouble());
+				
+				// Calculate available torque
+				double torque = network.components.stream()
+					.filter(c -> c.getSourceSpeed(this.level) == 0)
+					.mapToDouble(c -> c.getTorque(level) / network.getTransmission(c))
+					.sum();
+				
+				// Calculate total load
+				double load = network.components.stream()
+						.filter(c -> c.getSourceSpeed(this.level) == 0)
+						.mapToDouble(c -> c.getTorque(level) / network.getTransmission(c))
+						.sum();
+				
+				// Check for overload
+				if (load > torque) {
+					network.setNetworkSpeed(0.0);
+					network.tripFuse();
+					System.out.println("Overload!");
+				} 
+				
+				else {
+					
+					// Set network rotation speed
+					network.setNetworkSpeed(speed);
+					network.setState(PowerNetState.ACTIVE);
+					System.out.println("Network Speed: " + network.getSpeed());
+					System.out.println("Network Load: " + load + "/" + torque);
+					
+					// TODO DEBUGGIN update component RPM
+					for (Component c : network.getComponents()) {
+						int cspeed = (int) Math.round(network.getSpeed() / network.getTransmission(c));
+						c.setRPM(level, cspeed);
+						GameUtility.triggerClientSync(level, c.pos());
+					}
+					
+				}
+				
+			}
 			
 		}
-		
-//		// If no source, all RPMs are zero
-//		if (maxSpeed.isEmpty()) {
-//			network.setNetworkSpeed(0.0);
-//		} else {
-//			
-//			Queue<Component> queue = new ArrayDeque<>();
-//			
-//			queue.add(sourceComponent.get());
-//			
-//			while (queue.size() > 0) {
-//				
-//				
-//				
-//			}
-//			
-//		}
-		
-		
 		
 		return network;
 		
@@ -451,8 +483,6 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	}
 	
 	public KineticNetwork makeNetwork(BlockPos startPos) {
-
-		System.out.println("TEST" + this.level.isClientSide);
 		
 		KineticNetwork network = null;
 		List<BlockPos> tnd = new ArrayList<>();
@@ -492,16 +522,11 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 					} else {
 						KineticNetwork previousNetwork = this.component2kineticMap.put(component1, network);
 						if (previousNetwork != null && previousNetwork != network) {
-//							previousNetwork.getComponents().stream()
-//								.filter(c -> !c.pos().equals(pos1) && !neighbors.contains(c.pos()))
-//								.forEach(c -> neighbors.add(c.pos()));
 							this.kineticNetworks.remove(previousNetwork);
 						}
 					}
 					
 					network.getComponents().add(component1);
-					
-//					System.out.println("Node at: " + tpos1 + " type " + node1.type());
 					
 					for (BlockPos tpos2 : node1.type().pos(node1)) {
 
@@ -524,9 +549,8 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 									addToNetwork(component1);
 								}
 								
-								network.addTransmission(component1, component2, transmission);
-								
-//								System.out.println("Transmission to node at: " + tpos2 + " with ratio " + transmission);
+								if (!network.addTransmission(component1, component2, transmission))
+									network.tripFuse();
 								
 								if (!neighbors.contains(pos2)) neighbors.add(pos2);
 								break;

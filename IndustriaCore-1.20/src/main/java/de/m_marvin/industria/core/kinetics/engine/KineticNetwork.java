@@ -72,11 +72,12 @@ public class KineticNetwork {
 		return components;
 	}
 
-	public void addTransmission(Component component1, Component component2, double ratio) {
-		if (ratio == 0.0) return;
+	public boolean addTransmission(Component component1, Component component2, double ratio) {
+		if (ratio == 0.0) return true;
 		Double ratio1 = this.component2ratioMap.get(component1);
 		if (ratio1 != null) {
-			this.component2ratioMap.put(component2, ratio1 / ratio);
+			Double r = this.component2ratioMap.put(component2, ratio1 / ratio);
+			if (r != null && r != ratio) return false;
 		} else {
 			Double ratio2 = this.component2ratioMap.get(component2);
 			if (ratio2 == null) {
@@ -85,6 +86,7 @@ public class KineticNetwork {
 			}
 			this.component2ratioMap.put(component1, ratio2 * ratio);
 		}
+		return true;
 	}
 	
 	public double getTransmission(Component component) {
@@ -125,25 +127,24 @@ public class KineticNetwork {
 		invalid.forEach(c -> components.remove(c));
 	}
 	
-//	public void tripFuse() {
-//		setState(State.OVERLOADED);
-//	}
+	public void tripFuse() {
+		setState(PowerNetState.FAILED);
+	}
 	
-//	public void setState(State state) {
-//		this.state = state;
-//		recalculateLoads();
-//	}
+	public void setState(PowerNetState state) {
+		this.state = state;
+	}
 	
-//	public State getState() {
-//		return state;
-//	}
+	public PowerNetState getState() {
+		return state;
+	}
 	
-//	public boolean isTripped() {
-//		return this.state == State.OVERLOADED;
-//	}
-//	
-//	public boolean isOnline() {
-//		return this.state == State.ACTIVE;
-//	}
+	public boolean isTripped() {
+		return this.state == PowerNetState.FAILED;
+	}
+	
+	public boolean isOnline() {
+		return this.state == PowerNetState.ACTIVE;
+	}
 	
 }
