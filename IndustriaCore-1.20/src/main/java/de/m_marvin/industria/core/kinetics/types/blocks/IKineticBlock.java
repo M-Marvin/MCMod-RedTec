@@ -6,6 +6,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.IKineticBlockEntity;
 import de.m_marvin.industria.core.util.MathUtility;
+import de.m_marvin.univec.impl.Vec3i;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -47,6 +48,50 @@ public interface IKineticBlock {
 				n.pos().relative(Direction.fromAxisAndDirection(n.axis(), AxisDirection.NEGATIVE))
 			};
 		};
+	};
+	
+	public static final TransmissionType GEAR_ANGLE = new TransmissionType() {
+		public int vaxis(BlockPos vec, Axis axis) {
+			switch (axis) {
+			default:
+			case X: return vec.getX();
+			case Y: return vec.getY();
+			case Z: return vec.getZ();
+			}
+		}
+		@Override
+		public double apply(TransmissionNode a, TransmissionNode b) {
+			if (a.type() != GEAR_ANGLE || b.type() != GEAR_ANGLE) return 0.0;
+			if (a.axis() == b.axis()) return 0.0;
+			if (Stream.of(pos(a)).filter(p -> p.equals(b.pos())).count() == 0) return 0.0;
+			if (Stream.of(pos(b)).filter(p -> p.equals(a.pos())).count() == 0) return 0.0;
+			int ia = vaxis(b.pos(), b.axis()) - vaxis(a.pos(), b.axis());
+			int ib = vaxis(a.pos(), a.axis()) - vaxis(b.pos(), a.axis());
+			return -(ia * ib) * a.ratio() / b.ratio();
+		}
+		@Override
+		public BlockPos[] pos(TransmissionNode n) {
+			Vec3i v = Vec3i.fromVec(n.pos()).sub(Vec3i.fromVec(n.blockPos()));
+			if (v.lengthSqrt() != 0) {
+				Direction offset = MathUtility.getVecDirection(v);
+				return new BlockPos[] {
+					n.pos().relative(offset).relative(n.axis(), +1),
+					n.pos().relative(offset).relative(n.axis(), -1)
+				};
+			} else {
+				Direction[] offset = MathUtility.getDirectionsOrthogonal(n.axis());
+				return new BlockPos[] {
+					n.pos().relative(offset[0]).relative(n.axis(), +1),
+					n.pos().relative(offset[0]).relative(n.axis(), -1),
+					n.pos().relative(offset[1]).relative(n.axis(), +1),
+					n.pos().relative(offset[1]).relative(n.axis(), -1),
+					n.pos().relative(offset[2]).relative(n.axis(), +1),
+					n.pos().relative(offset[2]).relative(n.axis(), -1),
+					n.pos().relative(offset[3]).relative(n.axis(), +1),
+					n.pos().relative(offset[3]).relative(n.axis(), -1)
+				};
+			}
+		}
 	};
 	
 	public static final TransmissionType GEAR_DIAG = new TransmissionType() {

@@ -79,7 +79,7 @@
 	},
 	"groups": [
 		{
-			"name": "Gear2",
+			"name": "Gear",
 			"origin": [0, 0, -52],
 			"color": 0,
 			"children": [0, 1, 2]

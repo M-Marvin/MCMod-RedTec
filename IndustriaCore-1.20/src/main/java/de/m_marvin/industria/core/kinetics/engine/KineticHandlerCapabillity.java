@@ -327,7 +327,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 			
 			else {
 				
-				double speed = maxSpeedL.orElse(maxSpeedH.getAsDouble());
+				double speed = maxSpeedL.orElseGet(() -> maxSpeedH.getAsDouble());
 				
 				// Calculate available torque
 				double torque = network.components.stream()
@@ -356,17 +356,17 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 					System.out.println("Network Speed: " + network.getSpeed());
 					System.out.println("Network Load: " + load + "/" + torque);
 					
-					// TODO DEBUGGIN update component RPM
-					for (Component c : network.getComponents()) {
-						int cspeed = (int) Math.round(network.getSpeed() / network.getTransmission(c));
-						c.setRPM(level, cspeed);
-						GameUtility.triggerClientSync(level, c.pos());
-					}
-					
 				}
 				
 			}
 			
+		}
+
+		// TODO DEBUGGIN update component RPM
+		for (Component c : network.getComponents()) {
+			int cspeed = (int) Math.round(network.getSpeed() / network.getTransmission(c));
+			c.setRPM(level, cspeed);
+			GameUtility.triggerClientSync(level, c.pos());
 		}
 		
 		return network;
@@ -400,7 +400,8 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 						Component componentToUpdate = componentsToUpdate.poll();
 						if (componentToUpdate == component) continue;
 						KineticNetwork network2 = updateNetwork(componentToUpdate.pos());
-						componentsToUpdate.removeAll(network2.getComponents());
+						if (network2 != null)
+							componentsToUpdate.removeAll(network2.getComponents());
 					}
 					this.kineticNetworks.remove(network);
 				}
@@ -567,7 +568,8 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 			
 		}
 		
-		this.kineticNetworks.add(network);
+		if (network != null)
+			this.kineticNetworks.add(network);
 		
 		return network;
 		

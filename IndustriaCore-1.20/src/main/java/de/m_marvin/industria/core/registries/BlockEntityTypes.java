@@ -22,6 +22,7 @@ public class BlockEntityTypes {
 	public static final RegistryObject<BlockEntityType<SimpleKineticBlockEntity>> SIMPLE_KINETIC = BLOCK_ENTITY_TYPES.register("simple_kinetic", () -> BlockEntityType.Builder.of(SimpleKineticBlockEntity::new, 
 			Blocks.GEAR.get(),
 			Blocks.LARGE_GEAR.get(),
+			Blocks.SHAFT.get(),
 			Blocks.MOTOR.get()
 		).build(null));
 	

@@ -27,7 +27,7 @@ public class MotorBlock extends BaseEntityBlock implements IKineticBlock {
 	
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	
-	public static final VoxelShape SHAPE = Shapes.or(VoxelShapeUtility.box(6, 0, 6, 10, 16, 10), VoxelShapeUtility.box(3, 3, 1, 13, 15, 13));
+	public static final VoxelShape SHAPE = Shapes.or(VoxelShapeUtility.box(6, 0, 6, 10, 16, 10), VoxelShapeUtility.box(3, 1, 3, 13, 15, 13));
 	
 	public MotorBlock(Properties pProperties) {
 		super(pProperties);

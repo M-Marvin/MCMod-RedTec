@@ -1,4 +1,4 @@
-package de.m_marvin.industria.core.kinetics.types.blocks;
+ package de.m_marvin.industria.core.kinetics.types.blocks;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
 import de.m_marvin.industria.core.registries.Tags;
@@ -18,24 +18,28 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class LargeGearBlock extends BaseEntityBlock implements IKineticBlock {
+public class ShaftBlock extends BaseEntityBlock implements IKineticBlock {
 
 	public static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
 
-	public static final VoxelShape SHAPE = Shapes.or(VoxelShapeUtility.box(6, 0, 6, 10, 16, 10), VoxelShapeUtility.box(-4, 6, -4, 20, 10, 20));
+	public static final VoxelShape SHAPE = VoxelShapeUtility.box(6, 0, 6, 10, 16, 10);
 	
-	public LargeGearBlock(Properties pProperties) {
+	public ShaftBlock(Properties pProperties) {
 		super(pProperties);
 	}
-
+	
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
 		pBuilder.add(AXIS);
 	}
-
+	
+	@Override
+	public RenderShape getRenderShape(BlockState pState) {
+		return RenderShape.ENTITYBLOCK_ANIMATED;
+	}
+	
 	@Override
 	public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
 		return VoxelShapeUtility.transformation()
@@ -44,7 +48,7 @@ public class LargeGearBlock extends BaseEntityBlock implements IKineticBlock {
 				.uncentered()
 				.transform(SHAPE);
 	}
-
+	
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
 		Axis axis = pContext.getClickedFace().getAxis();
@@ -56,23 +60,16 @@ public class LargeGearBlock extends BaseEntityBlock implements IKineticBlock {
 		}
 		return this.defaultBlockState().setValue(AXIS, axis);
 	}
-
-	@Override
-	public RenderShape getRenderShape(BlockState pState) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
-	}
-
+	
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
 		return new SimpleKineticBlockEntity(pPos, pState);
 	}
-	
+
 	@Override
 	public TransmissionNode[] getTransmissionNodes(Level level, BlockPos pos, BlockState state) {
 		return new TransmissionNode[] {
-				new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(AXIS), SHAFT),
-				new TransmissionNode(pos, state, pos, this, 2.0, state.getValue(AXIS), GEAR_DIAG),
-				new TransmissionNode(pos, state, pos, this, 2.0, state.getValue(AXIS), GEAR_ANGLE)
+			new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(AXIS), SHAFT)
 		};
 	}
 	

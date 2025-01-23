@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import de.m_marvin.industria.IndustriaCore;
@@ -77,7 +76,7 @@ public class KineticNetwork {
 		Double ratio1 = this.component2ratioMap.get(component1);
 		if (ratio1 != null) {
 			Double r = this.component2ratioMap.put(component2, ratio1 / ratio);
-			if (r != null && r != ratio) return false;
+			if (r != null && Double.compare(r, ratio1 / ratio) != 0) return false;
 		} else {
 			Double ratio2 = this.component2ratioMap.get(component2);
 			if (ratio2 == null) {
