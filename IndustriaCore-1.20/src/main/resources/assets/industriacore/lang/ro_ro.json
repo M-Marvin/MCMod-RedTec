@@ -96,6 +96,10 @@
 "block.industriacore.voltage_source": 			"Sursa de tensiune",
 "block.industriacore.magnet": 				"Magnet",
 "block.industriacore.wire_holder":			"Suport cablu",
+"block.industriacore.gear":				"Roată dințată mică",
+"block.industriacore.large_gear":			"Roată dințată mare",
+"block.industriacore.shaft":				"Arbore",
+"block.industriacore.motor":				"Sursă de rotație",
 "item.industriacore.electric_wire":			"Cablu",
 "conduit.industriacore.electric_conduit":		"Cablu",
 

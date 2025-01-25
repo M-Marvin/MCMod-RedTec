@@ -96,6 +96,10 @@
 "block.industriacore.voltage_source": 			"Voltage bron",
 "block.industriacore.magnet": 				"Magneet",
 "block.industriacore.wire_holder":			"Kabelhouder",
+"block.industriacore.gear":				"Klein tandwiel",
+"block.industriacore.large_gear":			"Grote tandwiel",
+"block.industriacore.shaft":				"Aandrijfas",
+"block.industriacore.motor":				"Rotatiebron",
 "item.industriacore.electric_wire":			"Kabel",
 "conduit.industriacore.electric_conduit":		"Kabel",
 

@@ -96,6 +96,10 @@
 "block.industriacore.voltage_source": 			"Zdroj napätia",
 "block.industriacore.magnet": 				"Magnet",
 "block.industriacore.wire_holder":			"Držiak kábla",
+"block.industriacore.gear":				"Malé ozubené koleso",
+"block.industriacore.large_gear":			"Veľké ozubené kolesol",
+"block.industriacore.shaft":				"Hriadeľ",
+"block.industriacore.motor":				"Zdroj rotácie",
 "item.industriacore.electric_wire":			"Kábel",
 "conduit.industriacore.electric_conduit":		"Kábel",
 

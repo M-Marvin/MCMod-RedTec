@@ -96,6 +96,10 @@
 "block.industriacore.voltage_source": 			"Source de voltage",
 "block.industriacore.magnet": 				"Aimant",
 "block.industriacore.wire_holder":			"Support de câble",
+"block.industriacore.gear":				"Petite roue dentée",
+"block.industriacore.large_gear":			"Grande roue dentée",
+"block.industriacore.shaft":				"Arbre",
+"block.industriacore.motor":				"Source de rtotation",
 "item.industriacore.electric_wire":			"Câble",
 "conduit.industriacore.electric_conduit":		"Câble",
 

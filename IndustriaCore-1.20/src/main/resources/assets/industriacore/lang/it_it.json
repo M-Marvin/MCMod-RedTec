@@ -96,6 +96,10 @@
 "block.industriacore.voltage_source": 			"Fonte di energia",
 "block.industriacore.magnet": 				"Magnet",
 "block.industriacore.wire_holder":			"Portacavo",
+"block.industriacore.gear":				"Piccola ruota dentata",
+"block.industriacore.large_gear":			"Grande Cogwheel",
+"block.industriacore.shaft":				"Albero",
+"block.industriacore.motor":				"Sorgente di rotazione",
 "item.industriacore.electric_wire":			"Cavo",
 "conduit.industriacore.electric_conduit":		"Cavo",
 
