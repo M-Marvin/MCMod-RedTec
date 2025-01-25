@@ -96,6 +96,10 @@
 "block.industriacore.voltage_source":									"Voltage source",
 "block.industriacore.magnet":											"Magnet",
 "block.industriacore.wire_holder":										"Wire holder",
+"block.industriacore.gear":												"Cogwheel",
+"block.industriacore.large_gear":										"Large Cogwheel",
+"block.industriacore.shaft":											"Shaft",
+"block.industriacore.motor":											"Kreative Motor",
 "item.industriacore.electric_wire":										"Cable",
 "conduit.industriacore.electric_conduit":								"Cable",
 
