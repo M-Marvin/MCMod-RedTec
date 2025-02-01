@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Queue;
 import java.util.Set;
@@ -17,7 +16,6 @@ import com.google.common.base.Objects;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
-import de.m_marvin.industria.core.kinetics.engine.KineticNetwork.TransmissionJoint;
 import de.m_marvin.industria.core.kinetics.engine.network.SSyncKineticComponentsPackage;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
@@ -63,7 +61,6 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	
 	private final Level level;
 	private final HashMap<Object, Component> pos2componentMap = new HashMap<Object, Component>();
-//	private final HashMap<NodePos, Set<Component<?, ?, ?>>> node2componentMap = new HashMap<NodePos, Set<Component<?, ?, ?>>>();
 	private final HashSet<KineticNetwork> kineticNetworks = new HashSet<KineticNetwork>();
 	private final HashMap<Component, KineticNetwork> component2kineticMap = new HashMap<Component, KineticNetwork>();
 	
@@ -146,11 +143,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 		Set<Component> components = kineticHandler.findComponentsInChunk(event.getPos());
 		
 		if (!components.isEmpty()) {
-//			List<ElectricNetwork> networks = components.stream().map(kineticHandler.component2kineticMap::get).distinct().toList();
 			IndustriaCore.NETWORK.send(PacketDistributor.PLAYER.with(event::getPlayer), new SSyncKineticComponentsPackage(components, event.getChunk().getPos(), SyncRequestType.ADDED));
-//			for (ElectricNetwork network : networks) {
-//				IndustriaCore.NETWORK.send(ElectricUtility.TRACKING_NETWORK.with(() -> network), new SUpdateElectricNetworkPackage(network));
-//			}
 		}
 	}
 	
@@ -377,6 +370,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	 * Triggers the same update methods as when updating the network, without actually starting a new simulation.
 	 */
 	public void triggerUpdates(ElectricNetwork network) {
+		// FIXME not sure if this is required
 //		network.getComponents().forEach(c -> c.onNetworkChange(network.getLevel()));
 //		IndustriaCore.NETWORK.send(ElectricUtility.TRACKING_NETWORK.with(() -> network), new SUpdateNetworkPackage(network));
 	}
@@ -436,14 +430,6 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	 */
 	public Component removeFromNetwork(BlockPos pos) {
 		Component component = this.pos2componentMap.remove(pos);
-		if (component != null) {
-//			List<NodePos> empty = new ArrayList<>();
-//			for (Entry<NodePos, Set<Component>> entry : this.node2componentMap.entrySet()) {
-//				entry.getValue().remove(component);
-//				if (entry.getValue().isEmpty()) empty.add(entry.getKey());
-//			}
-//			empty.forEach(c -> this.node2componentMap.remove(c));
-		}
 		return component;
 	}
 	
@@ -476,11 +462,6 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	public void addToNetwork(Component component) {
 		if (component.instance(level) == null) return;
 		this.pos2componentMap.put(component.pos, component);
-//		for (NodePos node : component.type().getConnections(this.level, component.pos, component.instance(level))) {
-//			Set<Component> componentSet = this.node2componentMap.getOrDefault(node, new HashSet<Component>>());
-//			componentSet.add(component);
-//			this.node2componentMap.put(node, componentSet);
-//		}
 	}
 	
 	public KineticNetwork makeNetwork(BlockPos startPos) {

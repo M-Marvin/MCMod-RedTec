@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.m_marvin.industria.core.kinetics.types.blockentities.IKineticBlockEntity;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
+import de.m_marvin.industria.core.registries.Blocks;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -43,11 +44,17 @@ public class SimpleKineticBlockEntityRenderer<T extends BlockEntity & IKineticBl
 			if (nodes.length == 0) return;
 			Axis axis = nodes[0].axis();
 
+			// FIXME this has to be configured when registering the renderer
+			float ROT_OFFSET = (float) (11.25F / 360F * Math.PI * 2);
+			if (state.getBlock() == Blocks.LARGE_GEAR.get()) {
+				ROT_OFFSET = (float) (5.625F / 360F * Math.PI * 2);
+			}
+			
 			pPoseStack.translate(0.5, 0.5, 0.5);
 			switch (axis) {
-			case X: pPoseStack.mulPose(com.mojang.math.Axis.XP.rotation(rotation)); break;
-			case Y: pPoseStack.mulPose(com.mojang.math.Axis.YP.rotation(rotation)); break;
-			case Z: pPoseStack.mulPose(com.mojang.math.Axis.ZP.rotation(rotation)); break;
+			case X: pPoseStack.mulPose(com.mojang.math.Axis.XP.rotation(rotation - ROT_OFFSET)); break;
+			case Y: pPoseStack.mulPose(com.mojang.math.Axis.YP.rotation(rotation - ROT_OFFSET)); break;
+			case Z: pPoseStack.mulPose(com.mojang.math.Axis.ZP.rotation(rotation - ROT_OFFSET)); break;
 			}
 			pPoseStack.translate(-0.5, -0.5, -0.5);
 			
