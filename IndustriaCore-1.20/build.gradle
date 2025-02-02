@@ -29,7 +29,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
-version = mod_version
+version = minecraft_version + '-' + mod_version
 group = mod_group_id
 
 base {
@@ -291,11 +291,13 @@ java {
     withSourcesJar()
 }
 
-// Example configuration to allow publishing using the maven-publish plugin
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            artifact shadowJar
+            groupId = 'de.m_marvin.industria'
+        	artifactId = "industriacore"
+        	
+        	artifact shadowJar
             artifact mojmapJar
             artifact sourcesJar
         }

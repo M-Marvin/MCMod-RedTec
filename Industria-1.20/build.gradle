@@ -30,7 +30,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin' // Required for VS2 and industriacore
 
-version = mod_version
+version = minecraft_version + '-' + mod_version
 group = mod_group_id
 
 base {
@@ -193,7 +193,7 @@ dependencies {
 	runtimeOnly fg.deobf("curse.maven:kotlinforforge-351264:$forge_kotlin_version")
 	
     // Industria Core
- 	implementation "de.m_marvin.industria:IndustriaCore-1.20:${industriacore_version}:mojmap"
+ 	implementation "de.m_marvin.industria:industriacore:${minecraft_version}-${industriacore_version}:mojmap"
  	
 }
 
@@ -251,11 +251,13 @@ reobf {
     shadowJar {}
 }
 
-// Example configuration to allow publishing using the maven-publish plugin
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            artifact shadowJar
+            groupId = 'de.m_marvin.industria'
+        	artifactId = "industria"
+        	
+        	artifact shadowJar
         }
     }
     repositories {
