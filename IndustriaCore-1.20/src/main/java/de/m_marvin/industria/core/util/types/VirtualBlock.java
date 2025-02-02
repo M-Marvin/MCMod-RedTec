@@ -157,6 +157,11 @@ public class VirtualBlock<B extends Block, E extends BlockEntity> {
 			this.level = level;
 		}
 		
+		@Override
+		public String toString() {
+			return "Virtual" + this.level.toString();
+		}
+		
 		private final Level level;
 		
 		@Override

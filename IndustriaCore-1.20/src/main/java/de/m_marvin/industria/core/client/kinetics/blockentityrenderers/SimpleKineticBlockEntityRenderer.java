@@ -2,7 +2,9 @@ package de.m_marvin.industria.core.client.kinetics.blockentityrenderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.m_marvin.industria.core.client.util.ClientTimer;
 import de.m_marvin.industria.core.kinetics.types.blockentities.IKineticBlockEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -24,8 +26,7 @@ public class SimpleKineticBlockEntityRenderer<T extends BlockEntity & IKineticBl
 	@Override
 	public void render(T pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
 		
-		int rpm = pBlockEntity.getRPM(0);
-		double t = pBlockEntity.getLevel().getGameTime() + pPartialTick;
+		pPartialTick = Minecraft.getInstance().getFrameTime();
 		
 		for (IKineticBlockEntity.CompoundPart part : pBlockEntity.getVisualParts()) {
 
@@ -38,7 +39,8 @@ public class SimpleKineticBlockEntityRenderer<T extends BlockEntity & IKineticBl
 			float rotationalOffset = (float) part.axialOffset();
 			float rotationalSpeed = (float) part.rotationRatio();
 			
-			float rotation = (float) ((float) (t / 3000 * rpm * rotationalSpeed) * 2 * Math.PI);
+			int rpm = pBlockEntity.getRPM(0);
+			float rotation = (float) ((float) (ClientTimer.getRenderTicks() / 3000 * rpm * rotationalSpeed) * 2 * Math.PI);
 			
 			pPoseStack.translate(0.5, 0.5, 0.5);
 			switch (axis) {

@@ -1,6 +1,8 @@
  package de.m_marvin.industria.core.kinetics.types.blocks;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
+import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.KineticReference;
+import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
 import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
 import net.minecraft.core.BlockPos;
@@ -69,7 +71,8 @@ public class ShaftBlock extends BaseEntityBlock implements IKineticBlock {
 	@Override
 	public TransmissionNode[] getTransmissionNodes(LevelAccessor level, BlockPos pos, BlockState state) {
 		return new TransmissionNode[] {
-			new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), null, SHAFT)
+			new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), null, SHAFT),
+			new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), null, AXLE)
 		};
 	}
 	

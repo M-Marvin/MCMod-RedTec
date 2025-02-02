@@ -50,7 +50,7 @@ public class MotorBlock extends BaseEntityBlock implements IKineticBlock {
 	
 	@Override
 	public int getSourceSpeed(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
-		return 16;
+		return 128;
 	}
 	
 	@Override

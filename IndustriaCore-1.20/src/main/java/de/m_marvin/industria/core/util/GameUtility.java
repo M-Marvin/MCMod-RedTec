@@ -177,11 +177,6 @@ public class GameUtility {
 		level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
 	}
 	
-	@SuppressWarnings("resource")
-	public static long getSystemTicks() {
-		return Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getGameTime() : 0;
-	}
-	
 	public static HitResult raycast(Level level, Vec3d from, Vec3d direction, double range) {
 		return raycast(level, from, from.add(direction.mul(range)));
 	}

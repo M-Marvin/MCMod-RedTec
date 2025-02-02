@@ -1,6 +1,8 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
+import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.KineticReference;
+import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
 import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
@@ -76,14 +78,14 @@ public class LargeGearBlock extends BaseEntityBlock implements IKineticBlock {
 		AxisOffset offset = state.getValue(POS);
 		if (offset == AxisOffset.CENTER) {
 			return new TransmissionNode[] {
-//					new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(AXIS), SHAFT),
 					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), AxisOffset.CENTER, GEAR_DIAG),
-					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), AxisOffset.CENTER, GEAR_ANGLE)
+					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), AxisOffset.CENTER, GEAR_ANGLE),
+					new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), AxisOffset.CENTER, ATTACHMENT)
 			};
 		} else {
 			return new TransmissionNode[] {
-//					new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(AXIS), SHAFT),
-					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), offset, GEAR_DIAG)
+					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), offset, GEAR_DIAG),
+					new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), offset, ATTACHMENT)
 			};
 		}
 		

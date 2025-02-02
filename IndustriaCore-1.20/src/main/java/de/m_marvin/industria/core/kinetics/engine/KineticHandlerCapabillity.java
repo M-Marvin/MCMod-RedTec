@@ -577,7 +577,6 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 											network.tripFuse();
 										
 										if (!neighbors.contains(node2.reference())) neighbors.add(node2.reference());
-										break;
 										
 									}
 									

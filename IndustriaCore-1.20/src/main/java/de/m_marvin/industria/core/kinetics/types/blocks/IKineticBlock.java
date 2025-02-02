@@ -1,6 +1,7 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
 import de.m_marvin.industria.core.kinetics.engine.transmission.GearTransmissions;
+import de.m_marvin.industria.core.kinetics.engine.transmission.AxleTransmission;
 import de.m_marvin.industria.core.kinetics.engine.transmission.ShaftTransmission;
 import de.m_marvin.industria.core.kinetics.types.blockentities.IKineticBlockEntity;
 import de.m_marvin.industria.core.util.types.AxisOffset;
@@ -75,19 +76,25 @@ public interface IKineticBlock {
 			return new TransmissionNode(reference, pos, ratio, axis, offset, type);
 		}
 	}
-
+	
+	
 	/** Shaft which connects in both directions **/
 	public static final TransmissionType SHAFT = ShaftTransmission.SHAFT;
 	/** Shaft which connects only in the axis positive direction **/
 	public static final TransmissionType SHAFT_POS = ShaftTransmission.SHAFT_POS;
 	/** Shaft which connects only in the axis negative direction **/
 	public static final TransmissionType SHAFT_NEG = ShaftTransmission.SHAFT_NEG;
+	/** Gear which connects only to touching neighbor gears with the same axis **/
+	public static final TransmissionType GEAR = GearTransmissions.GEAR;
 	/** Gear which connects on an 90 degree orthogonal axis to other gears of the same type **/
 	public static final TransmissionType GEAR_ANGLE = GearTransmissions.GEAR_ANGLE;
 	/** Gear which connects diagonally on the same plane to gears with same axis **/
 	public static final TransmissionType GEAR_DIAG = GearTransmissions.GEAR_DIAG;
-	/** Gear which connects only to touching neighbor gears with the same axis **/
-	public static final TransmissionType GEAR = GearTransmissions.GEAR;
+	/** Insert connection which connects to inserted axles (shafts) **/
+	public static final TransmissionType ATTACHMENT = AxleTransmission.ATTACHMENT;
+	/** Axle connection which connects to inserts (gears) placed onto the shaft **/
+	public static final TransmissionType AXLE = AxleTransmission.AXLE;
+	
 	
 	public TransmissionNode[] getTransmissionNodes(LevelAccessor level, BlockPos pos, BlockState state);
 

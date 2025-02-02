@@ -44,7 +44,7 @@ public class CompoundKineticBlockEntityRenderer<T extends CompoundKineticBlockEn
 				
 			} else if (block.getState().getRenderShape() == RenderShape.ENTITYBLOCK_ANIMATED && block.getBlockEntity() != null) {
 				
-				renderCompoundBlockEntity(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, block.getBlockEntity());
+				renderCompoundBlockEntity(pPoseStack, pBuffer, pPartialTick, pPackedLight, pPackedOverlay, block.getBlockEntity());
 				
 			}
 			
@@ -62,12 +62,12 @@ public class CompoundKineticBlockEntityRenderer<T extends CompoundKineticBlockEn
 		
 	}
 	
-	protected <B extends BlockEntity> void renderCompoundBlockEntity(PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay, B blockEntity) {
+	protected <B extends BlockEntity> void renderCompoundBlockEntity(PoseStack pPoseStack, MultiBufferSource pBuffer, float pPartialTick, int pPackedLight, int pPackedOverlay, B blockEntity) {
 		
 		BlockEntityRenderer<B> renderer = this.blockEntityDispatcher.getRenderer(blockEntity);
 		if (renderer == null) return;
 		
-		renderer.render(blockEntity, pPackedOverlay, pPoseStack, pBuffer, pPackedLight, pPackedOverlay);
+		renderer.render(blockEntity, pPartialTick, pPoseStack, pBuffer, pPackedLight, pPackedOverlay);
 		
 	}
 	

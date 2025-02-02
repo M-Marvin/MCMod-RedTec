@@ -5,6 +5,7 @@ import java.util.function.Function;
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
 import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
+import de.m_marvin.industria.core.util.types.AxisOffset;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.AxisDirection;
@@ -74,9 +75,19 @@ public class ShortShaftBlock extends BaseEntityBlock implements IKineticBlock {
 	@Override
 	public TransmissionNode[] getTransmissionNodes(LevelAccessor level, BlockPos pos, BlockState state) {
 		Direction facing = state.getValue(FACING);
-		return new TransmissionNode[] {
-			new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), null, facing.getAxisDirection() == AxisDirection.POSITIVE ? SHAFT_POS : SHAFT_NEG)
-		};
+		boolean positive = facing.getAxisDirection() == AxisDirection.POSITIVE;
+		if (this.isLong) {
+			return new TransmissionNode[] {
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), null, positive ? SHAFT_POS : SHAFT_NEG),
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), positive ? AxisOffset.FRONT : AxisOffset.BACK, AXLE),
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), AxisOffset.CENTER, AXLE)
+			};
+		} else {
+			return new TransmissionNode[] {
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), null, positive ? SHAFT_POS : SHAFT_NEG),
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), positive ? AxisOffset.FRONT : AxisOffset.BACK, AXLE)
+			};
+		}
 	}
 	
 }
