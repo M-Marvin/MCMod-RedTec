@@ -1,8 +1,12 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
+import org.valkyrienskies.core.impl.shadow.pS;
+import org.valkyrienskies.core.impl.shadow.ps;
+
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
 import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.registries.Tags;
+import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
 import de.m_marvin.industria.core.util.types.AxisOffset;
 import net.minecraft.core.BlockPos;
@@ -13,7 +17,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -78,6 +84,26 @@ public class GearBlock extends BaseEntityBlock implements IKineticBlock {
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
 		return new SimpleKineticBlockEntity(pPos, pState);
+	}
+
+	@Override
+	public BlockState rotate(BlockState pState, Rotation pRotation) {
+		if (pState.getValue(POS) == AxisOffset.CENTER) {
+			return pState.setValue(AXIS, MathUtility.rotate(pRotation, pState.getValue(AXIS)));
+		} else {
+			Direction d = Direction.fromAxisAndDirection(pState.getValue(AXIS), pState.getValue(POS).getAxisDirection());
+			d = pRotation.rotate(d);
+			return pState.setValue(AXIS, d.getAxis()).setValue(POS, AxisOffset.fromAxisDirection(d.getAxisDirection()));
+		}
+	}
+	
+	@Override
+	public BlockState mirror(BlockState pState, Mirror pMirror) {
+		if (pState.getValue(POS) == AxisOffset.CENTER) {
+			return pState;
+		} else {
+			return pState.setValue(POS, pState.getValue(POS) == AxisOffset.BACK ? AxisOffset.FRONT : AxisOffset.BACK);
+		}
 	}
 	
 }

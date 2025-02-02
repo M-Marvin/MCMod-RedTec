@@ -4,7 +4,9 @@ import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBloc
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.KineticReference;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
 import de.m_marvin.industria.core.registries.Tags;
+import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
+import io.netty.util.internal.MathUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -13,7 +15,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -74,6 +79,16 @@ public class ShaftBlock extends BaseEntityBlock implements IKineticBlock {
 			new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), null, SHAFT),
 			new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), null, AXLE)
 		};
+	}
+
+	@Override
+	public BlockState rotate(BlockState pState, Rotation pRotation) {
+		return pState.setValue(AXIS, MathUtility.rotate(pRotation, pState.getValue(AXIS)));
+	}
+	
+	@Override
+	public BlockState mirror(BlockState pState, Mirror pMirror) {
+		return pState;
 	}
 	
 }

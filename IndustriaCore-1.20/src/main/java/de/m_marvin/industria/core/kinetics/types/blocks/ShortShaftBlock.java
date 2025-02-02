@@ -2,6 +2,8 @@
 
 import java.util.function.Function;
 
+import org.valkyrienskies.core.impl.shadow.pS;
+
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
 import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
@@ -14,7 +16,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -88,6 +92,16 @@ public class ShortShaftBlock extends BaseEntityBlock implements IKineticBlock {
 				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), positive ? AxisOffset.FRONT : AxisOffset.BACK, AXLE)
 			};
 		}
+	}
+	
+	@Override
+	public BlockState rotate(BlockState pState, Rotation pRotation) {
+		return pState.setValue(FACING, pRotation.rotate(pState.getValue(FACING)));
+	}
+	
+	@Override
+	public BlockState mirror(BlockState pState, Mirror pMirror) {
+		return pState.setValue(FACING, pMirror.mirror(pState.getValue(FACING)));
 	}
 	
 }
