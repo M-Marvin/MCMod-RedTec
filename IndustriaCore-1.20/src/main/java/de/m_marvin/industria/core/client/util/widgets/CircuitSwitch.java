@@ -4,12 +4,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.client.electrics.events.ElectricNetworkEvent;
+import de.m_marvin.industria.core.client.util.ClientTimer;
 import de.m_marvin.industria.core.client.util.GraphicsUtility;
 import de.m_marvin.industria.core.electrics.ElectricUtility;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
 import de.m_marvin.industria.core.electrics.engine.network.CPlayerSwitchNetworkPackage;
 import de.m_marvin.industria.core.util.ConditionalExecutor;
-import de.m_marvin.industria.core.util.GameUtility;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -90,7 +90,7 @@ public class CircuitSwitch extends AbstractWidget {
 		pGuiGraphics.blit(this.texture, this.getX(), this.getY(), 212, 1, 43, 87);
 		
 		if (network == null) return;
-		this.time = GameUtility.getSystemTicks() + pPartialTick;
+		this.time = ClientTimer.getRenderTicks();
 		
 		// Status Lamps
 		float lm = (float) Math.sin(this.time % 15 / 15F * Math.PI * 2);
