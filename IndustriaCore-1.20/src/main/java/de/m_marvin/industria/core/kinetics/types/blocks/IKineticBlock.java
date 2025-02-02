@@ -27,7 +27,7 @@ public interface IKineticBlock {
 		public BlockState state(Level level) {
 			BlockState state = level.getBlockState(pos);
 			if (state.getBlock() instanceof IKineticBlock block && partId > 0) {
-				return block.getState(level, pos, partId, state);
+				return block.getPartState(level, pos, partId, state);
 			}
 			return state;
 		}
@@ -91,7 +91,7 @@ public interface IKineticBlock {
 	
 	public TransmissionNode[] getTransmissionNodes(LevelAccessor level, BlockPos pos, BlockState state);
 
-	public default BlockState getState(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
+	public default BlockState getPartState(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
 		return level.getBlockState(pos);
 	}
 	

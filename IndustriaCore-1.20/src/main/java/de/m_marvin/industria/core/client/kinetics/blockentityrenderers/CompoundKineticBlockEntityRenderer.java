@@ -3,6 +3,7 @@ package de.m_marvin.industria.core.client.kinetics.blockentityrenderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.CompoundKineticBlockEntity;
+import de.m_marvin.industria.core.registries.Blocks;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -27,6 +28,13 @@ public class CompoundKineticBlockEntityRenderer<T extends CompoundKineticBlockEn
 	
 	@Override
 	public void render(T pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
+		
+		if (pBlockEntity.getParts().isEmpty()) {
+			
+			renderCompoundBlock(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pBlockEntity.getLevel(), Blocks.ERROR_BLOCK.get().defaultBlockState());
+			return;
+			
+		}
 		
 		for (var block : pBlockEntity.getParts().values()) {
 			

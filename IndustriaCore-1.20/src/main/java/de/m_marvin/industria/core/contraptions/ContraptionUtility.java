@@ -32,6 +32,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class ContraptionUtility {
 
+	private ContraptionUtility() {}
+	
 	/* Naming and finding of contraptions */
 
 	public static <T extends Contraption> List<T> getContraptionsWithTag(Level level, String name) {

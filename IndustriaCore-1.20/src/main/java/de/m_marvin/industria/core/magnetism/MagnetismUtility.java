@@ -13,6 +13,8 @@ import net.minecraftforge.network.PacketDistributor;
 
 public class MagnetismUtility {
 	
+	private MagnetismUtility() {}
+	
 	public static void removeFieldInfluence(Level level, BlockPos pos) {
 		MagnetismHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.MAGNETISM_HANDLER_CAPABILITY);
 		handler.removeFieldInfluence(pos);

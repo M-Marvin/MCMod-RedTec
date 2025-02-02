@@ -32,6 +32,14 @@ public class CompoundKineticBlock extends BaseEntityBlock implements IKineticBlo
 	}
 
 	@Override
+	public BlockState getPartState(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
+		if (level.getBlockEntity(pos) instanceof CompoundKineticBlockEntity blockEntity) {
+			return blockEntity.getPartState(partId);
+		}
+		return state;
+	}
+	
+	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
 		return new CompoundKineticBlockEntity(pPos, pState);
 	}

@@ -32,6 +32,11 @@ import net.minecraftforge.network.PacketDistributor;
 
 public class ElectricUtility {
 	
+	private ElectricUtility() {}
+	
+	/**
+	 * Triggers an update for the network at the given position
+	 */
 	public static <P> void updateNetwork(Level level, P position) {
 		ElectricHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.ELECTRIC_HANDLER_CAPABILITY);
 		handler.updateNetwork(position);

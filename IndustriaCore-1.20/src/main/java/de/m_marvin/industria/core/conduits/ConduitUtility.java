@@ -26,6 +26,8 @@ import net.minecraftforge.network.PacketDistributor;
 
 public class ConduitUtility {
 	
+	private ConduitUtility() {}
+	
 	public static boolean setConduit(Level level, ConduitPos position, Conduit conduit, double length) {
 		ConduitHandlerCapability handler = GameUtility.getLevelCapability(level, Capabilities.CONDUIT_HANDLER_CAPABILITY);
 		if (handler.placeConduit(position, conduit, length) && !level.isClientSide()) {

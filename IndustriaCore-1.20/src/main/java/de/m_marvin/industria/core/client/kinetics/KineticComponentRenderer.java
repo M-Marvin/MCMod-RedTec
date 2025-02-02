@@ -71,8 +71,6 @@ public class KineticComponentRenderer {
 	@SuppressWarnings({ "resource", "deprecation" })
 	private static void drawDebugFrames(PoseStack matrixStack, MultiBufferSource bufferSource, ClientLevel clientLevel, float partialTicks) {
 		
-		// TODO incorrect bounding box rendering on compound block
-		
 		LazyOptional<KineticHandlerCapabillity> optionalKineticHolder = clientLevel.getCapability(Capabilities.KINETIC_HANDLER_CAPABILITY);
 		if (optionalKineticHolder.isPresent()) {
 			KineticHandlerCapabillity kineticHolder = optionalKineticHolder.resolve().get();

@@ -40,6 +40,11 @@ public class CompoundKineticBlockEntity extends BlockEntity implements IKineticB
 				.toArray(TransmissionNode[]::new);
 	}
 	
+	public BlockState getPartState(int partId) {
+		if (!this.parts.containsKey(partId)) return getBlockState();
+		return this.parts.get(partId).getState();
+	}
+	
 	public Map<Integer, VirtualBlock<Block, BlockEntity>> getParts() {
 		return parts;
 	}

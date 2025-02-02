@@ -1,15 +1,15 @@
 package de.m_marvin.industria.core.kinetics.engine;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.kinetics.engine.KineticHandlerCapabillity.Component;
+import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.KineticReference;
 import de.m_marvin.industria.core.util.types.PowerNetState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -20,17 +20,12 @@ public class KineticNetwork {
 	public static record TransmissionJoint(Component a, Component b, double ratio) {}
 	
 	protected final Supplier<Level> level;
-	protected Set<Component> components = new HashSet<>();
+	protected Map<KineticReference, Component> components = new HashMap<>();
 	protected Map<Component, Double> component2ratioMap = new HashMap<>();
 	protected double speed = 0;
-//	protected Set<TransmissionJoint> joints = ConcurrentHashMap.newKeySet();
 	
 	protected PowerNetState state = PowerNetState.ACTIVE;
 	
-//	protected double maxPower;
-//	protected double currentConsumtion;
-//	protected double currentProduction;
-
 	public KineticNetwork(Supplier<Level> level) {
 		this.level = level;
 	}
@@ -43,7 +38,7 @@ public class KineticNetwork {
 		CompoundTag tag = new CompoundTag();
 		
 		ListTag componentsTag = new ListTag();
-		for (Component component : this.components) {
+		for (Component component : this.components.values()) {
 			if (component == null) continue;
 			try {
 				CompoundTag compTag = new CompoundTag();
@@ -62,13 +57,22 @@ public class KineticNetwork {
 	public void loadNBT(KineticHandlerCapabillity handler, CompoundTag tag) {
 		ListTag componentsTag = tag.getList("Components", ListTag.TAG_COMPOUND);
 		componentsTag.stream().forEach((componentTag) -> {
-			this.components.add(Component.deserializeNbt((CompoundTag) componentTag));
+			Component component = Component.deserializeNbt((CompoundTag) componentTag);
+			this.components.put(component.reference(), component);
 		});
 		this.state = PowerNetState.valueOf(tag.getString("State").toUpperCase());
 	}
 	
-	public Set<Component> getComponents() {
-		return components;
+	public Collection<Component> getComponents() {
+		return components.values();
+	}
+	
+	public void addComponent(Component component) {
+		this.components.put(component.reference(), component);
+	}
+	
+	public boolean hasReference(KineticReference reference) {
+		return components.containsKey(reference);
 	}
 
 	public boolean addTransmission(Component component1, Component component2, double ratio) {
@@ -100,16 +104,7 @@ public class KineticNetwork {
 		return speed;
 	}
 	
-//	public Set<TransmissionJoint> getJoints() {
-//		return joints;
-//	}
-	
 	public void reset() {
-//		this.maxPower = 0;
-//		this.currentConsumtion = 0;
-//		this.circuitBuilder = new StringBuilder();
-//		this.netList = "";
-//		this.groundNode = null;
 		this.components.clear();
 		this.component2ratioMap.clear();
 	}
@@ -120,10 +115,10 @@ public class KineticNetwork {
 
 	public void removeInvalidComponents() {
 		List<Component> invalid = new ArrayList<>();
-		for (Component component : this.components) {
+		for (Component component : this.components.values()) {
 			if (component == null || component.instance(null) == null) invalid.add(component);
 		}
-		invalid.forEach(c -> components.remove(c));
+		invalid.forEach(c -> components.remove(c.reference()));
 	}
 	
 	public void tripFuse() {
