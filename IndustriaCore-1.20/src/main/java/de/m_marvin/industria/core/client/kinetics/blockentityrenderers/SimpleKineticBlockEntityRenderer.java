@@ -3,19 +3,14 @@ package de.m_marvin.industria.core.client.kinetics.blockentityrenderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.IKineticBlockEntity;
-import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock;
-import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
-import de.m_marvin.industria.core.registries.Blocks;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.data.ModelData;
 
 public class SimpleKineticBlockEntityRenderer<T extends BlockEntity & IKineticBlockEntity> implements BlockEntityRenderer<T> {
@@ -29,39 +24,35 @@ public class SimpleKineticBlockEntityRenderer<T extends BlockEntity & IKineticBl
 	@Override
 	public void render(T pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
 		
-		pPoseStack.pushPose();
-		
-		BlockState state = pBlockEntity.getBlockState();
-		BakedModel model = dispatcher.getBlockModel(state);
-		ModelData data = ModelData.EMPTY;
-		
-		int rpm = pBlockEntity.getRPM();
+		int rpm = pBlockEntity.getRPM(0);
 		double t = pBlockEntity.getLevel().getGameTime() + pPartialTick;
-		float rotation = (float) ((float) (t / 3000 * rpm) * 2 * Math.PI);
 		
-		if (state.getBlock() instanceof IKineticBlock kinetic) {
-			TransmissionNode[] nodes = kinetic.getTransmissionNodes(pBlockEntity.getLevel(), pBlockEntity.getBlockPos(), state);
-			if (nodes.length == 0) return;
-			Axis axis = nodes[0].axis();
+		for (IKineticBlockEntity.CompoundPart part : pBlockEntity.getVisualParts()) {
 
-			// FIXME this has to be configured when registering the renderer
-			float ROT_OFFSET = (float) (11.25F / 360F * Math.PI * 2);
-			if (state.getBlock() == Blocks.LARGE_GEAR.get()) {
-				ROT_OFFSET = (float) (5.625F / 360F * Math.PI * 2);
-			}
+			pPoseStack.pushPose();
+		
+			BlockState state = part.state();
+			BakedModel model = dispatcher.getBlockModel(state);
+			ModelData data = ModelData.EMPTY;
+			Axis axis = part.rotationAxis();
+			float rotationalOffset = (float) part.axialOffset();
+			float rotationalSpeed = (float) part.rotationRatio();
+			
+			float rotation = (float) ((float) (t / 3000 * rpm * rotationalSpeed) * 2 * Math.PI);
 			
 			pPoseStack.translate(0.5, 0.5, 0.5);
 			switch (axis) {
-			case X: pPoseStack.mulPose(com.mojang.math.Axis.XP.rotation(rotation - ROT_OFFSET)); break;
-			case Y: pPoseStack.mulPose(com.mojang.math.Axis.YP.rotation(rotation - ROT_OFFSET)); break;
-			case Z: pPoseStack.mulPose(com.mojang.math.Axis.ZP.rotation(rotation - ROT_OFFSET)); break;
+			case X: pPoseStack.mulPose(com.mojang.math.Axis.XP.rotation(rotation - rotationalOffset)); break;
+			case Y: pPoseStack.mulPose(com.mojang.math.Axis.YP.rotation(rotation - rotationalOffset)); break;
+			case Z: pPoseStack.mulPose(com.mojang.math.Axis.ZP.rotation(rotation - rotationalOffset)); break;
 			}
 			pPoseStack.translate(-0.5, -0.5, -0.5);
-			
-			for (net.minecraft.client.renderer.RenderType rt : model.getRenderTypes(state, RandomSource.create(42), data))
+
+			for (net.minecraft.client.renderer.RenderType rt : model.getRenderTypes(state, pBlockEntity.getLevel().getRandom(), data))
 				this.dispatcher.getModelRenderer().renderModel(pPoseStack.last(), pBuffer.getBuffer(net.minecraftforge.client.RenderTypeHelper.getEntityRenderType(rt, false)), state, model, 1F, 1F, 1F, pPackedLight, pPackedOverlay, data, rt);
-			
+
 			pPoseStack.popPose();
+			
 		}
 		
 	}

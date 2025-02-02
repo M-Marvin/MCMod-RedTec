@@ -65,8 +65,8 @@ public class VoxelShapeUtility {
 		
 		public VoxelShapeRotationBuilder rotateFromAxisY(Axis axis) {
 			switch (axis) {
-			case X: return rotateZ(90);
-			case Z: return rotateX(90);
+			case X: return rotateZ(-90);
+			case Z: return rotateX(-90);
 			default: return this;
 			}
 		}

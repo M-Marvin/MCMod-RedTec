@@ -1,11 +1,9 @@
 package de.m_marvin.industria.core.kinetics.engine;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.OptionalDouble;
 import java.util.Queue;
@@ -18,6 +16,7 @@ import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.electrics.engine.ElectricNetwork;
 import de.m_marvin.industria.core.kinetics.engine.network.SSyncKineticComponentsPackage;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock;
+import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.KineticReference;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
 import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
@@ -60,7 +59,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	}
 	
 	private final Level level;
-	private final HashMap<Object, Component> pos2componentMap = new HashMap<Object, Component>();
+	private final HashMap<KineticReference, Component> pos2componentMap = new HashMap<KineticReference, Component>();
 	private final HashSet<KineticNetwork> kineticNetworks = new HashSet<KineticNetwork>();
 	private final HashMap<Component, KineticNetwork> component2kineticMap = new HashMap<Component, KineticNetwork>();
 	
@@ -121,18 +120,15 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 		Level level = (Level) event.getLevel();
 		KineticHandlerCapabillity handler = GameUtility.getLevelCapability(level, Capabilities.KINETIC_HANDLER_CAPABILITY);
 		
-		if (event.getState().getBlock() instanceof IKineticBlock kinetic) {
-			if (handler.isInNetwork(event.getPos())) {
-				Component component = handler.getComponentAt(event.getPos());
-				if (component.instance(level).equals(event.getState())) return; // No real update, ignore
-				handler.addToNetwork(component); // The component is already added to the network at this point, this call just ensures that the node maps are up to date
+		if (event.getState().getBlock() instanceof IKineticBlock) {
+			for (Component component : handler.getComponentsAt(event.getPos())) {
 				component.setChanged();
-				handler.updateNetwork(component.pos());
-			} else {
-				handler.addComponent(event.getPos(), kinetic, event.getState());
 			}
+			handler.updateNetwork(event.getPos());
 		} else {
-			handler.removeComponent(event.getPos());
+			for (Component component : handler.getComponentsAt(event.getPos())) {
+				handler.removeComponent(component.reference());
+			}
 		}
 	}
 	
@@ -163,15 +159,15 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	 * Represents a component in the kinetic networks
 	 */
 	public static class Component {
-		protected BlockPos pos;
+		protected KineticReference reference;
 		protected boolean hasChanged;
 		protected BlockState instance;
 		protected IKineticBlock type;
 		
-		public Component(BlockPos pos, IKineticBlock type, BlockState instance) {
+		public Component(KineticReference reference, IKineticBlock type, BlockState instance) {
 			this.type = type;
 			this.instance = instance;
-			this.pos = pos;
+			this.reference = reference;
 			this.hasChanged = true;
 		}
 		
@@ -179,8 +175,8 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 			this.hasChanged = true;
 		}
 		
-		public BlockPos pos() {
-			return pos;
+		public KineticReference reference() {
+			return reference;
 		}
 		
 		public IKineticBlock type() {
@@ -189,7 +185,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 		
 		public BlockState instance(Level level) {
 			if ((this.hasChanged || instance.isAir()) && level != null) {
-				this.instance = level.getBlockState(pos);
+				this.instance = reference.state(level);
 				if (!this.instance.isAir()) {
 					this.hasChanged = false;
 				}
@@ -199,25 +195,25 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 		
 		@Override
 		public int hashCode() {
-			return Objects.hashCode(this.type, this.pos);
+			return Objects.hashCode(this.type, this.reference);
 		}
 		
 		@Override
 		public String toString() {
-			return "Component{pos=" + this.pos() + ",type=" + this.type.toString() + ",instance=" + (this.instance(null) == null ? "N/A" : this.instance(null).toString()) + "}#hash=" + this.hashCode();
+			return "Component{reference=" + this.reference() + ",type=" + this.type.toString() + ",instance=" + (this.instance(null) == null ? "N/A" : this.instance(null).toString()) + "}#hash=" + this.hashCode();
 		}
 		
 		@Override
 		public boolean equals(Object obj) {
 			if (obj == this) return true;
 			if (obj instanceof Component other) {
-				return this.type.equals(other.type) && this.pos.equals(other.pos);
+				return this.type.equals(other.type) && this.reference.equals(other.reference);
 			}
 			return false;
 		}
 		
 		public void serializeNbt(CompoundTag nbt) {
-			nbt.put("Position", NbtUtils.writeBlockPos(pos));
+			nbt.put("Reference", reference.serialize());
 			if (this.type instanceof Block typeBlock) nbt.putString("Type", ForgeRegistries.BLOCKS.getKey(typeBlock).toString());
 			nbt.put("State", NbtUtils.writeBlockState(instance));
 		}
@@ -225,45 +221,52 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 			ResourceLocation typeName = new ResourceLocation(nbt.getString("Type"));
 			Block typeObject = ForgeRegistries.BLOCKS.getValue(typeName);
 			if (typeObject instanceof IKineticBlock type) {
-				BlockPos position = NbtUtils.readBlockPos(nbt.getCompound("Position"));
+				KineticReference reference = KineticReference.deserialize(nbt.getCompound("Reference"));
 				@SuppressWarnings("deprecation")
 				BlockState instance = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("State"));
-				return new Component(position, type, instance);
+				return new Component(reference, type, instance);
 			}
 			return null;
 		}
 		
-		public TransmissionNode[] getTransmissionNodes(Level level) {
-			return this.type.getTransmissionNodes(level, pos, instance);
-		}
 		public int getSourceSpeed(Level level) {
-			return this.type.getSourceSpeed(level, pos, instance);
+			return this.type.getSourceSpeed(level, reference.pos(), reference.partId(), instance);
 		}
 		public double getTorque(Level level) {
-			return this.type.getTorque(level, pos, instance);
+			return this.type.getTorque(level, reference.pos(), reference.partId(), instance);
 		}
 		public void setRPM(Level level, int rpm) {
-			this.type.setRPM(level, pos, instance, rpm);
+			this.type.setRPM(level, reference.pos(), reference.partId(), instance, rpm);
 		}
 		public int getRPM(Level level) {
-			return this.type.getRPM(level, pos, instance);
+			return this.type.getRPM(level, reference.pos(), reference.partId(), instance);
 		}
 	}
 
 	/**
 	 * Returns the component with the given position
 	 */
-	public Component getComponentAt(BlockPos position) {
-		return this.pos2componentMap.get(position);
+	public Collection<Component> getComponentsAt(BlockPos position) {
+		return this.pos2componentMap.keySet().stream()
+				.filter(r -> r.pos().equals(position))
+				.map(this::getComponentAt)
+				.toList();
+	}
+
+	/**
+	 * Returns the component with the given position
+	 */
+	public Component getComponentAt(KineticReference reference) {
+		return this.pos2componentMap.get(reference);
 	}
 	
 	/**
 	 * Returns the network an component at the given position
 	 */
 	public KineticNetwork getNetworkAt(BlockPos position) {
-		Component component = getComponentAt(position);
-		if (component == null) return null;
-		return this.component2kineticMap.get(component);
+		Collection<Component> components = getComponentsAt(position);
+		if (components.isEmpty()) return null;
+		return this.component2kineticMap.get(components.stream().findAny().get());
 	}
 
 	/**
@@ -271,8 +274,8 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	 */
 	public Set<Component> findComponentsInChunk(ChunkPos chunkPos) {
 		Set<Component> components = new HashSet<>();
-		for (Entry<Object, Component> componentEntry : this.pos2componentMap.entrySet()) {
-			if (new ChunkPos(componentEntry.getValue().pos()).equals(chunkPos)) components.add(componentEntry.getValue());
+		for (Entry<KineticReference, Component> componentEntry : this.pos2componentMap.entrySet()) {
+			if (new ChunkPos(componentEntry.getKey().pos()).equals(chunkPos)) components.add(componentEntry.getValue());
 		}
 		return components;
 	}
@@ -355,11 +358,11 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 			
 		}
 
-		// TODO DEBUGGIN update component RPM
+		// TODO DEBUGING update component RPM
 		for (Component c : network.getComponents()) {
 			int cspeed = (int) Math.round(network.getSpeed() / network.getTransmission(c));
 			c.setRPM(level, cspeed);
-			GameUtility.triggerClientSync(level, c.pos());
+			GameUtility.triggerClientSync(level, c.reference().pos()); // TODO to many updates
 		}
 		
 		return network;
@@ -378,12 +381,12 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	/**
 	 * Removes a component from the network and updates it and its components
 	 */
-	public void removeComponent(BlockPos pos) {
-		if (this.pos2componentMap.containsKey(pos)) {
-			Component component = removeFromNetwork(pos);
+	public void removeComponent(KineticReference reference) {
+		if (this.pos2componentMap.containsKey(reference)) {
+			Component component = removeFromNetwork(reference);
 			if (component != null) {
 				if (!this.level.isClientSide) {
-					ChunkPos chunkPos = new ChunkPos(component.pos());
+					ChunkPos chunkPos = new ChunkPos(component.reference().pos());
 					IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunk(chunkPos.x, chunkPos.z)), new SSyncKineticComponentsPackage(component, chunkPos, SyncRequestType.REMOVED));
 				}
 				KineticNetwork network = this.component2kineticMap.remove(component);
@@ -393,7 +396,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 					while (componentsToUpdate.size() > 0) {
 						Component componentToUpdate = componentsToUpdate.poll();
 						if (componentToUpdate == component) continue;
-						KineticNetwork network2 = updateNetwork(componentToUpdate.pos());
+						KineticNetwork network2 = updateNetwork(componentToUpdate.reference().pos());
 						if (network2 != null)
 							componentsToUpdate.removeAll(network2.getComponents());
 					}
@@ -406,30 +409,30 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	/**
 	 * Adds a component to the network and updates it and its components
 	 */
-	public void addComponent(BlockPos pos, IKineticBlock type, BlockState instance) {
+	public void addComponent(KineticReference reference, IKineticBlock type, BlockState instance) {
 		
-		Component component = this.pos2componentMap.get(pos);
+		Component component = this.pos2componentMap.get(reference);
 		if (component != null) {
 			if (!component.type.equals(type)) {
-				removeFromNetwork(pos);
+				removeFromNetwork(reference);
 			}
 		}
-		Component component2 = new Component(pos, type, instance);
+		Component component2 = new Component(reference, type, instance);
 		addToNetwork(component2);
 		if (!this.level.isClientSide) {
-			ChunkPos chunkPos = new ChunkPos(component2.pos());
+			ChunkPos chunkPos = new ChunkPos(component2.reference().pos());
 			IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunk(chunkPos.x, chunkPos.z)), new SSyncKineticComponentsPackage(component2, chunkPos, SyncRequestType.ADDED));
 		}
 
-		updateNetwork(pos);
+		updateNetwork(reference.pos());
 
 	}
 	
 	/**
 	 * Removes a component from the network but does not cause any updates
 	 */
-	public Component removeFromNetwork(BlockPos pos) {
-		Component component = this.pos2componentMap.remove(pos);
+	public Component removeFromNetwork(KineticReference reference) {
+		Component component = this.pos2componentMap.remove(reference);
 		return component;
 	}
 	
@@ -438,7 +441,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	 */
 	public boolean isInNetwork(Component component) {
 		if (component.instance(level) == null) return false;
-		return this.component2kineticMap.containsKey(component) && this.pos2componentMap.containsKey(component.pos());
+		return this.component2kineticMap.containsKey(component) && this.pos2componentMap.containsKey(component.reference());
 	}
 
 	/**
@@ -461,81 +464,90 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	 */
 	public void addToNetwork(Component component) {
 		if (component.instance(level) == null) return;
-		this.pos2componentMap.put(component.pos, component);
+		this.pos2componentMap.put(component.reference(), component);
 	}
 	
 	public KineticNetwork makeNetwork(BlockPos startPos) {
 		
 		KineticNetwork network = null;
-		List<BlockPos> tnd = new ArrayList<>();
+		Set<KineticReference> tnd = new HashSet<>();
 		Queue<BlockPos> neighbors = new ArrayDeque<>();
 		neighbors.add(startPos);
 		
 		while (!neighbors.isEmpty()) {
 			
-			BlockPos pos1 = neighbors.poll();
-			BlockState state1 = this.level.getBlockState(pos1);
+			BlockPos pos1a = neighbors.poll();
+			BlockState state1a = this.level.getBlockState(pos1a);
 			
-			if (state1.getBlock() instanceof IKineticBlock kinetic1) {
+			if (state1a.getBlock() instanceof IKineticBlock kinetic1a) {
 				
-				for (TransmissionNode node1 : kinetic1.getTransmissionNodes(level, pos1, state1)) {
+				for (TransmissionNode node1 : kinetic1a.getTransmissionNodes(level, pos1a, state1a)) {
 					
-					BlockPos tpos1 = node1.pos();
+					BlockState state1 = node1.reference().state(level);
 					
-					tnd.add(tpos1);
-					
-					Component component1 = getComponentAt(pos1);
-					if (component1 == null) {
-						component1 = new Component(pos1, kinetic1, state1);
-						addToNetwork(component1);
-						
-						ChunkPos chunkPos = new ChunkPos(component1.pos());
-						IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunk(chunkPos.x, chunkPos.z)), new SSyncKineticComponentsPackage(component1, chunkPos, SyncRequestType.ADDED));
-					}
-					
-					if (network == null) {
-						network = this.component2kineticMap.get(component1);
-						if (network == null) {
-							network = new KineticNetwork(() -> this.level);
-							this.component2kineticMap.put(component1, network); 
-						} else {
-							network.reset();
-						}
-					} else {
-						KineticNetwork previousNetwork = this.component2kineticMap.put(component1, network);
-						if (previousNetwork != null && previousNetwork != network) {
-							this.kineticNetworks.remove(previousNetwork);
-						}
-					}
-					
-					network.getComponents().add(component1);
-					
-					for (BlockPos tpos2 : node1.type().pos(node1)) {
+					if (state1.getBlock() instanceof IKineticBlock kinetic1) {
 
-						if (tnd.contains(tpos2)) continue;
+						tnd.add(node1.reference());
 						
-						BlockState state2 = this.level.getBlockState(tpos2);
-						
-						if (state2.getBlock() instanceof IKineticBlock kinetic2) {
+						Component component1 = getComponentAt(node1.reference());
+						if (component1 == null) {
+							component1 = new Component(node1.reference(), kinetic1, state1);
+							addToNetwork(component1);
 							
-							for (TransmissionNode node2 : kinetic2.getTransmissionNodes(level, tpos2, state2)) {
+							ChunkPos chunkPos = new ChunkPos(component1.reference().pos());
+							IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunk(chunkPos.x, chunkPos.z)), new SSyncKineticComponentsPackage(component1, chunkPos, SyncRequestType.ADDED));
+						}
+						
+						if (network == null) {
+							network = this.component2kineticMap.get(component1);
+							if (network == null) {
+								network = new KineticNetwork(() -> this.level);
+								this.component2kineticMap.put(component1, network); 
+							} else {
+								network.reset();
+							}
+						} else {
+							KineticNetwork previousNetwork = this.component2kineticMap.put(component1, network);
+							if (previousNetwork != null && previousNetwork != network) {
+								this.kineticNetworks.remove(previousNetwork);
+							}
+						}
+						
+						network.getComponents().add(component1);
+
+						for (BlockPos pos2a : node1.type().pos(node1)) {
+							
+							BlockState state2a = this.level.getBlockState(pos2a);
+							
+							if (state2a.getBlock() instanceof IKineticBlock kinetic2a) {
 								
-								double transmission = node1.type().apply(node1, node2);
-								if (transmission == 0.0) continue;
+								for (TransmissionNode node2 : kinetic2a.getTransmissionNodes(level, pos2a, state2a)) {
 
-								BlockPos pos2 = node2.blockPos();
+									if (tnd.contains(node2.reference())) continue;
+									
+									BlockPos pos2 = node2.reference().pos();
+									BlockState state2 = node2.reference().state(level);
+									
+									if (state2.getBlock() instanceof IKineticBlock kinetic2) {
 
-								Component component2 = getComponentAt(pos2);
-								if (component2 == null) {
-									component2 = new Component(pos2, kinetic2, state2);
-									addToNetwork(component1);
+										double transmission = node1.type().apply(node1, node2);
+										if (transmission == 0.0) continue;
+
+										Component component2 = getComponentAt(node2.reference());
+										if (component2 == null) {
+											component2 = new Component(node2.reference(), kinetic2, state2);
+											addToNetwork(component1);
+										}
+										
+										if (!network.addTransmission(component1, component2, transmission))
+											network.tripFuse();
+										
+										if (!neighbors.contains(pos2)) neighbors.add(pos2);
+										break;
+										
+									}
+									
 								}
-								
-								if (!network.addTransmission(component1, component2, transmission))
-									network.tripFuse();
-								
-								if (!neighbors.contains(pos2)) neighbors.add(pos2);
-								break;
 								
 							}
 							

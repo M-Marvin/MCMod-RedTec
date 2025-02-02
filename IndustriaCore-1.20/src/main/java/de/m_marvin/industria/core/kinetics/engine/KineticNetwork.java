@@ -50,7 +50,7 @@ public class KineticNetwork {
 				component.serializeNbt(compTag);
 				componentsTag.add(compTag);
 			} catch (Exception e) {
-				IndustriaCore.LOGGER.error("Failed to serialize kinetic component at " + component.pos() + "!");
+				IndustriaCore.LOGGER.error("Failed to serialize kinetic component at " + component.reference() + "!");
 				e.printStackTrace();
 			}
 		}

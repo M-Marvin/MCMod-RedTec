@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
+// TODO still required ?
 public class UniversalRecipeSerializer<T extends Recipe<?>> implements RecipeSerializer<T> {
 
 	protected final BiFunction<ResourceLocation, FriendlyByteBuf, T> fromNetwork;

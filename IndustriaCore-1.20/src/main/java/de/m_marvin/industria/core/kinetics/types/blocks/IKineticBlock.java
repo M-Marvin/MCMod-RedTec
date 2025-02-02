@@ -1,17 +1,15 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.ArrayUtils;
-
+import de.m_marvin.industria.core.kinetics.engine.transmission.GearTransmissions;
+import de.m_marvin.industria.core.kinetics.engine.transmission.ShaftTransmission;
 import de.m_marvin.industria.core.kinetics.types.blockentities.IKineticBlockEntity;
-import de.m_marvin.industria.core.util.MathUtility;
-import de.m_marvin.univec.impl.Vec3i;
+import de.m_marvin.industria.core.util.types.AxisOffset;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface IKineticBlock {
@@ -21,143 +19,98 @@ public interface IKineticBlock {
 		public BlockPos[] pos(TransmissionNode n);
 	}
 	
+	public static record KineticReference(
+			BlockPos pos, 
+			int partId
+	) {
+		
+		public BlockState state(Level level) {
+			BlockState state = level.getBlockState(pos);
+			if (state.getBlock() instanceof IKineticBlock block && partId > 0) {
+				return block.getState(level, pos, partId, state);
+			}
+			return state;
+		}
+		
+		public static KineticReference simple(BlockPos pos) {
+			return new KineticReference(pos, 0);
+		}
+		
+		public static KineticReference subPart(BlockPos pos, int partId) {
+			return new KineticReference(pos, partId);
+		}
+		
+		public CompoundTag serialize() {
+			CompoundTag nbt = new CompoundTag();
+			nbt.put("Position", NbtUtils.writeBlockPos(pos));
+			nbt.putInt("PartId", partId);
+			return nbt;
+		}
+		
+		public static KineticReference deserialize(CompoundTag nbt) {
+			BlockPos position = NbtUtils.readBlockPos(nbt.getCompound("Position"));
+			int partId = nbt.getInt("PartId");
+			return new KineticReference(position, partId);
+		}
+		
+	}
+	
 	/**
+	 * @param reference The reference to the main block to which this node belongs
 	 * @param pos Position of this node in the world
-	 * @param state State of the main block of this kinetic component (can be different from the block at pos!)
-	 * @param blockPos Position of the main block of this kinetic component (can be different from pos!)
-	 * @param kinetic The Block instance of this kinetic component
 	 * @param ratio The RPM ratio for this transmission node
 	 * @param axis The axis of rotation of this node
+	 * @param offset Where the node is placed along the axis (front/center/back)
 	 * @param type The type of transmission of this node
 	 */
-	public static record TransmissionNode(BlockPos pos, BlockState state, BlockPos blockPos, IKineticBlock kinetic, double ratio, Axis axis, TransmissionType type) {}
+	public static record TransmissionNode(
+			KineticReference reference,
+			BlockPos pos, 
+			double ratio, 
+			Axis axis, 
+			AxisOffset offset, 
+			TransmissionType type
+	) {
+		public TransmissionNode withReference(KineticReference reference) {
+			return new TransmissionNode(reference, pos, ratio, axis, offset, type);
+		}
+	}
 
-	public static final TransmissionType SHAFT = new TransmissionType() {
-		@Override
-		public double apply(TransmissionNode a, TransmissionNode b) {
-			if (a.type() != this || b.type() != this) return 0.0;
-			if (a.axis() != b.axis()) return 0.0;
-			if (a.pos().relative(Direction.fromAxisAndDirection(a.axis(), AxisDirection.POSITIVE)).equals(b.pos())) return 1.0;
-			if (a.pos().relative(Direction.fromAxisAndDirection(a.axis(), AxisDirection.NEGATIVE)).equals(b.pos())) return 1.0;
-			return 0.0;
-		}
-		@Override
-		public BlockPos[] pos(TransmissionNode n) {
-			return new BlockPos[] {
-				n.pos().relative(Direction.fromAxisAndDirection(n.axis(), AxisDirection.POSITIVE)),
-				n.pos().relative(Direction.fromAxisAndDirection(n.axis(), AxisDirection.NEGATIVE))
-			};
-		};
-	};
+	/** Shaft which connects in both directions **/
+	public static final TransmissionType SHAFT = ShaftTransmission.SHAFT;
+	/** Shaft which connects only in the axis positive direction **/
+	public static final TransmissionType SHAFT_POS = ShaftTransmission.SHAFT_POS;
+	/** Shaft which connects only in the axis negative direction **/
+	public static final TransmissionType SHAFT_NEG = ShaftTransmission.SHAFT_NEG;
+	/** Gear which connects on an 90 degree orthogonal axis to other gears of the same type **/
+	public static final TransmissionType GEAR_ANGLE = GearTransmissions.GEAR_ANGLE;
+	/** Gear which connects diagonally on the same plane to gears with same axis **/
+	public static final TransmissionType GEAR_DIAG = GearTransmissions.GEAR_DIAG;
+	/** Gear which connects only to touching neighbor gears with the same axis **/
+	public static final TransmissionType GEAR = GearTransmissions.GEAR;
 	
-	public static final TransmissionType GEAR_ANGLE = new TransmissionType() {
-		public int vaxis(BlockPos vec, Axis axis) {
-			switch (axis) {
-			default:
-			case X: return vec.getX();
-			case Y: return vec.getY();
-			case Z: return vec.getZ();
-			}
-		}
-		@Override
-		public double apply(TransmissionNode a, TransmissionNode b) {
-			if (a.type() != GEAR_ANGLE || b.type() != GEAR_ANGLE) return 0.0;
-			if (a.axis() == b.axis()) return 0.0;
-			if (Stream.of(pos(a)).filter(p -> p.equals(b.pos())).count() == 0) return 0.0;
-			if (Stream.of(pos(b)).filter(p -> p.equals(a.pos())).count() == 0) return 0.0;
-			int ia = vaxis(b.pos(), b.axis()) - vaxis(a.pos(), b.axis());
-			int ib = vaxis(a.pos(), a.axis()) - vaxis(b.pos(), a.axis());
-			return -(ia * ib) * a.ratio() / b.ratio();
-		}
-		@Override
-		public BlockPos[] pos(TransmissionNode n) {
-			Vec3i v = Vec3i.fromVec(n.pos()).sub(Vec3i.fromVec(n.blockPos()));
-			if (v.lengthSqrt() != 0) {
-				Direction offset = MathUtility.getVecDirection(v);
-				return new BlockPos[] {
-					n.pos().relative(offset).relative(n.axis(), +1),
-					n.pos().relative(offset).relative(n.axis(), -1)
-				};
-			} else {
-				Direction[] offset = MathUtility.getDirectionsOrthogonal(n.axis());
-				return new BlockPos[] {
-					n.pos().relative(offset[0]).relative(n.axis(), +1),
-					n.pos().relative(offset[0]).relative(n.axis(), -1),
-					n.pos().relative(offset[1]).relative(n.axis(), +1),
-					n.pos().relative(offset[1]).relative(n.axis(), -1),
-					n.pos().relative(offset[2]).relative(n.axis(), +1),
-					n.pos().relative(offset[2]).relative(n.axis(), -1),
-					n.pos().relative(offset[3]).relative(n.axis(), +1),
-					n.pos().relative(offset[3]).relative(n.axis(), -1)
-				};
-			}
-		}
-	};
+	public TransmissionNode[] getTransmissionNodes(LevelAccessor level, BlockPos pos, BlockState state);
+
+	public default BlockState getState(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
+		return level.getBlockState(pos);
+	}
 	
-	public static final TransmissionType GEAR_DIAG = new TransmissionType() {
-		@Override
-		public double apply(TransmissionNode a, TransmissionNode b) {
-			if (a.type() == GEAR && b.type() == GEAR) {
-				return GEAR.apply(a, b);
-			} else if (a.type() == GEAR && b.type() == GEAR_DIAG) {
-				if (a.axis() != b.axis()) return 0.0;
-				if (Stream.of(gearPos(b)).filter(p -> p.equals(a.pos())).count() == 0) return 0.0;
-				return -a.ratio() / b.ratio();
-			} else if (a.type() == GEAR_DIAG && b.type() == GEAR) {
-				if (a.axis() != b.axis()) return 0.0;
-				if (Stream.of(gearPos(a)).filter(p -> p.equals(b.pos())).count() == 0) return 0.0;
-				return -a.ratio() / b.ratio();
-			}
-			return 0.0;
-		}
-		public BlockPos[] gearPos(TransmissionNode n) {
-			return MathUtility.getDiagonalPositionsAroundAxis(n.pos(), n.axis());
-		}
-		@Override
-		public BlockPos[] pos(TransmissionNode n) {
-			return ArrayUtils.addAll(gearPos(n), MathUtility.getPositionsAroundAxis(n.pos(), n.axis()));
-		};
-	};
-	
-	public static final TransmissionType GEAR = new TransmissionType() {
-		@Override
-		public double apply(TransmissionNode a, TransmissionNode b) {
-			if (a.type() == GEAR && b.type() == GEAR) {
-				if (a.axis() != b.axis()) return 0.0;
-				if (Stream.of(gearPos(a)).filter(p -> p.equals(b.pos())).count() == 0) return 0.0;
-				return -a.ratio() / b.ratio();
-			} else if (a.type() == GEAR && b.type() == GEAR_DIAG || a.type() == GEAR_DIAG && b.type() == GEAR) {
-				return GEAR_DIAG.apply(a, b);
-			}
-			return 0.0;
-		}
-		public BlockPos[] gearPos(TransmissionNode n) {
-			return MathUtility.getPositionsAroundAxis(n.pos(), n.axis());
-		}
-		@Override
-		public BlockPos[] pos(TransmissionNode n) {
-			return ArrayUtils.addAll(gearPos(n), MathUtility.getDiagonalPositionsAroundAxis(n.pos(), n.axis()));
-		};
-	};
-	
-	public TransmissionNode[] getTransmissionNodes(Level level, BlockPos pos, BlockState state);
-	
-	public default int getSourceSpeed(Level level, BlockPos pos, BlockState state) {
+	public default int getSourceSpeed(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
 		return 0;
 	}
 	
-	public default double getTorque(Level level, BlockPos pos, BlockState state) {
+	public default double getTorque(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
 		return 0.0;
 	}
-	
-	public default void setRPM(Level level, BlockPos pos, BlockState state, int rpm) {
+
+	public default void setRPM(LevelAccessor level, BlockPos pos, int partId, BlockState state, int rpm) {
 		if (level.getBlockEntity(pos) instanceof IKineticBlockEntity kinetic)
-			kinetic.setRPM(rpm);
+			kinetic.setRPM(partId, rpm);
 	}
-	
-	public default int getRPM(Level level, BlockPos pos, BlockState state) {
+
+	public default int getRPM(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
 		if (level.getBlockEntity(pos) instanceof IKineticBlockEntity kinetic)
-			return kinetic.getRPM();
+			return kinetic.getRPM(partId);
 		return 0;
 	}
 	

@@ -17,7 +17,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
@@ -65,8 +68,10 @@ public class KineticComponentRenderer {
 	
 	/* private render methods, called by the render event */
 	
-	@SuppressWarnings("resource")
+	@SuppressWarnings({ "resource", "deprecation" })
 	private static void drawDebugFrames(PoseStack matrixStack, MultiBufferSource bufferSource, ClientLevel clientLevel, float partialTicks) {
+		
+		// TODO incorrect bounding box rendering on compound block
 		
 		LazyOptional<KineticHandlerCapabillity> optionalKineticHolder = clientLevel.getCapability(Capabilities.KINETIC_HANDLER_CAPABILITY);
 		if (optionalKineticHolder.isPresent()) {
@@ -77,10 +82,16 @@ public class KineticComponentRenderer {
 			
 			for (KineticHandlerCapabillity.Component component : kineticHolder.getComponents()) {
 				
-				BlockPos pos = component.pos();
+				BlockPos pos = component.reference().pos();
+				
+				BlockState state = component.instance(clientLevel);
+				VoxelShape shape = state.getBlock().getShape(state, clientLevel, pos, null);
+				
+				AABB bounds = new AABB(0, 0, 0, 16, 16, 16);
+				if (shape != null && !shape.isEmpty()) bounds = shape.bounds();
 				
 				double distance = playerPosition.dist(ContraptionUtility.ensureWorldCoordinates(clientLevel, pos, Vec3d.fromVec(pos)));
-				if (distance < renderDistance * renderDistance) drawKineticFrame(clientLevel, bufferSource, matrixStack, pos, partialTicks);
+				if (distance < renderDistance * renderDistance) drawKineticFrame(clientLevel, bufferSource, matrixStack, pos, bounds, partialTicks);
 				
 			}
 			
@@ -88,7 +99,7 @@ public class KineticComponentRenderer {
 		
 	}
 	
-	private static void drawKineticFrame(ClientLevel clientLevel, MultiBufferSource bufferSource, PoseStack matrixStack, BlockPos pos, float partialTicks) {
+	private static void drawKineticFrame(ClientLevel clientLevel, MultiBufferSource bufferSource, PoseStack matrixStack, BlockPos pos, AABB bounds, float partialTicks) {
 		
 		matrixStack.pushPose();
 		
@@ -96,12 +107,12 @@ public class KineticComponentRenderer {
 		
 		float f = 0.0625F + (float) -Math.sin(animationTicks * 0.1F) * 0.03125F;
 		
-		float fxl = -f;
-		float fyl = -f;
-		float fzl = -f;
-		float fxh = 1 + f;
-		float fyh = 1 + f;
-		float fzh = 1 + f;
+		float fxl = (float) (bounds.minX + -f);
+		float fyl = (float) (bounds.minY + -f);
+		float fzl = (float) (bounds.minZ + -f);
+		float fxh = (float) (bounds.maxX + f);
+		float fyh = (float) (bounds.maxY + f);
+		float fzh = (float) (bounds.maxZ + f);
 		
 		float r = 1F;
 		float g = 0.5F;

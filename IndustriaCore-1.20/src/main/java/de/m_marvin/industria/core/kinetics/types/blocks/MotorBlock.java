@@ -1,14 +1,13 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
-import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
+import de.m_marvin.industria.core.kinetics.types.blockentities.MotorBlockEntity;
 import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -17,7 +16,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -39,19 +37,19 @@ public class MotorBlock extends BaseEntityBlock implements IKineticBlock {
 	}
 
 	@Override
-	public TransmissionNode[] getTransmissionNodes(Level level, BlockPos pos, BlockState state) {
+	public TransmissionNode[] getTransmissionNodes(LevelAccessor level, BlockPos pos, BlockState state) {
 		return new TransmissionNode[] {
-				new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(FACING).getAxis(), SHAFT)
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(FACING).getAxis(), null, SHAFT)
 		};
 	}
 	
 	@Override
-	public double getTorque(Level level, BlockPos pos, BlockState state) {
+	public double getTorque(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
 		return 100;
 	}
 	
 	@Override
-	public int getSourceSpeed(Level level, BlockPos pos, BlockState state) {
+	public int getSourceSpeed(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
 		return 16;
 	}
 	
@@ -83,7 +81,7 @@ public class MotorBlock extends BaseEntityBlock implements IKineticBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-		return new SimpleKineticBlockEntity(pPos, pState);
+		return new MotorBlockEntity(pPos, pState);
 	}
 	
 }

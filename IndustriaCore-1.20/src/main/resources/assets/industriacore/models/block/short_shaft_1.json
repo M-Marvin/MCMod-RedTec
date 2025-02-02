@@ -1,23 +1,21 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"3": "industriacore:block/motor_side",
-		"5": "industriacore:block/motor_front",
-		"particle": "industriacore:block/motor_side"
+		"2": "industriacore:block/shaft",
+		"particle": "industriacore:block/shaft"
 	},
 	"elements": [
 		{
-			"name": "motor",
-			"from": [3, 1, 3],
-			"to": [13, 15, 13],
-			"rotation": {"angle": 0, "axis": "x", "origin": [2, 15, 2]},
+			"from": [6, 6, 0],
+			"to": [10, 10, 5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 6, 14]},
 			"faces": {
-				"north": {"uv": [1, 0, 15, 10], "rotation": 270, "texture": "#3"},
-				"east": {"uv": [1, 0, 15, 10], "rotation": 270, "texture": "#3"},
-				"south": {"uv": [1, 0, 15, 10], "rotation": 90, "texture": "#3"},
-				"west": {"uv": [1, 0, 15, 10], "rotation": 90, "texture": "#3"},
-				"up": {"uv": [0, 0, 10, 10], "rotation": 180, "texture": "#5"},
-				"down": {"uv": [0, 0, 10, 10], "texture": "#5"}
+				"north": {"uv": [0, 8, 4, 12], "texture": "#2"},
+				"east": {"uv": [0, 0, 5, 4], "texture": "#2"},
+				"south": {"uv": [4, 8, 8, 12], "texture": "#2"},
+				"west": {"uv": [0, 0, 5, 4], "texture": "#2"},
+				"up": {"uv": [0, 4, 5, 8], "rotation": 90, "texture": "#2"},
+				"down": {"uv": [0, 4, 5, 8], "rotation": 270, "texture": "#2"}
 			}
 		}
 	],
@@ -54,7 +52,7 @@
 	},
 	"groups": [
 		{
-			"name": "motor",
+			"name": "Shaft",
 			"origin": [0, 0, -52],
 			"color": 0,
 			"children": [0]

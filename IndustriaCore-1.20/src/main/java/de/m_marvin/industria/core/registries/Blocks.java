@@ -3,13 +3,17 @@ package de.m_marvin.industria.core.registries;
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.electrics.types.blocks.VoltageSourceBlock;
 import de.m_marvin.industria.core.electrics.types.blocks.WireHolderBlock;
+import de.m_marvin.industria.core.kinetics.types.blocks.CompoundKineticBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.GearBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.LargeGearBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.MotorBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.ShaftBlock;
+import de.m_marvin.industria.core.kinetics.types.blocks.ShortShaftBlock;
 import de.m_marvin.industria.core.magnetism.types.blocks.MagnetBlock;
+import de.m_marvin.industria.core.util.types.AxisOffset;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -23,13 +27,19 @@ public class Blocks {
 		BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 	
-	public static final RegistryObject<Block> ERROR_BLOCK =		BLOCKS.register("error_block", () -> new Block(Properties.of().noParticlesOnBreak().mapColor(MapColor.COLOR_RED).strength(0F, 3600000F).noLootTable().noOcclusion()));
-	public static final RegistryObject<Block> VOLTAGE_SOURCE = 	BLOCKS.register("voltage_source", () -> new VoltageSourceBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
-	public static final RegistryObject<Block> MAGNET = 			BLOCKS.register("magnet", () -> new MagnetBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
-	public static final RegistryObject<Block> WIRE_HOLDER =		BLOCKS.register("wire_holder", () -> new WireHolderBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
-	public static final RegistryObject<Block> GEAR =			BLOCKS.register("gear", () -> new GearBlock(Properties.of().mapColor(MapColor.COLOR_ORANGE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
-	public static final RegistryObject<Block> LARGE_GEAR =		BLOCKS.register("large_gear", () -> new LargeGearBlock(Properties.of().mapColor(MapColor.COLOR_ORANGE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
-	public static final RegistryObject<Block> SHAFT = 			BLOCKS.register("shaft", () -> new ShaftBlock(Properties.of().mapColor(MapColor.COLOR_GRAY).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
-	public static final RegistryObject<Block> MOTOR = 			BLOCKS.register("motor", () -> new MotorBlock(Properties.of().mapColor(MapColor.COLOR_GRAY).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
+	public static final RegistryObject<Block> ERROR_BLOCK =			BLOCKS.register("error_block", () -> new Block(Properties.of().noParticlesOnBreak().mapColor(MapColor.COLOR_RED).strength(0F, 3600000F).noLootTable().noOcclusion()));
+	public static final RegistryObject<Block> VOLTAGE_SOURCE = 		BLOCKS.register("voltage_source", () -> new VoltageSourceBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
+	public static final RegistryObject<Block> MAGNET = 				BLOCKS.register("magnet", () -> new MagnetBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
+	public static final RegistryObject<Block> WIRE_HOLDER =			BLOCKS.register("wire_holder", () -> new WireHolderBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
+	public static final RegistryObject<Block> GEAR =				BLOCKS.register("gear", () -> new GearBlock(Properties.of().mapColor(MapColor.COLOR_ORANGE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
+	public static final RegistryObject<Block> LARGE_GEAR =			BLOCKS.register("large_gear", () -> new LargeGearBlock(Properties.of().mapColor(MapColor.COLOR_ORANGE).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
+	public static final RegistryObject<Block> SHAFT = 				BLOCKS.register("shaft", () -> new ShaftBlock(Properties.of().mapColor(MapColor.COLOR_GRAY).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
+	public static final RegistryObject<Block> SHORT_SHAFT_1 =		BLOCKS.register("short_shaft_1", () -> new ShortShaftBlock(false, Properties.of().mapColor(MapColor.COLOR_GRAY).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
+	public static final RegistryObject<Block> SHORT_SHAFT_2 =		BLOCKS.register("short_shaft_2", () -> new ShortShaftBlock(true, Properties.of().mapColor(MapColor.COLOR_GRAY).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
+	public static final RegistryObject<Block> MOTOR = 				BLOCKS.register("motor", () -> new MotorBlock(Properties.of().mapColor(MapColor.COLOR_GRAY).requiresCorrectToolForDrops().strength(-1.0F, 3600000.0F).noLootTable()));
+	public static final RegistryObject<Block> COMPOUND_KINETIC = 	BLOCKS.register("compound_kinetic", () -> new CompoundKineticBlock(Properties.of().mapColor(MapColor.COLOR_ORANGE)));
+	
+	/* BlockStateProperties */
+	public static final EnumProperty<AxisOffset> PROP_GEAR_POS = EnumProperty.create("pos", AxisOffset.class);
 	
 }

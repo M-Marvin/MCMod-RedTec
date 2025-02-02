@@ -1,14 +1,16 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
+import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
+import de.m_marvin.industria.core.util.types.AxisOffset;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -18,14 +20,14 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class LargeGearBlock extends BaseEntityBlock implements IKineticBlock {
-
+	
 	public static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
-
-	public static final VoxelShape SHAPE = Shapes.or(VoxelShapeUtility.box(6, 0, 6, 10, 16, 10), VoxelShapeUtility.box(-4, 6, -4, 20, 10, 20));
+	public static final EnumProperty<AxisOffset> POS = Blocks.PROP_GEAR_POS;
+	
+	public static final VoxelShape SHAPE = VoxelShapeUtility.box(-4, 6, -4, 20, 10, 20);
 	
 	public LargeGearBlock(Properties pProperties) {
 		super(pProperties);
@@ -33,13 +35,15 @@ public class LargeGearBlock extends BaseEntityBlock implements IKineticBlock {
 
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
-		pBuilder.add(AXIS);
+		pBuilder.add(AXIS, POS);
 	}
 
 	@Override
 	public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+		int offset = pState.getValue(POS) == AxisOffset.CENTER ? 0 : pState.getValue(POS) == AxisOffset.FRONT ? +5 : -5;
 		return VoxelShapeUtility.transformation()
 				.centered()
+				.offset(0, offset, 0)
 				.rotateFromAxisY(pState.getValue(AXIS))
 				.uncentered()
 				.transform(SHAPE);
@@ -54,7 +58,7 @@ public class LargeGearBlock extends BaseEntityBlock implements IKineticBlock {
 				// TODO placement helper
 			}
 		}
-		return this.defaultBlockState().setValue(AXIS, axis);
+		return this.defaultBlockState().setValue(AXIS, axis).setValue(POS, AxisOffset.CENTER);
 	}
 
 	@Override
@@ -64,16 +68,25 @@ public class LargeGearBlock extends BaseEntityBlock implements IKineticBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-		return new SimpleKineticBlockEntity(pPos, pState);
+		return new SimpleKineticBlockEntity(pPos, pState, 5.625F / 360F * Math.PI * 2);
 	}
 	
 	@Override
-	public TransmissionNode[] getTransmissionNodes(Level level, BlockPos pos, BlockState state) {
-		return new TransmissionNode[] {
-				new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(AXIS), SHAFT),
-				new TransmissionNode(pos, state, pos, this, 2.0, state.getValue(AXIS), GEAR_DIAG),
-				new TransmissionNode(pos, state, pos, this, 2.0, state.getValue(AXIS), GEAR_ANGLE)
-		};
+	public TransmissionNode[] getTransmissionNodes(LevelAccessor level, BlockPos pos, BlockState state) {
+		AxisOffset offset = state.getValue(POS);
+		if (offset == AxisOffset.CENTER) {
+			return new TransmissionNode[] {
+//					new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(AXIS), SHAFT),
+					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), AxisOffset.CENTER, GEAR_DIAG),
+					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), AxisOffset.CENTER, GEAR_ANGLE)
+			};
+		} else {
+			return new TransmissionNode[] {
+//					new TransmissionNode(pos, state, pos, this, 1.0, state.getValue(AXIS), SHAFT),
+					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), offset, GEAR_DIAG)
+			};
+		}
+		
 	}
 	
 }

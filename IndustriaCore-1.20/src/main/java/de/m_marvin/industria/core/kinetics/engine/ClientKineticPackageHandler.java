@@ -23,17 +23,15 @@ public class ClientKineticPackageHandler {
 		KineticHandlerCapabillity handler = GameUtility.getLevelCapability(level, Capabilities.KINETIC_HANDLER_CAPABILITY);
 		
 		if (msg.request == SyncRequestType.ADDED) {
-			Object position = null;
 			for (Component component : msg.components) {
 				if (component.instance(null) == null) continue;
 				if (!handler.isInNetwork(component)) {
 					handler.addToNetwork(component);
-					if (position == null) position = component.pos();
 				}
 			}
 		} else {
 			for (Component component : msg.components) {
-				handler.removeFromNetwork(component.pos);
+				handler.removeFromNetwork(component.reference());
 			}
 		}
 	}

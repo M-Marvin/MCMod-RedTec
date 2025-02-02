@@ -1,7 +1,13 @@
 {
   "variants": {
-    "axis=y": { "model": "industriacore:block/gear", "x": -90 },
-    "axis=x": { "model": "industriacore:block/gear", "y": 90 },
-    "axis=z": { "model": "industriacore:block/gear" }
+    "axis=y,pos=back": { "model": "industriacore:block/gear_back", "x": 90 },
+    "axis=x,pos=back": { "model": "industriacore:block/gear_back", "y": -90 },
+    "axis=z,pos=back": { "model": "industriacore:block/gear_back" },
+    "axis=y,pos=center": { "model": "industriacore:block/gear_center", "x": 90 },
+    "axis=x,pos=center": { "model": "industriacore:block/gear_center", "y": -90 },
+    "axis=z,pos=center": { "model": "industriacore:block/gear_center" },
+    "axis=y,pos=front": { "model": "industriacore:block/gear_front", "x": 90 },
+    "axis=x,pos=front": { "model": "industriacore:block/gear_front", "y": -90 },
+    "axis=z,pos=front": { "model": "industriacore:block/gear_front" }
   }
 }
