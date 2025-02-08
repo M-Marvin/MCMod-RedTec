@@ -3,8 +3,12 @@ package de.m_marvin.industria.core.kinetics.types.blocks;
 import java.util.Collections;
 import java.util.List;
 
+import org.valkyrienskies.core.impl.shadow.pl;
+
 import de.m_marvin.industria.core.kinetics.types.blockentities.CompoundKineticBlockEntity;
+import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
+import de.m_marvin.industria.core.util.types.StateTransform;
 import de.m_marvin.industria.core.util.types.virtualblock.VirtualBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
@@ -26,7 +31,8 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -39,10 +45,35 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class CompoundKineticBlock extends BaseEntityBlock implements IKineticBlock {
 	
+	public static final EnumProperty<StateTransform> TRANSFORM = Blocks.PROP_TRANSFORM;
+	
 	public static final VoxelShape DEFAULT_SHAPE = VoxelShapeUtility.box(1, 1, 1, 15, 15, 15);
 	
 	public CompoundKineticBlock(Properties pProperties) {
 		super(pProperties);
+	}
+	
+	@Override
+	protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
+		pBuilder.add(TRANSFORM);
+	}
+	
+	@Override
+	public BlockState rotate(BlockState pState, Rotation pRotation) {
+		return pState.setValue(TRANSFORM, StateTransform.of(pRotation));
+	}
+	
+	@Override
+	public BlockState mirror(BlockState pState, Mirror pMirror) {
+		return pState.setValue(TRANSFORM, StateTransform.of(pMirror));
+	}
+	
+	@Override
+	public void onBlockStateChange(LevelReader level, BlockPos pos, BlockState oldState, BlockState newState) {
+		if (level.getBlockEntity(pos) instanceof CompoundKineticBlockEntity blockEntity) {
+			blockEntity.applyTransform();
+		}
+		super.onBlockStateChange(level, pos, oldState, newState);
 	}
 	
 	@Override
@@ -110,18 +141,6 @@ public class CompoundKineticBlock extends BaseEntityBlock implements IKineticBlo
 			pLevel.removeBlockEntity(pPos);
 		}
 
-	}
-
-	@Override
-	public BlockState rotate(BlockState pState, Rotation pRotation) {
-		// FIXME compound rotation
-		return pState;
-	}
-
-	@Override
-	public BlockState mirror(BlockState pState, Mirror pMirror) {
-		// FIXME compound rotation
-		return pState;
 	}
 
 //	@Override
@@ -273,6 +292,7 @@ public class CompoundKineticBlock extends BaseEntityBlock implements IKineticBlo
 			compound.getParts().values().stream()
 				.forEach(p -> p.getBlock().tick(p.getState(), (ServerLevel) p.getLevel(), p.getPos(), pRandom));
 		}
+		pLevel.setBlock(pPos, pState.setValue(TRANSFORM, StateTransform.NONE), 3);
 	}
 
 	@SuppressWarnings("deprecation")

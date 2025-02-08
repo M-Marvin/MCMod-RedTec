@@ -2,10 +2,14 @@ package de.m_marvin.industria.core.util.types.virtualblock;
 
 import java.util.function.Supplier;
 
+import org.valkyrienskies.core.impl.shadow.ol;
+
 import com.google.common.base.Objects;
 
+import de.m_marvin.industria.core.util.types.StateTransform;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -13,6 +17,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -70,7 +76,10 @@ public class VirtualBlock<B extends Block, E extends BlockEntity> {
 	public void setBlock(BlockState state) {
 		try {
 			this.block = (B) state.getBlock();
+			BlockState oldState = this.state;
 			this.state = state;
+			if (this.state != null && oldState != null)
+				this.state.onBlockStateChange(getLevel(), getPos(), oldState);
 			if (this.state.hasBlockEntity() && block instanceof EntityBlock entityBlock) {
 				this.blockEntity = (E) entityBlock.newBlockEntity(getPos(), state);
 				this.blockEntity.setLevel(this.level);
@@ -114,8 +123,37 @@ public class VirtualBlock<B extends Block, E extends BlockEntity> {
 		return virtualBlock;
 	}
 	
+	public void mirror(Mirror mirror) {
+		BlockState oldState = getState();
+		BlockState newState = oldState.mirror(mirror);
+		if (!oldState.equals(newState)) {
+			CompoundTag tag = null;
+			if (oldState.hasBlockEntity() && this.blockEntity != null)
+				tag = this.blockEntity.serializeNBT();
+			setBlock(newState);
+			if (newState.hasBlockEntity() && this.blockEntity != null && tag != null)
+				this.blockEntity.deserializeNBT(tag);
+		}
+	}
 
-
-
+	public void rotate(Rotation rotation) {
+		BlockState oldState = getState();
+		BlockState newState = oldState.rotate(getLevel(), getPos(), rotation);
+		if (!oldState.equals(newState)) {
+			CompoundTag tag = null;
+			if (oldState.hasBlockEntity() && this.blockEntity != null)
+				tag = this.blockEntity.serializeNBT();
+			setBlock(newState);
+			if (newState.hasBlockEntity() && this.blockEntity != null && tag != null)
+				this.blockEntity.deserializeNBT(tag);
+		}
+	}
+	
+	public void transform(StateTransform transform) {
+		if (transform.getRotation() != Rotation.NONE)
+			rotate(transform.getRotation());
+		if (transform.getMirror() != Mirror.NONE)
+			mirror(transform.getMirror());
+	}
 	
 }

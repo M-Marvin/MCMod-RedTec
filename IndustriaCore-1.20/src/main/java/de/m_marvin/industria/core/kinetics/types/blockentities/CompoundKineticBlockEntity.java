@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import de.m_marvin.industria.core.kinetics.types.blocks.CompoundKineticBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.KineticReference;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
 import de.m_marvin.industria.core.registries.BlockEntityTypes;
+import de.m_marvin.industria.core.util.types.StateTransform;
 import de.m_marvin.industria.core.util.types.virtualblock.VirtualBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -81,6 +83,16 @@ public class CompoundKineticBlockEntity extends BlockEntity implements IKineticB
 		return true;
 	}
 	
+	public void applyTransform() {
+		if (!hasLevel()) return;
+		BlockState state = getLevel().getBlockState(getBlockPos());
+		if (!(state.getBlock() instanceof CompoundKineticBlock)) return;
+		StateTransform transform = state.getValue(CompoundKineticBlock.TRANSFORM);
+		if (transform == StateTransform.NONE) return;
+		this.parts.values().forEach(vb -> vb.transform(transform));
+		getLevel().scheduleTick(getBlockPos(), getBlockState().getBlock(), 1);
+	}
+	
 	@Override
 	protected void saveAdditional(CompoundTag pTag) {
 		CompoundTag parts = new CompoundTag();
@@ -109,6 +121,7 @@ public class CompoundKineticBlockEntity extends BlockEntity implements IKineticB
 			if (this.level != null) virtualBlock.setLevel(this.level);
 			this.parts.put(id, virtualBlock);
 		}
+		applyTransform();
 		this.setChanged();
 	}
 	

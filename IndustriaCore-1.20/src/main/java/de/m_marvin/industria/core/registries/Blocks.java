@@ -11,6 +11,7 @@ import de.m_marvin.industria.core.kinetics.types.blocks.ShaftBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.ShortShaftBlock;
 import de.m_marvin.industria.core.magnetism.types.blocks.MagnetBlock;
 import de.m_marvin.industria.core.util.types.AxisOffset;
+import de.m_marvin.industria.core.util.types.StateTransform;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -41,5 +42,6 @@ public class Blocks {
 	
 	/* BlockStateProperties */
 	public static final EnumProperty<AxisOffset> PROP_GEAR_POS = EnumProperty.create("pos", AxisOffset.class);
+	public static final EnumProperty<StateTransform> PROP_TRANSFORM = EnumProperty.create("transform", StateTransform.class);
 	
 }

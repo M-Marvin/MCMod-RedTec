@@ -99,6 +99,9 @@ public class GearBlock extends BaseEntityBlock implements IKineticBlock {
 	
 	@Override
 	public BlockState mirror(BlockState pState, Mirror pMirror) {
+		if (pMirror == Mirror.NONE) return pState;
+		if (pState.getValue(AXIS) == Axis.Y) return pState;
+		if ((pMirror == Mirror.LEFT_RIGHT) == (pState.getValue(AXIS) == Axis.Z)) return pState;
 		if (pState.getValue(POS) == AxisOffset.CENTER) {
 			return pState;
 		} else {
