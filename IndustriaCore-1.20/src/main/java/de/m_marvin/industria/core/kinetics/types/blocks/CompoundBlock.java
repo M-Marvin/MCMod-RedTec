@@ -112,7 +112,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 
 	@Override
 	public Vec3d getFieldVector(Level level, BlockState state, BlockPos blockPos) {
-		if (level.getBlockEntity(blockPos) instanceof CompoundBlockEntity compound) {
+		if (level != null && level.getBlockEntity(blockPos) instanceof CompoundBlockEntity compound) {
 			return compound.getParts().values().stream()
 				.map(p -> MagnetismUtility.getBlockField(p.getLevel(), p.getState(), p.getPos()))
 				.reduce((a, b) -> a.add(b)).orElse(new Vec3d(0, 0, 0));
@@ -122,7 +122,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 	
 	@Override
 	public double getCoefficient(Level level, BlockState state, BlockPos pos) {
-		if (level.getBlockEntity(pos) instanceof CompoundBlockEntity compound) {
+		if (level != null && level.getBlockEntity(pos) instanceof CompoundBlockEntity compound) {
 			return compound.getParts().values().stream()
 				.map(p -> MagnetismUtility.getBlockCoefficient(p.getLevel(), p.getState(), p.getPos()))
 				.reduce((a, b) -> a * b).orElse(0.0);

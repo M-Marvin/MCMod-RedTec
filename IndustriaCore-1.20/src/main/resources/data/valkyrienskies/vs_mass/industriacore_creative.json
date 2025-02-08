@@ -1,5 +1,29 @@
 [
   {
+    "block": "industriacore:gear",
+    "mass": 200.0
+  },
+  {
+    "block": "industriacore:large_gear",
+    "mass": 200.0
+  },
+  {
+    "block": "industriacore:shaft",
+    "mass": 200.0
+  },
+  {
+    "block": "industriacore:short_shaft_1",
+    "mass": 200.0
+  },
+  {
+    "block": "industriacore:short_shaft_2",
+    "mass": 200.0
+  },
+  {
+    "block": "industriacore:compound_block",
+    "mass": 500.0
+  },
+  {
     "block": "industriacore:error_block",
     "mass": 500.0
   },
