@@ -85,7 +85,7 @@ public class Conduit {
 	}
 	
 	public int getColorAt(ClientLevel level, Vec3d nodePos, ConduitEntity conduitState) {
-		return 0xFFFFFF;
+		return 0xFFFFFFFF;
 	}
 	
 	public void onNodeStateChange(Level level, BlockPos nodePos, BlockState nodeState, ConduitEntity conduitState) {

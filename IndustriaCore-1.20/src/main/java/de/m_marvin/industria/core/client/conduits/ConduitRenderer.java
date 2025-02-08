@@ -178,7 +178,7 @@ public class ConduitRenderer {
 			
 			ConduitHandlerCapability conduitHolder = optionalConduitHolder.resolve().get();
 			
-			VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entitySolid(ConduitTextureManager.LOCATION_CONDUITS));
+			VertexConsumer vertexConsumer =  bufferSource.getBuffer(RenderType.entityTranslucent(ConduitTextureManager.LOCATION_CONDUITS));
 			
 			for (ConduitEntity conduit : conduitHolder.getConduits()) {
 				
@@ -322,12 +322,11 @@ public class ConduitRenderer {
 		Matrix3f normal = matrixStack.last().normal();
 		float w = 6 / 16F;
 		
-		VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(node.getType().getSymbolTexture()));
+		VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.outline(node.getType().getSymbolTexture()));
 		vertex(vertexConsumer, pose, normal, w/2, 0, 0, 	0, 0, 1, 	1, 0, 15728880, colori);
 		vertex(vertexConsumer, pose, normal, w/2, w , 0, 	0, 0, 1, 	1, 1, 15728880, colori);
 		vertex(vertexConsumer, pose, normal, -w/2, w, 0, 	0, 0, 1, 	0, 1, 15728880, colori);
 		vertex(vertexConsumer, pose, normal, -w/2, 0, 0, 	0, 0, 1, 	0, 0, 15728880, colori);
-		vertexConsumer.endVertex();
 		
 		matrixStack.scale(0.01F, -0.01F, 0.01F);
 		
