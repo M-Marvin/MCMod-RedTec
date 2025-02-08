@@ -181,6 +181,7 @@ repositories {
         	includeGroup "org.valkyrienskies"
         }
 	}
+    maven { url = 'https://maven.minecraftforge.net' }
 }
 
 configurations {
@@ -216,6 +217,12 @@ dependencies {
 	shade("de.m_marvin.univec:univec:${univec_version}")
 	minecraftLibrary("de.m_marvin.univec:univec:${univec_version}")
 	api("de.m_marvin.univec:univec:${univec_version}")
+	
+	// Debugging
+	runtimeOnly fg.deobf("curse.maven:atlasviewer-633577:4882554")
+	runtimeOnly fg.deobf("curse.maven:oculus-581495:6020952")
+	runtimeOnly fg.deobf("curse.maven:embeddium-908741:5681725")
+	runtimeOnly fg.deobf("curse.maven:jei-238222:6075247")
 	
 }
 
