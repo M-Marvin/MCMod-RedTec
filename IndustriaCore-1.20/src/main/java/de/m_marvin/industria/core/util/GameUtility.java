@@ -14,7 +14,6 @@ import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.univec.impl.Vec3d;
 import de.m_marvin.univec.impl.Vec3f;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;

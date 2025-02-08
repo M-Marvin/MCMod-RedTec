@@ -2,8 +2,6 @@
 
 import java.util.function.Function;
 
-import org.valkyrienskies.core.impl.shadow.pS;
-
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
 import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;

@@ -1,7 +1,7 @@
 package de.m_marvin.industria.core.client.registries;
 
 import de.m_marvin.industria.IndustriaCore;
-import de.m_marvin.industria.core.client.kinetics.blockentityrenderers.CompoundKineticBlockEntityRenderer;
+import de.m_marvin.industria.core.client.kinetics.blockentityrenderers.CompoundBlockEntityRenderer;
 import de.m_marvin.industria.core.client.kinetics.blockentityrenderers.SimpleKineticBlockEntityRenderer;
 import de.m_marvin.industria.core.registries.BlockEntityTypes;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,7 +16,7 @@ public class Renderers {
 	public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerBlockEntityRenderer(BlockEntityTypes.SIMPLE_KINETIC.get(), SimpleKineticBlockEntityRenderer::new);
 		event.registerBlockEntityRenderer(BlockEntityTypes.MOTOR.get(), SimpleKineticBlockEntityRenderer::new);
-		event.registerBlockEntityRenderer(BlockEntityTypes.COMPOUND_KINETIC.get(), CompoundKineticBlockEntityRenderer::new);
+		event.registerBlockEntityRenderer(BlockEntityTypes.COMPOUND_BLOCK.get(), CompoundBlockEntityRenderer::new);
 	}
 	
 }

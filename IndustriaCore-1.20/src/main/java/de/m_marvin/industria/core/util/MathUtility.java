@@ -29,6 +29,7 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -425,7 +426,11 @@ public class MathUtility {
 		return false;
 	}
 	
-	public static BlockHitResult getPlayerPOVHitResult(Level pLevel, Player pPlayer, ClipContext.Fluid pFluidMode, double reachDistance) {
+	public static BlockHitResult getPlayerPOVHitResult(BlockGetter pLevel, Player pPlayer, ClipContext.Fluid pFluidMode, double reachDistance) {
+		return pLevel.clip(getPlayerPOVClipContext(pLevel, pPlayer, pFluidMode, reachDistance));
+	}
+	
+	public static ClipContext getPlayerPOVClipContext(BlockGetter pLevel, Player pPlayer, ClipContext.Fluid pFluidMode, double reachDistance) {
 		float f = pPlayer.getXRot();
 		float f1 = pPlayer.getYRot();
 		Vec3 vec3 = pPlayer.getEyePosition();
@@ -437,12 +442,12 @@ public class MathUtility {
 		float f7 = f2 * f4;
 		double d0 = reachDistance;
 		Vec3 vec31 = vec3.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
-		return pLevel.clip(new ClipContext(vec3, vec31, ClipContext.Block.OUTLINE, pFluidMode, pPlayer));
+		return new ClipContext(vec3, vec31, ClipContext.Block.OUTLINE, pFluidMode, pPlayer);
 	}
 	
 	private static final Predicate<Entity> ENTITY_PREDICATE_CLICKEABLE = EntitySelector.NO_SPECTATORS.and(Entity::isPickable);
 	
-	public static UseOnContext raycastBlockClick(Level level, Player player, InteractionHand hand, double reachDistance) {
+	public static UseOnContext getPlayerPOVUseContext(Level level, Player player, InteractionHand hand, double reachDistance) {
 		ItemStack stack = player.getItemInHand(hand);
 		HitResult hitresult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY, reachDistance);
 		

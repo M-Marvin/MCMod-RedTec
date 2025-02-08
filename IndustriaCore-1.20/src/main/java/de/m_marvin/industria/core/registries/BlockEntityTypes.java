@@ -3,7 +3,7 @@ package de.m_marvin.industria.core.registries;
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.electrics.types.blockentities.JunctionBoxBlockEntity;
 import de.m_marvin.industria.core.electrics.types.blockentities.VoltageSourceBlockEntity;
-import de.m_marvin.industria.core.kinetics.types.blockentities.CompoundKineticBlockEntity;
+import de.m_marvin.industria.core.kinetics.types.blockentities.CompoundBlockEntity;
 import de.m_marvin.industria.core.kinetics.types.blockentities.MotorBlockEntity;
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
 import net.minecraft.core.registries.Registries;
@@ -29,6 +29,6 @@ public class BlockEntityTypes {
 			Blocks.SHORT_SHAFT_2.get()
 		).build(null));
 	public static final RegistryObject<BlockEntityType<MotorBlockEntity>> MOTOR = BLOCK_ENTITY_TYPES.register("motor", () -> BlockEntityType.Builder.of(MotorBlockEntity::new, Blocks.MOTOR.get()).build(null));
-	public static final RegistryObject<BlockEntityType<CompoundKineticBlockEntity>> COMPOUND_KINETIC = BLOCK_ENTITY_TYPES.register("compound_kinetic", () -> BlockEntityType.Builder.of(CompoundKineticBlockEntity::new, Blocks.COMPOUND_KINETIC.get()).build(null));
+	public static final RegistryObject<BlockEntityType<CompoundBlockEntity>> COMPOUND_BLOCK = BLOCK_ENTITY_TYPES.register("compound_block", () -> BlockEntityType.Builder.of(CompoundBlockEntity::new, Blocks.COMPOUND_BLOCK.get()).build(null));
 	
 }

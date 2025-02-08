@@ -1,8 +1,5 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
-import org.valkyrienskies.core.impl.shadow.pS;
-import org.valkyrienskies.core.impl.shadow.ps;
-
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
 import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.registries.Tags;

@@ -100,6 +100,7 @@
 "block.industriacore.large_gear":										"Large Cogwheel",
 "block.industriacore.shaft":											"Shaft",
 "block.industriacore.motor":											"Rotation source",
+"block.industriacore.compound_block":									"Compound Block",
 "item.industriacore.electric_wire":										"Cable",
 "conduit.industriacore.electric_conduit":								"Cable",
 

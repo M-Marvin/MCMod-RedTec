@@ -122,6 +122,7 @@ public class Conduit {
 		if (dropItems && getItem() != null) {
 			int wireCost = (int) Math.ceil(conduitState.getLength() / (float) BLOCKS_PER_WIRE_ITEM);
 			for (int i = 0; i < wireCost; i++) {
+				// TODO
 				GameUtility.dropItem(level, new ItemStack(getItem()), Vec3f.fromVec(middle).add(new Vec3f(0.5F, 0.5F, 0.5F)), 0.5F, 0.1F);
 			}
 		}

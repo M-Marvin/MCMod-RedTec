@@ -1,15 +1,12 @@
-package de.m_marvin.industria.core.util.types.virtualblock;
+package de.m_marvin.industria.core.util.virtualblock;
 
 import java.util.function.Supplier;
-
-import org.valkyrienskies.core.impl.shadow.ol;
 
 import com.google.common.base.Objects;
 
 import de.m_marvin.industria.core.util.types.StateTransform;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -29,9 +26,14 @@ public class VirtualBlock<B extends Block, E extends BlockEntity> {
 	protected B block;
 	protected BlockState state;
 	protected E blockEntity;
+	protected Runnable stateChangeEvent;
 	
 	public VirtualBlock(Supplier<BlockPos> pos) {
 		this.pos = pos;
+	}
+	
+	public void setStateChangeEvent(Runnable stateChangeEvent) {
+		this.stateChangeEvent = stateChangeEvent;
 	}
 	
 	public void setLevel(Level level) {
@@ -86,9 +88,22 @@ public class VirtualBlock<B extends Block, E extends BlockEntity> {
 			} else {
 				this.blockEntity = null;
 			}
+			if (this.stateChangeEvent != null)
+				this.stateChangeEvent.run();
 		} catch (Throwable e) {
-			throw new IllegalArgumentException("illegal candiate for virtual block: " + state.toString());
+			throw new IllegalArgumentException("illegal candiate for virtual block: " + state.toString(), e);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void setBlockEntityObj(BlockEntity blockEntity) {
+		this.blockEntity = (E) blockEntity;
+		this.blockEntity.setLevel(getLevel());
+	}
+	
+	public void setBlockEntity(E blockEntity) {
+		this.blockEntity = blockEntity;
+		this.blockEntity.setLevel(getLevel());
 	}
 	
 	public B getBlock() {

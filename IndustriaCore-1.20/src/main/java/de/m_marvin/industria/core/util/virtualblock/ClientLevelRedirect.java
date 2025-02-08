@@ -1,34 +1,44 @@
-package de.m_marvin.industria.core.util.types.virtualblock;
+package de.m_marvin.industria.core.util.virtualblock;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.multiplayer.ClientChunkCache;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerScoreboard;
-import net.minecraft.server.level.ServerChunkCache;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -43,41 +53,50 @@ import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.ticks.LevelTicks;
+import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.ticks.LevelTickAccess;
+import net.minecraft.world.ticks.ScheduledTick;
+import net.minecraft.world.ticks.TickPriority;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.unsafe.UnsafeHacks;
 
-class ServerLevelRedirect extends ServerLevel {
-	
-	private ServerLevelRedirect() {
-		super(null, null, null, null, null, null, null, false, 0, null, false, null);
+class ClientLevelRedirect extends ClientLevel {
+
+	private ClientLevelRedirect() {
+		super(null, null, null, null, 0, 0, null, null, false, 0);
 		this.level = null;
 		this.block = null;
 	}
 	
-	public static ServerLevelRedirect newRedirect(VirtualBlock<?, ?> virtualBlock, ServerLevel level) {
+	public static ClientLevelRedirect newRedirect(VirtualBlock<?, ?> virtualBlock, ClientLevel level) {
 		try {
-			ServerLevelRedirect redirect = UnsafeHacks.newInstance(ServerLevelRedirect.class);
-			Field levelField = ServerLevelRedirect.class.getDeclaredField("level");
-			Field blockField = ServerLevelRedirect.class.getDeclaredField("block");
+			ClientLevelRedirect redirect = UnsafeHacks.newInstance(ClientLevelRedirect.class);
+			Field levelField = ClientLevelRedirect.class.getDeclaredField("level");
+			Field blockField = ClientLevelRedirect.class.getDeclaredField("block");
 			levelField.setAccessible(true);
 			blockField.setAccessible(true);
 			levelField.set(redirect, level);
 			blockField.set(redirect, virtualBlock);
 			return redirect;
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException("Failed to construct ServerLevelRedirect using Unsafe!", e);
+			throw new RuntimeException("Failed to construct ClientLevelRedirect using Unsafe!", e);
 		}
 	}
-	
+
 	private VirtualBlock<?,?> block;
-	private ServerLevel level;
+	private ClientLevel level;
 	
 	@Override
 	public String toString() {
 		return "Virtual" + this.level.toString();
+	}
+
+	@Override
+	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+		return level.getCapability(cap, side);
 	}
 	
 	@Override
@@ -104,8 +123,9 @@ class ServerLevelRedirect extends ServerLevel {
 	@Override
 	public boolean setBlock(BlockPos pPos, BlockState pState, int pFlags, int pRecursionLeft) {
 		if (pPos.equals(block.getPos())) {
+			block.setBlock(pState);
 			BlockState rstate = level.getBlockState(pPos);
-			level.sendBlockUpdated(pPos, rstate, rstate, pFlags);
+			level.markAndNotifyBlock(pPos, level.getChunkAt(pPos), rstate, rstate, pFlags, pRecursionLeft);
 			return true;
 		}
 		return level.setBlock(pPos, pState, pFlags);
@@ -122,6 +142,67 @@ class ServerLevelRedirect extends ServerLevel {
 		return level.removeBlock(pPos, pIsMoving);
 	}
 
+	@Override
+	public void removeBlockEntity(BlockPos pPos) {
+		if (pPos.equals(block.getPos())) {
+			block.setBlockEntity(null);
+			return;
+		}
+		level.removeBlockEntity(pPos);
+	}
+
+	@Override
+	public void setBlockEntity(BlockEntity pBlockEntity) {
+		if (pBlockEntity.getBlockPos().equals(block.getPos())) {
+			block.setBlockEntityObj(pBlockEntity);
+			return;
+		}
+		level.setBlockEntity(pBlockEntity);
+	}
+	
+	@Override
+	public void addBlockEntityTicker(TickingBlockEntity pTicker) {}
+	
+	@Override
+	public void addFreshBlockEntities(Collection<BlockEntity> beList) {
+		level.addFreshBlockEntities(beList);
+	}
+	
+	@Override
+	public boolean addFreshEntity(Entity pEntity) {
+		return level.addFreshEntity(pEntity);
+	}
+
+	@Override
+	public ProfilerFiller getProfiler() {
+		return level.getProfiler();
+	}
+	
+	@Override
+	public Supplier<ProfilerFiller> getProfilerSupplier() {
+		return level.getProfilerSupplier();
+	}
+	
+	@Override
+	public int getMaxBuildHeight() {
+		return level.getMaxBuildHeight();
+	}
+	
+	@Override
+	public double getMaxEntityRadius() {
+		return level.getMaxEntityRadius();
+	}
+	
+	@Override
+	public int getMaxLightLevel() {
+		return level.getMaxLightLevel();
+	}
+	
+	@Override
+	public DamageSources damageSources() {
+		return level.damageSources();
+	}
+	
 	@Override
 	public boolean destroyBlock(BlockPos pPos, boolean pDropBlock, Entity pEntity, int pRecursionLeft) {
 		
@@ -175,7 +256,7 @@ class ServerLevelRedirect extends ServerLevel {
 	}
 
 	@Override
-	public List<ServerPlayer> players() {
+	public List<AbstractClientPlayer> players() {
 		return level.players();
 	}
 
@@ -220,6 +301,21 @@ class ServerLevelRedirect extends ServerLevel {
 	}
 
 	@Override
+	public ResourceKey<DimensionType> dimensionTypeId() {
+		return level.dimensionTypeId();
+	}
+
+	@Override
+	public Holder<DimensionType> dimensionTypeRegistration() {
+		return level.dimensionTypeRegistration();
+	}
+	
+	@Override
+	public ResourceKey<Level> dimension() {
+		return level.dimension();
+	}
+	
+	@Override
 	public RegistryAccess registryAccess() {
 		return level.registryAccess();
 	}
@@ -250,20 +346,43 @@ class ServerLevelRedirect extends ServerLevel {
 	}
 
 	@Override
-	public LevelTicks<Block> getBlockTicks() {
+	public LevelTickAccess<Block> getBlockTicks() {
 		return level.getBlockTicks();
 	}
 
 	@Override
-	public LevelTicks<Fluid> getFluidTicks() {
+	public LevelTickAccess<Fluid> getFluidTicks() {
 		return level.getFluidTicks();
 	}
 
+	private <T> ScheduledTick<T> createTick(BlockPos pPos, T pType, int pDelay, TickPriority pPriority) {
+		return new ScheduledTick<>(pType, pPos, this.getLevelData().getGameTime() + (long)pDelay, pPriority, this.nextSubTickCount());
+	}
+	
+	private <T> ScheduledTick<T> createTick(BlockPos pPos, T pType, int pDelay) {
+		return new ScheduledTick<>(pType, pPos, this.getLevelData().getGameTime() + (long)pDelay, this.nextSubTickCount());
+	}
+
 	@Override
-	public LevelData getLevelData() {
+	public void scheduleTick(BlockPos pPos, Block pBlock, int pDelay, TickPriority pPriority) {
+		this.getBlockTicks().schedule(createTick(pPos, pPos.equals(block.getPos()) ? level.getBlockState(pPos).getBlock() : pBlock, pDelay, pPriority));
+	}
+	
+	@Override
+	public void scheduleTick(BlockPos pPos, Block pBlock, int pDelay) {
+		this.getBlockTicks().schedule(createTick(pPos, pPos.equals(block.getPos()) ? level.getBlockState(pPos).getBlock() : pBlock, pDelay));
+	}
+	
+	@Override
+	public ClientLevelData getLevelData() {
 		return level.getLevelData();
 	}
 
+	@Override
+	public GameRules getGameRules() {
+		return level.getGameRules();
+	}
+	
 	@Override
 	public DifficultyInstance getCurrentDifficultyAt(BlockPos pPos) {
 		return level.getCurrentDifficultyAt(pPos);
@@ -275,7 +394,7 @@ class ServerLevelRedirect extends ServerLevel {
 	}
 
 	@Override
-	public ServerChunkCache getChunkSource() {
+	public ClientChunkCache getChunkSource() {
 		return level.getChunkSource();
 	}
 
@@ -311,6 +430,26 @@ class ServerLevelRedirect extends ServerLevel {
 		level.sendBlockUpdated(pPos, pOldState, pNewState, pFlags);
 	}
 
+	@Override
+	public void updateNeighborsAt(BlockPos pPos, Block pBlock) {
+		level.updateNeighborsAt(pPos, pBlock);
+	}
+	
+	@Override
+	public void updateNeighborsAtExceptFromFacing(BlockPos pPos, Block pBlockType, Direction pSkipSide) {
+		level.updateNeighborsAtExceptFromFacing(pPos, pBlockType, pSkipSide);
+	}
+	
+	@Override
+	public void neighborChanged(BlockPos pPos, Block pBlock, BlockPos pFromPos) {
+		level.neighborChanged(pPos, pBlock, pFromPos);
+	}
+	
+	@Override
+	public void neighborChanged(BlockState pState, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
+		level.neighborChanged(pState, pPos, pBlock, pFromPos, pIsMoving);
+	}
+	
 	@Override
 	public void playSeededSound(Player pPlayer, double pX, double pY, double pZ, Holder<SoundEvent> pSound,
 			SoundSource pSource, float pVolume, float pPitch, long pSeed) {
@@ -354,7 +493,7 @@ class ServerLevelRedirect extends ServerLevel {
 	}
 
 	@Override
-	public ServerScoreboard getScoreboard() {
+	public Scoreboard getScoreboard() {
 		return level.getScoreboard();
 	}
 
@@ -364,8 +503,8 @@ class ServerLevelRedirect extends ServerLevel {
 	}
 
 	@Override
-	public LevelEntityGetter<Entity> getEntities() {
-		return level.getEntities();
+	protected LevelEntityGetter<Entity> getEntities() {
+		return null;
 	}
 	
 }

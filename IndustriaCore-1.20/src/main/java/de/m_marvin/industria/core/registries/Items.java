@@ -29,6 +29,7 @@ public class Items {
 	public static final RegistryObject<BlockItem> SHORT_SHAFT_1 = 	ITEMS.register("short_shaft_1", () -> new BlockItem(Blocks.SHORT_SHAFT_1.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<BlockItem> SHORT_SHAFT_2 = 	ITEMS.register("short_shaft_2", () -> new BlockItem(Blocks.SHORT_SHAFT_2.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<BlockItem> MOTOR = 			ITEMS.register("motor", () -> new BlockItem(Blocks.MOTOR.get(), new Item.Properties().rarity(Rarity.EPIC)));
+	public static final RegistryObject<BlockItem> COMPOUND_BLOCK =	ITEMS.register("compound_block", () -> new BlockItem(Blocks.COMPOUND_BLOCK.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	
 	public static final RegistryObject<AbstractConduitItem> ELECTRIC_WIRE = ITEMS.register("electric_wire", () -> new AbstractConduitItem(new Item.Properties().rarity(Rarity.EPIC), Conduits.ELECTRIC_CONDUIT) {
 		@Override

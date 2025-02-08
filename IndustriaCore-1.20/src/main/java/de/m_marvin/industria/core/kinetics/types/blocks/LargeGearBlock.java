@@ -1,8 +1,6 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
-import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.KineticReference;
-import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
 import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.MathUtility;

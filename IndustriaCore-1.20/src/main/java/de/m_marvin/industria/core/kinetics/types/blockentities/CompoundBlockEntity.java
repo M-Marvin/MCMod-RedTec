@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import de.m_marvin.industria.core.kinetics.types.blocks.CompoundKineticBlock;
+import de.m_marvin.industria.core.kinetics.types.blocks.CompoundBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.KineticReference;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
 import de.m_marvin.industria.core.registries.BlockEntityTypes;
 import de.m_marvin.industria.core.util.types.StateTransform;
-import de.m_marvin.industria.core.util.types.virtualblock.VirtualBlock;
+import de.m_marvin.industria.core.util.virtualblock.VirtualBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -18,17 +18,18 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class CompoundKineticBlockEntity extends BlockEntity implements IKineticBlockEntity {
+public class CompoundBlockEntity extends BlockEntity implements IKineticBlockEntity {
 
 	protected static record KineticPart() {}
 	
 	protected Map<Integer, VirtualBlock<Block, BlockEntity>> parts = new HashMap<>();
 	
-	public CompoundKineticBlockEntity(BlockPos pPos, BlockState pBlockState) {
-		super(BlockEntityTypes.COMPOUND_KINETIC.get(), pPos, pBlockState);
+	public CompoundBlockEntity(BlockPos pPos, BlockState pBlockState) {
+		super(BlockEntityTypes.COMPOUND_BLOCK.get(), pPos, pBlockState);
 	}
 	
 	public TransmissionNode[] getTransmissionNodes() {
@@ -49,6 +50,32 @@ public class CompoundKineticBlockEntity extends BlockEntity implements IKineticB
 	
 	public Map<Integer, VirtualBlock<Block, BlockEntity>> getParts() {
 		return parts;
+	}
+	
+	public int coundParts() {
+		return (int) parts.values().stream()
+			.filter(v -> !v.getState().isAir())
+			.count();
+	}
+	
+	public boolean isEmpty() {
+		return coundParts() == 0;
+	}
+	
+	public void checkCompound() {
+		int i = coundParts();
+		if (i == 0) {
+			level.setBlockAndUpdate(worldPosition, Blocks.AIR.defaultBlockState());
+		} else if (i == 1) {
+			VirtualBlock<Block, BlockEntity> part = parts.values().stream().filter(v -> !v.getState().isAir()).findAny().get();
+			level.setBlockAndUpdate(worldPosition, part.getState());
+			if (part.getBlockEntity() != null) {
+				level.setBlockEntity(part.getBlockEntity());
+				part.getBlockEntity().setLevel(level);
+			} else {
+				level.removeBlockEntity(worldPosition);
+			}
+		}
 	}
 	
 	@Override
@@ -75,6 +102,7 @@ public class CompoundKineticBlockEntity extends BlockEntity implements IKineticB
 			if (this.parts.get(id).getState().isAir()) break;
 		if (!this.parts.containsKey(id)) {
 			var virtualBlock = new VirtualBlock<Block, BlockEntity>(this::getBlockPos);
+			virtualBlock.setStateChangeEvent(this::checkCompound);
 			if (level != null) virtualBlock.setLevel(level);
 			this.parts.put(id, virtualBlock);
 		}
@@ -86,8 +114,8 @@ public class CompoundKineticBlockEntity extends BlockEntity implements IKineticB
 	public void applyTransform() {
 		if (!hasLevel()) return;
 		BlockState state = getLevel().getBlockState(getBlockPos());
-		if (!(state.getBlock() instanceof CompoundKineticBlock)) return;
-		StateTransform transform = state.getValue(CompoundKineticBlock.TRANSFORM);
+		if (!(state.getBlock() instanceof CompoundBlock)) return;
+		StateTransform transform = state.getValue(CompoundBlock.TRANSFORM);
 		if (transform == StateTransform.NONE) return;
 		this.parts.values().forEach(vb -> vb.transform(transform));
 		getLevel().scheduleTick(getBlockPos(), getBlockState().getBlock(), 1);
@@ -118,6 +146,7 @@ public class CompoundKineticBlockEntity extends BlockEntity implements IKineticB
 			int id = Integer.parseInt(key);
 			VirtualBlock<Block, BlockEntity> virtualBlock = 
 					VirtualBlock.deserialize(this::getBlockPos, parts.getCompound(key));
+			virtualBlock.setStateChangeEvent(this::checkCompound);
 			if (this.level != null) virtualBlock.setLevel(this.level);
 			this.parts.put(id, virtualBlock);
 		}

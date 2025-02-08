@@ -2,7 +2,7 @@ package de.m_marvin.industria.core.client.kinetics.blockentityrenderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.m_marvin.industria.core.kinetics.types.blockentities.CompoundKineticBlockEntity;
+import de.m_marvin.industria.core.kinetics.types.blockentities.CompoundBlockEntity;
 import de.m_marvin.industria.core.registries.Blocks;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -16,12 +16,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 
-public class CompoundKineticBlockEntityRenderer<T extends CompoundKineticBlockEntity> implements BlockEntityRenderer<T> {
+public class CompoundBlockEntityRenderer<T extends CompoundBlockEntity> implements BlockEntityRenderer<T> {
 
 	protected BlockRenderDispatcher blockDispatcher;
 	protected BlockEntityRenderDispatcher blockEntityDispatcher;
 	
-	public CompoundKineticBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+	public CompoundBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
 		this.blockDispatcher = context.getBlockRenderDispatcher();
 		this.blockEntityDispatcher = context.getBlockEntityRenderDispatcher();
 	}
@@ -31,7 +31,7 @@ public class CompoundKineticBlockEntityRenderer<T extends CompoundKineticBlockEn
 		
 		if (pBlockEntity.getParts().isEmpty()) {
 			
-			renderCompoundBlock(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pBlockEntity.getLevel(), Blocks.ERROR_BLOCK.get().defaultBlockState());
+			renderCompoundBlock(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pBlockEntity.getLevel(), Blocks.COMPOUND_BLOCK.get().defaultBlockState());
 			return;
 			
 		}

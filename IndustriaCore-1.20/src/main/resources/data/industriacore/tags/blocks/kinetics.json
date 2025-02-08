@@ -3,6 +3,7 @@
 	"values": [
 		"industriacore:gear",
 		"industriacore:large_gear",
-		"industriacore:motor"
+		"industriacore:motor",
+		"industriacore:compound_kinetic"
 	]
 }

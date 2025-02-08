@@ -1,12 +1,9 @@
  package de.m_marvin.industria.core.kinetics.types.blocks;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
-import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.KineticReference;
-import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.TransmissionNode;
 import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
-import io.netty.util.internal.MathUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -17,7 +14,6 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;

@@ -122,9 +122,6 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 		KineticHandlerCapabillity handler = GameUtility.getLevelCapability(level, Capabilities.KINETIC_HANDLER_CAPABILITY);
 		
 		if (event.getState().getBlock() instanceof IKineticBlock) {
-			for (Component component : handler.findComponentsAt(event.getPos())) {
-				component.setChanged();
-			}
 			handler.updateNetworks(event.getPos());
 		} else {
 			for (Component component : handler.findComponentsAt(event.getPos())) {
@@ -161,7 +158,6 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	 */
 	public static class Component {
 		protected KineticReference reference;
-		protected boolean hasChanged;
 		protected BlockState instance;
 		protected IKineticBlock type;
 		
@@ -169,11 +165,6 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 			this.type = type;
 			this.instance = instance;
 			this.reference = reference;
-			this.hasChanged = true;
-		}
-		
-		public void setChanged() {
-			this.hasChanged = true;
 		}
 		
 		public KineticReference reference() {
@@ -185,10 +176,9 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 		}
 		
 		public BlockState instance(Level level) {
-			if ((this.hasChanged || instance.isAir()) && level != null) {
+			if (level != null) {
 				this.instance = reference.state(level);
 				if (!this.instance.isAir()) {
-					this.hasChanged = false;
 				}
 			}
 			return instance;

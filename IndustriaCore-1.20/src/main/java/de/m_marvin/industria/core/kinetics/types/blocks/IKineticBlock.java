@@ -1,7 +1,7 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
-import de.m_marvin.industria.core.kinetics.engine.transmission.GearTransmissions;
 import de.m_marvin.industria.core.kinetics.engine.transmission.AxleTransmission;
+import de.m_marvin.industria.core.kinetics.engine.transmission.GearTransmissions;
 import de.m_marvin.industria.core.kinetics.engine.transmission.ShaftTransmission;
 import de.m_marvin.industria.core.kinetics.types.blockentities.IKineticBlockEntity;
 import de.m_marvin.industria.core.util.types.AxisOffset;
