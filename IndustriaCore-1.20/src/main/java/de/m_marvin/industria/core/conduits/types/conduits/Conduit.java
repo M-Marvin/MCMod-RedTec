@@ -42,6 +42,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -119,21 +120,19 @@ public class Conduit {
 		Vec3d middle = nodeA.sub(nodeB).mul(0.5).add(nodeB);
 		Vec3d nodeOrigin = MathUtility.getMinCorner(nodeA, nodeB);
 		
-		if (dropItems && getItem() != null) {
+		if (dropItems && !level.isClientSide() && getItem() != null) {
 			int wireCost = (int) Math.ceil(conduitState.getLength() / (float) BLOCKS_PER_WIRE_ITEM);
 			for (int i = 0; i < wireCost; i++) {
-				// TODO
-				GameUtility.dropItem(level, new ItemStack(getItem()), Vec3f.fromVec(middle).add(new Vec3f(0.5F, 0.5F, 0.5F)), 0.5F, 0.1F);
+				if (level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS))
+					GameUtility.dropItem(level, new ItemStack(getItem()), Vec3f.fromVec(middle).add(new Vec3f(0.5F, 0.5F, 0.5F)), 0.5F, 0.1F);
 			}
 		}
 		
-		if (dropItems) {
-			level.playLocalSound(middle.x, middle.y, middle.z, this.getSoundType().getBreakSound(), SoundSource.BLOCKS, this.getSoundType().getVolume(), this.getSoundType().getPitch(), false);
-			
-			if (!level.isClientSide()) {
-				for (Vec3d node : conduitState.getShape().nodes) {
-					((ServerLevel) level).sendParticles(new ConduitParticleOption(ParticleTypes.CONDUIT.get(), conduitState.getConduit()), node.x + nodeOrigin.x, node.y + nodeOrigin.y, node.z + nodeOrigin.z, 10, 0.2F, 0.2F, 0.2F, 1);
-				}
+		level.playLocalSound(middle.x, middle.y, middle.z, this.getSoundType().getBreakSound(), SoundSource.BLOCKS, this.getSoundType().getVolume(), this.getSoundType().getPitch(), false);
+		
+		if (dropItems && !level.isClientSide()) {
+			for (Vec3d node : conduitState.getShape().nodes) {
+				((ServerLevel) level).sendParticles(new ConduitParticleOption(ParticleTypes.CONDUIT.get(), conduitState.getConduit()), node.x + nodeOrigin.x, node.y + nodeOrigin.y, node.z + nodeOrigin.z, 10, 0.2F, 0.2F, 0.2F, 1);
 			}
 		}
 		
