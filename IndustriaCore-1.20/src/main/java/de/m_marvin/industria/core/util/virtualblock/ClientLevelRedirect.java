@@ -80,6 +80,7 @@ class ClientLevelRedirect extends ClientLevel {
 			blockField.setAccessible(true);
 			levelField.set(redirect, level);
 			blockField.set(redirect, virtualBlock);
+			redirect.random = level.random;
 			return redirect;
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 			throw new RuntimeException("Failed to construct ClientLevelRedirect using Unsafe!", e);
@@ -425,6 +426,11 @@ class ClientLevelRedirect extends ClientLevel {
 		level.gameEvent(pEvent, pPosition, pContext);
 	}
 
+	@Override
+	public void blockEvent(BlockPos pPos, Block pBlock, int pEventID, int pEventParam) {
+		level.blockEvent(pPos, pBlock, pEventID, pEventParam);
+	}
+	
 	@Override
 	public void sendBlockUpdated(BlockPos pPos, BlockState pOldState, BlockState pNewState, int pFlags) {
 		level.sendBlockUpdated(pPos, pOldState, pNewState, pFlags);

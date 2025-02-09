@@ -454,6 +454,11 @@ class ServerLevelRedirect extends ServerLevel {
 	}
 
 	@Override
+	public void blockEvent(BlockPos pPos, Block pBlock, int pEventID, int pEventParam) {
+		level.blockEvent(pPos, pBlock, pEventID, pEventParam);
+	}
+	
+	@Override
 	public void playSeededSound(Player pPlayer, double pX, double pY, double pZ, Holder<SoundEvent> pSound,
 			SoundSource pSource, float pVolume, float pPitch, long pSeed) {
 		level.playSeededSound(pPlayer, pX, pY, pZ, pSound, pSource, pVolume, pPitch, pSeed);
