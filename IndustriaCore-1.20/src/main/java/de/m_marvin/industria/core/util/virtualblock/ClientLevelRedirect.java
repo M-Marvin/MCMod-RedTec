@@ -1,6 +1,5 @@
 package de.m_marvin.industria.core.util.virtualblock;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -10,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import de.m_marvin.industria.core.util.GameUtility;
-import de.m_marvin.industria.core.util.UnsafeUtility;
+import de.m_marvin.industria.core.util.TheUnsafeUtility;
 import net.minecraft.client.multiplayer.ClientChunkCache;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -21,6 +20,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -62,12 +62,12 @@ import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.unsafe.UnsafeHacks;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 class ClientLevelRedirect extends ClientLevel {
 
 	private ClientLevelRedirect() {
+		/* This makes it impossible to construct the level using the normal constructor, 
+		 * as this would break the game by calling the ClientLevel constructor! */
 		super(null, null, null, null, 0, 0, null, null, false, 0);
 		this.level = null;
 		this.block = null;
@@ -75,16 +75,14 @@ class ClientLevelRedirect extends ClientLevel {
 	
 	public static ClientLevelRedirect newRedirect(VirtualBlock virtualBlock, ClientLevel level) {
 		try {
-			ClientLevelRedirect redirect = UnsafeHacks.newInstance(ClientLevelRedirect.class);
-			UnsafeUtility.copyClassFields(ClientLevel.class, level, redirect);
-//			UnsafeUtility.setField(ClientLevelRedirect.class, "level", redirect, level);
-//			UnsafeUtility.setField(ClientLevelRedirect.class, "block", redirect, virtualBlock);
-//			UnsafeUtility.setField(Level.class, "_46441_", redirect, level.random);
-//			UnsafeUtility.setField(Level.class, "f_46443_", redirect, false);
-//			redirect.random = level.random;
-//			redirect.isClientSide = true;
+			/* WARNING unsafe code section, this code operates directly on the native memory, 
+			 * bypassing any java restrictions */
+			ClientLevelRedirect redirect = TheUnsafeUtility.securedAllocateNewInstance(ClientLevelRedirect.class);
+			TheUnsafeUtility.securedCopyClassFields(ClientLevel.class, level, redirect);
+			TheUnsafeUtility.securedWriteField(ClientLevelRedirect.class.getDeclaredField("block"), redirect, virtualBlock);
+			TheUnsafeUtility.securedWriteField(ClientLevelRedirect.class.getDeclaredField("level"), redirect, level);
 			return redirect;
-		} catch (SecurityException | IllegalArgumentException e) {
+		} catch (SecurityException | IllegalArgumentException | InstantiationException | NoSuchFieldException e) {
 			throw new RuntimeException("Failed to construct ClientLevelRedirect using Unsafe!", e);
 		}
 	}

@@ -1,6 +1,5 @@
 package de.m_marvin.industria.core.util.virtualblock;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -10,8 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import de.m_marvin.industria.core.util.GameUtility;
-import de.m_marvin.industria.core.util.UnsafeUtility;
-import net.minecraft.client.multiplayer.ClientLevel;
+import de.m_marvin.industria.core.util.TheUnsafeUtility;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -64,12 +62,12 @@ import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.unsafe.UnsafeHacks;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 class ServerLevelRedirect extends ServerLevel {
 	
 	private ServerLevelRedirect() {
+		/* This makes it impossible to construct the level using the normal constructor, 
+		 * as this would break the game by calling the ServerLevel constructor! */
 		super(null, null, null, null, null, null, null, false, 0, null, false, null);
 		this.level = null;
 		this.block = null;
@@ -77,26 +75,14 @@ class ServerLevelRedirect extends ServerLevel {
 	
 	public static ServerLevelRedirect newRedirect(VirtualBlock virtualBlock, ServerLevel level) {
 		try {
-			ServerLevelRedirect redirect = UnsafeHacks.newInstance(ServerLevelRedirect.class);
-			UnsafeUtility.copyClassFields(ServerLevel.class, level, redirect);
-			
-//			UnsafeUtility.setField(ServerLevelRedirect.class, "level", redirect, level);
-//			UnsafeUtility.setField(ServerLevelRedirect.class, "block", redirect, virtualBlock);
-//			UnsafeUtility.setField(Level.class, "_46441_", redirect, level.random);
-//			UnsafeUtility.setField(Level.class, "f_46443_", redirect, false);
-//			UnsafeUtility.setField(ServerLevel.class, "f_286969_", redirect, level.randomSequences);
-//			
-//			UnsafeHacks.setField(ClientLevelRedirect.class.getDeclaredField("level"), redirect, level);
-//			UnsafeHacks.setField(ClientLevelRedirect.class.getDeclaredField("block"), redirect, virtualBlock);
-//			
-//			UnsafeHacks.setField(ObfuscationReflectionHelper.findField(Level.class, "f_46441_"), redirect, level.random);
-//			UnsafeHacks.setField(ObfuscationReflectionHelper.findField(ServerLevel.class, "f_286969_"), redirect, level.randomSequences);
-//			UnsafeHacks.setField(ObfuscationReflectionHelper.findField(Level.class, "f_46443_"), redirect, false);
-//			redirect.random = level.random;
-//			redirect.randomSequences = level.randomSequences;
-//			redirect.isClientSide = false;
+			/* WARNING unsafe code section, this code operates directly on the native memory, 
+			 * bypassing any java restrictions */
+			ServerLevelRedirect redirect = TheUnsafeUtility.securedAllocateNewInstance(ServerLevelRedirect.class);
+			TheUnsafeUtility.securedCopyClassFields(ServerLevel.class, level, redirect);
+			TheUnsafeUtility.securedWriteField(ServerLevelRedirect.class.getDeclaredField("block"), redirect, virtualBlock);
+			TheUnsafeUtility.securedWriteField(ServerLevelRedirect.class.getDeclaredField("level"), redirect, level);
 			return redirect;
-		} catch (SecurityException | IllegalArgumentException e) {
+		} catch (InstantiationException | IllegalArgumentException | NoSuchFieldException | SecurityException e) {
 			throw new RuntimeException("Failed to construct ServerLevelRedirect using Unsafe!", e);
 		}
 	}
