@@ -44,7 +44,7 @@ public class ScrewDriverItem extends Item implements IScrollOverride {
 	
 	@Override
 	public boolean overridesScroll(UseOnContext context, ItemStack stack) {
-		if (context.getHitResult() != null) {
+		if (context != null && context.getHitResult() != null) {
 //			BlockPos targetedPos = context.getClickedPos();
 //			Direction targetedFace = context.getClickedFace();
 //			Vec3 targetedVec = context.getClickLocation();
