@@ -85,7 +85,8 @@ public class KineticComponentRenderer {
 				BlockState state = component.instance(clientLevel);
 				VoxelShape shape = state.getBlock().getShape(state, clientLevel, pos, null);
 				
-				AABB bounds = new AABB(0, 0, 0, 16, 16, 16);
+				AABB bounds = new AABB(0, 0, 0, 1, 1, 1);
+							
 				if (shape != null && !shape.isEmpty()) bounds = shape.bounds();
 				
 				double distance = playerPosition.dist(ContraptionUtility.ensureWorldCoordinates(clientLevel, pos, Vec3d.fromVec(pos)));

@@ -1,9 +1,9 @@
 package de.m_marvin.industria.core.registries;
 
 import de.m_marvin.industria.IndustriaCore;
+import de.m_marvin.industria.core.compound.types.blockentities.CompoundBlockEntity;
 import de.m_marvin.industria.core.electrics.types.blockentities.JunctionBoxBlockEntity;
 import de.m_marvin.industria.core.electrics.types.blockentities.VoltageSourceBlockEntity;
-import de.m_marvin.industria.core.kinetics.types.blockentities.CompoundBlockEntity;
 import de.m_marvin.industria.core.kinetics.types.blockentities.MotorBlockEntity;
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
 import net.minecraft.core.registries.Registries;

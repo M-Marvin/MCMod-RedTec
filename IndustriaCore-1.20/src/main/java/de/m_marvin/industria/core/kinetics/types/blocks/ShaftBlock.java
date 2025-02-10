@@ -1,11 +1,9 @@
  package de.m_marvin.industria.core.kinetics.types.blocks;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
-import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -55,12 +53,6 @@ public class ShaftBlock extends BaseEntityBlock implements IKineticBlock {
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
 		Axis axis = pContext.getClickedFace().getAxis();
-		for (Direction d : Direction.values()) {
-			BlockState state = pContext.getLevel().getBlockState(pContext.getClickedPos().relative(d));
-			if (state.is(Tags.Blocks.KINETICS)) {
-				// TODO placement helper
-			}
-		}
 		return this.defaultBlockState().setValue(AXIS, axis);
 	}
 	

@@ -110,12 +110,12 @@ public interface IKineticBlock {
 		return 0.0;
 	}
 
-	public default void setRPM(LevelAccessor level, BlockPos pos, int partId, BlockState state, int rpm) {
+	public default void setRPM(LevelAccessor level, BlockPos pos, int partId, BlockState state, double rpm) {
 		if (level.getBlockEntity(pos) instanceof IKineticBlockEntity kinetic)
 			kinetic.setRPM(partId, rpm);
 	}
 
-	public default int getRPM(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
+	public default double getRPM(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
 		if (level.getBlockEntity(pos) instanceof IKineticBlockEntity kinetic)
 			return kinetic.getRPM(partId);
 		return 0;

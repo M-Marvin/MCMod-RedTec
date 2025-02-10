@@ -1,7 +1,7 @@
 package de.m_marvin.industria.core.client.registries;
 
 import de.m_marvin.industria.IndustriaCore;
-import de.m_marvin.industria.core.client.kinetics.blockentityrenderers.CompoundBlockEntityRenderer;
+import de.m_marvin.industria.core.client.compound.renderers.CompoundBlockEntityRenderer;
 import de.m_marvin.industria.core.client.kinetics.blockentityrenderers.SimpleKineticBlockEntityRenderer;
 import de.m_marvin.industria.core.registries.BlockEntityTypes;
 import net.minecraftforge.api.distmarker.Dist;

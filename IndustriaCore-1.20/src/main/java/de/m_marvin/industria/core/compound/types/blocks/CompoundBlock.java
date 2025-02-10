@@ -1,4 +1,4 @@
-package de.m_marvin.industria.core.kinetics.types.blocks;
+package de.m_marvin.industria.core.compound.types.blocks;
 
 import java.util.List;
 import java.util.Map;
@@ -9,7 +9,8 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
-import de.m_marvin.industria.core.kinetics.types.blockentities.CompoundBlockEntity;
+import de.m_marvin.industria.core.compound.types.blockentities.CompoundBlockEntity;
+import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock;
 import de.m_marvin.industria.core.magnetism.MagnetismUtility;
 import de.m_marvin.industria.core.magnetism.types.blocks.IMagneticBlock;
 import de.m_marvin.industria.core.registries.Blocks;
@@ -489,7 +490,8 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		if (level != null && level.getBlockEntity(pos) instanceof CompoundBlockEntity compound) {
 			return compound.getParts().values().stream()
 				.map(p -> MagnetismUtility.getBlockCoefficient(p.getLevel(), p.getState(), p.getPos()))
-				.reduce((a, b) -> a * b).orElse(0.0);
+				.reduce((a, b) -> a + b)
+				.orElse(0.0) / compound.getParts().size();
 		}
 		return 0.0;
 	}
@@ -548,9 +550,8 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		BlockHitResult hit = level.clip(clip);
 		if (hit.getType() == Type.MISS) return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
 		if (level.getBlockEntity(pos) instanceof CompoundBlockEntity compound) {
-			for (VirtualBlock<Block, BlockEntity> part : compound.getParts().values()) {
-				VoxelShape shape = part.getState().getShape(part.getLevel(), part.getPos());
-				BlockHitResult hit2 = shape.clip(clip.getFrom(), clip.getTo(), part.getPos());
+			for (VirtualBlock part : compound.getParts().values()) {
+				BlockHitResult hit2 = part.getLevel().clip(clip);
 				if (hit2 != null && hit2.getType() != Type.MISS && hit.getLocation().distanceTo(hit2.getLocation()) < 0.01) {
 					
 					Block bblock = part.getBlock();
@@ -611,9 +612,8 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		BlockHitResult hit = level.clip(clip);
 		if (hit.getType() == Type.MISS) return super.canHarvestBlock(state, level, pos, player);
 		if (level.getBlockEntity(pos) instanceof CompoundBlockEntity compound) {
-			for (VirtualBlock<Block, BlockEntity> part : compound.getParts().values()) {
-				VoxelShape shape = part.getState().getShape(part.getLevel(), part.getPos());
-				BlockHitResult hit2 = shape.clip(clip.getFrom(), clip.getTo(), part.getPos());
+			for (VirtualBlock part : compound.getParts().values()) {
+				BlockHitResult hit2 = part.getLevel().clip(clip);
 				if (hit2 != null && hit2.getType() != Type.MISS && hit.getLocation().distanceTo(hit2.getLocation()) < 0.01) {
 					return part.getBlock().canHarvestBlock(part.getState(), part.getLevel(), part.getPos(), player);
 				}
@@ -631,9 +631,8 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 			return;
 		}
 		if (pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
-			for (VirtualBlock<Block, BlockEntity> part : compound.getParts().values()) {
-				VoxelShape shape = part.getState().getShape(part.getLevel(), part.getPos());
-				BlockHitResult hit2 = shape.clip(clip.getFrom(), clip.getTo(), part.getPos());
+			for (VirtualBlock part : compound.getParts().values()) {
+				BlockHitResult hit2 = part.getLevel().clip(clip);
 				if (hit2 != null && hit2.getType() != Type.MISS && hit.getLocation().distanceTo(hit2.getLocation()) < 0.01) {
 					part.getBlock().playerWillDestroy(part.getLevel(), part.getPos(), part.getState(), pPlayer);
 				}
@@ -651,7 +650,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 			return;
 		}
 		if (pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
-			for (VirtualBlock<Block, BlockEntity> part : compound.getParts().values()) {
+			for (VirtualBlock part : compound.getParts().values()) {
 				VoxelShape shape = part.getState().getShape(part.getLevel(), part.getPos());
 				BlockHitResult hit2 = shape.clip(clip.getFrom(), clip.getTo(), part.getPos());
 				if (hit2 != null && hit2.getType() != Type.MISS && hit.getLocation().distanceTo(hit2.getLocation()) < 0.01) {
@@ -669,9 +668,8 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		BlockHitResult hit = level.clip(clip);
 		if (hit.getType() == Type.MISS) return super.getCloneItemStack(state, target, level, pos, player);
 		if (level.getBlockEntity(pos) instanceof CompoundBlockEntity compound) {
-			for (VirtualBlock<Block, BlockEntity> part : compound.getParts().values()) {
-				VoxelShape shape = part.getState().getShape(part.getLevel(), part.getPos());
-				BlockHitResult hit2 = shape.clip(clip.getFrom(), clip.getTo(), part.getPos());
+			for (VirtualBlock part : compound.getParts().values()) {
+				BlockHitResult hit2 = part.getLevel().clip(clip);
 				if (hit2 != null && hit2.getType() != Type.MISS && hit.getLocation().distanceTo(hit2.getLocation()) < 0.01) {
 					return part.getBlock().getCloneItemStack(part.getState(), hit, part.getLevel(), part.getPos(), player);
 				}
@@ -687,9 +685,8 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		BlockHitResult hit = pLevel.clip(clip);
 		if (hit.getType() == Type.MISS) return super.getDestroyProgress(pState, pPlayer, pLevel, pPos);
 		if (pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
-			for (VirtualBlock<Block, BlockEntity> part : compound.getParts().values()) {
-				VoxelShape shape = part.getState().getShape(part.getLevel(), part.getPos());
-				BlockHitResult hit2 = shape.clip(clip.getFrom(), clip.getTo(), part.getPos());
+			for (VirtualBlock part : compound.getParts().values()) {
+				BlockHitResult hit2 = part.getLevel().clip(clip);
 				if (hit2 != null && hit2.getType() != Type.MISS && hit.getLocation().distanceTo(hit2.getLocation()) < 0.01) {
 					return part.getBlock().getDestroyProgress(part.getState(), pPlayer, part.getLevel(), part.getPos());
 				}
@@ -715,9 +712,8 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		BlockHitResult hit = pLevel.clip(clip);
 		if (hit.getType() == Type.MISS) return InteractionResult.PASS;
 		if (pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
-			for (VirtualBlock<Block, BlockEntity> part : compound.getParts().values()) {
-				VoxelShape shape = part.getState().getShape(part.getLevel(), part.getPos());
-				BlockHitResult hit2 = shape.clip(clip.getFrom(), clip.getTo(), part.getPos());
+			for (VirtualBlock part : compound.getParts().values()) {
+				BlockHitResult hit2 = part.getLevel().clip(clip);
 				if (hit2 != null && hit2.getType() != Type.MISS && hit.getLocation().distanceTo(hit2.getLocation()) < 0.01) {
 					return part.getBlock().use(part.getState(), part.getLevel(), part.getPos(), pPlayer, pHand, pHit);
 				}
@@ -733,9 +729,8 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		BlockHitResult hit = pLevel.clip(clip);
 		if (hit.getType() == Type.MISS) return;
 		if (pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
-			for (VirtualBlock<Block, BlockEntity> part : compound.getParts().values()) {
-				VoxelShape shape = part.getState().getShape(part.getLevel(), part.getPos());
-				BlockHitResult hit2 = shape.clip(clip.getFrom(), clip.getTo(), part.getPos());
+			for (VirtualBlock part : compound.getParts().values()) {
+				BlockHitResult hit2 = part.getLevel().clip(clip);
 				if (hit2 != null && hit2.getType() != Type.MISS && hit.getLocation().distanceTo(hit2.getLocation()) < 0.01) {
 					part.getBlock().attack(part.getState(), part.getLevel(), part.getPos(), pPlayer);
 				}
@@ -777,7 +772,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 	@SuppressWarnings("deprecation")
 	@Override
 	public VoxelShape getBlockSupportShape(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
-		if (pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
+		if (pLevel != null && pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
 			VoxelShape shape = compound.getParts().values().stream()
 				.map(p -> p.getBlock().getBlockSupportShape(p.getState(), p.getLevel(), p.getPos()))
 				.reduce(Shapes::or).orElseGet(() -> super.getBlockSupportShape(pState, pLevel, pPos));
@@ -789,8 +784,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 	@SuppressWarnings("deprecation")
 	@Override
 	public VoxelShape getInteractionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
-//		return Shapes.empty();
-		if (pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
+		if (pLevel != null && pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
 			VoxelShape shape = compound.getParts().values().stream()
 				.map(p -> p.getBlock().getInteractionShape(p.getState(), p.getLevel(), p.getPos()))
 				.reduce(Shapes::or).orElseGet(() -> super.getInteractionShape(pState, pLevel, pPos));
@@ -802,7 +796,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 	@Override
 	public boolean propagatesSkylightDown(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
 		if (pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
-			for (VirtualBlock<Block, BlockEntity> p : compound.getParts().values()) {
+			for (VirtualBlock p : compound.getParts().values()) {
 				if (p.getBlock().propagatesSkylightDown(p.getState(), p.getLevel(), p.getPos())) return true;
 			}
 			return false;
@@ -824,7 +818,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isCollisionShapeFullBlock(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
-		if (pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
+		if (pLevel != null && pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
 			return compound.getParts().values().stream()
 				.map(p -> p.getBlock().isCollisionShapeFullBlock(p.getState(), p.getLevel(), p.getPos()))
 				.reduce((a, b) -> a || b).orElse(true);
@@ -835,7 +829,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 	@SuppressWarnings("deprecation")
 	@Override
 	public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-		if (pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
+		if (pLevel != null && pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
 			VoxelShape shape = compound.getParts().values().stream()
 				.map(p -> p.getBlock().getShape(p.getState(), p.getLevel(), p.getPos(), pContext))
 				.reduce(Shapes::or).orElseGet(() -> DEFAULT_SHAPE);
@@ -847,7 +841,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 	@SuppressWarnings("deprecation")
 	@Override
 	public VoxelShape getCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-		if (pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
+		if (pLevel != null && pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
 			VoxelShape shape = compound.getParts().values().stream()
 				.map(p -> p.getBlock().getCollisionShape(p.getState(), p.getLevel(), p.getPos(), pContext))
 				.reduce(Shapes::or).orElseGet(() -> super.getCollisionShape(pState, pLevel, pPos, pContext));
@@ -859,7 +853,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 	@SuppressWarnings("deprecation")
 	@Override
 	public VoxelShape getVisualShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-		if (pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
+		if (pLevel != null && pLevel.getBlockEntity(pPos) instanceof CompoundBlockEntity compound) {
 			VoxelShape shape = compound.getParts().values().stream()
 				.map(p -> p.getBlock().getVisualShape(p.getState(), p.getLevel(), p.getPos(), pContext))
 				.reduce(Shapes::or).orElseGet(() -> super.getVisualShape(pState, pLevel, pPos, pContext));

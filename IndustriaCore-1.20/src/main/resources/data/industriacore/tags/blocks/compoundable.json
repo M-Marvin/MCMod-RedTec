@@ -5,8 +5,6 @@
 		"industriacore:large_gear",
 		"industriacore:shaft",
 		"industriacore:short_shaft_1",
-		"industriacore:short_shaft_2",
-		"industriacore:motor",
-		"industriacore:compound_kinetic"
+		"industriacore:short_shaft_2"
 	]
 }

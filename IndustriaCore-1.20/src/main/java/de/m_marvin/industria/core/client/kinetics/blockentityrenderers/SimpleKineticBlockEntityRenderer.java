@@ -39,7 +39,7 @@ public class SimpleKineticBlockEntityRenderer<T extends BlockEntity & IKineticBl
 			float rotationalOffset = (float) part.axialOffset();
 			float rotationalSpeed = (float) part.rotationRatio();
 			
-			int rpm = pBlockEntity.getRPM(0);
+			double rpm = pBlockEntity.getRPM(0);
 			float rotation = (float) ((float) (ClientTimer.getRenderTicks() / 3000 * rpm * rotationalSpeed) * 2 * Math.PI);
 			
 			pPoseStack.translate(0.5, 0.5, 0.5);

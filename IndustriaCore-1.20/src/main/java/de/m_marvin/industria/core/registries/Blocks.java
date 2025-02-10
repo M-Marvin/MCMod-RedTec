@@ -1,9 +1,9 @@
 package de.m_marvin.industria.core.registries;
 
 import de.m_marvin.industria.IndustriaCore;
+import de.m_marvin.industria.core.compound.types.blocks.CompoundBlock;
 import de.m_marvin.industria.core.electrics.types.blocks.VoltageSourceBlock;
 import de.m_marvin.industria.core.electrics.types.blocks.WireHolderBlock;
-import de.m_marvin.industria.core.kinetics.types.blocks.CompoundBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.GearBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.LargeGearBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.MotorBlock;

@@ -9,6 +9,8 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import de.m_marvin.industria.core.util.GameUtility;
+import de.m_marvin.industria.core.util.UnsafeUtility;
 import net.minecraft.client.multiplayer.ClientChunkCache;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -36,7 +38,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -62,6 +63,7 @@ import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.unsafe.UnsafeHacks;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 class ClientLevelRedirect extends ClientLevel {
 
@@ -71,23 +73,23 @@ class ClientLevelRedirect extends ClientLevel {
 		this.block = null;
 	}
 	
-	public static ClientLevelRedirect newRedirect(VirtualBlock<?, ?> virtualBlock, ClientLevel level) {
+	public static ClientLevelRedirect newRedirect(VirtualBlock virtualBlock, ClientLevel level) {
 		try {
 			ClientLevelRedirect redirect = UnsafeHacks.newInstance(ClientLevelRedirect.class);
-			Field levelField = ClientLevelRedirect.class.getDeclaredField("level");
-			Field blockField = ClientLevelRedirect.class.getDeclaredField("block");
-			levelField.setAccessible(true);
-			blockField.setAccessible(true);
-			levelField.set(redirect, level);
-			blockField.set(redirect, virtualBlock);
-			redirect.random = level.random;
+			UnsafeUtility.copyClassFields(ClientLevel.class, level, redirect);
+//			UnsafeUtility.setField(ClientLevelRedirect.class, "level", redirect, level);
+//			UnsafeUtility.setField(ClientLevelRedirect.class, "block", redirect, virtualBlock);
+//			UnsafeUtility.setField(Level.class, "_46441_", redirect, level.random);
+//			UnsafeUtility.setField(Level.class, "f_46443_", redirect, false);
+//			redirect.random = level.random;
+//			redirect.isClientSide = true;
 			return redirect;
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+		} catch (SecurityException | IllegalArgumentException e) {
 			throw new RuntimeException("Failed to construct ClientLevelRedirect using Unsafe!", e);
 		}
 	}
 
-	private VirtualBlock<?,?> block;
+	private VirtualBlock block;
 	private ClientLevel level;
 	
 	@Override
@@ -125,24 +127,12 @@ class ClientLevelRedirect extends ClientLevel {
 	public boolean setBlock(BlockPos pPos, BlockState pState, int pFlags, int pRecursionLeft) {
 		if (pPos.equals(block.getPos())) {
 			block.setBlock(pState);
-			BlockState rstate = level.getBlockState(pPos);
-			level.markAndNotifyBlock(pPos, level.getChunkAt(pPos), rstate, rstate, pFlags, pRecursionLeft);
+			if ((pFlags & 1) > 0) GameUtility.triggerUpdate(level, pPos);
 			return true;
 		}
 		return level.setBlock(pPos, pState, pFlags);
 	}
 	
-	@Override
-	public boolean removeBlock(BlockPos pPos, boolean pIsMoving) {
-		if (pPos.equals(block.getPos())) {
-			block.setBlock(Blocks.AIR.defaultBlockState());
-			BlockState rstate = level.getBlockState(pPos);
-			level.sendBlockUpdated(pPos, rstate, rstate, 3);
-			return true;
-		}
-		return level.removeBlock(pPos, pIsMoving);
-	}
-
 	@Override
 	public void removeBlockEntity(BlockPos pPos) {
 		if (pPos.equals(block.getPos())) {
@@ -155,7 +145,7 @@ class ClientLevelRedirect extends ClientLevel {
 	@Override
 	public void setBlockEntity(BlockEntity pBlockEntity) {
 		if (pBlockEntity.getBlockPos().equals(block.getPos())) {
-			block.setBlockEntityObj(pBlockEntity);
+			block.setBlockEntity(pBlockEntity);
 			return;
 		}
 		level.setBlockEntity(pBlockEntity);

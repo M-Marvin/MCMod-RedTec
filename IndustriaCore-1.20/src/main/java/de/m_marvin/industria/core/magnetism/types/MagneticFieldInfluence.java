@@ -84,7 +84,7 @@ public class MagneticFieldInfluence {
 	
 	@Override
 	public int hashCode() {
-		// WARNING: Don't implement hashCode(), it undefined behavior in HashSet<> because of an bug in the API!
+		// WARNING: Don't implement hashCode(), it causes undefined behavior in HashSet<> because of an bug in the API!
 		return super.hashCode();
 	}
 	

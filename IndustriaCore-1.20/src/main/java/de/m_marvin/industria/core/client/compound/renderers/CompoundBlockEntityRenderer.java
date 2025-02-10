@@ -1,8 +1,8 @@
-package de.m_marvin.industria.core.client.kinetics.blockentityrenderers;
+package de.m_marvin.industria.core.client.compound.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.m_marvin.industria.core.kinetics.types.blockentities.CompoundBlockEntity;
+import de.m_marvin.industria.core.compound.types.blockentities.CompoundBlockEntity;
 import de.m_marvin.industria.core.registries.Blocks;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;

@@ -16,6 +16,7 @@ public class Tags {
 		public static final TagKey<Block> ELECTRICS = tag("electrics");
 		public static final TagKey<Block> MAGNETIC = tag("magnetic");
 		public static final TagKey<Block> KINETICS = tag("kinetics");
+		public static final TagKey<Block> COMPOUNDABLE = tag("compoundable");
 		
 		private static TagKey<Block> tag(String name) {
 			return BlockTags.create(new ResourceLocation(IndustriaCore.MODID, name));

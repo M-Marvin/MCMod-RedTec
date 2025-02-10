@@ -229,7 +229,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 		public void setRPM(Level level, int rpm) {
 			this.type.setRPM(level, reference.pos(), reference.partId(), instance, rpm);
 		}
-		public int getRPM(Level level) {
+		public double getRPM(Level level) {
 			return this.type.getRPM(level, reference.pos(), reference.partId(), instance);
 		}
 	}
@@ -259,6 +259,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 		return components.stream()
 			.map(c -> this.component2kineticMap.get(c))
 			.distinct()
+			.filter(n -> n != null)
 			.toList();
 	}
 
@@ -287,24 +288,31 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	 */
 	public Collection<KineticNetwork> updateNetworks(BlockPos position) {
 		
-		Set<KineticNetwork> networks = new HashSet<>();
-		
-		BlockState state = level.getBlockState(position);
-		if (state.getBlock() instanceof IKineticBlock block) {
-			List<KineticReference> references = Stream.of(block.getTransmissionNodes(level, position, state))
-				.map(TransmissionNode::reference)
+		List<KineticReference> references =
+				getNetworksAt(position).stream()
+				.flatMap(n -> n.getComponents().stream())
+				.map(Component::reference)
 				.distinct()
 				.toList();
-			
-			Set<KineticReference> processed = new HashSet<>();
-			for (KineticReference reference : references) {
-				if (processed.contains(reference)) continue;
-				KineticNetwork network = updateNetwork(reference);
-				if (network == null) continue;
-				processed.addAll(network.getComponents().stream().map(Component::reference).distinct().toList());
-				networks.add(network);
+		
+		if (references.isEmpty()) {
+			BlockState state = level.getBlockState(position);
+			if (state.getBlock() instanceof IKineticBlock block) {
+				references = Stream.of(block.getTransmissionNodes(level, position, state))
+					.map(TransmissionNode::reference)
+					.distinct()
+					.toList();
 			}
-			
+		}
+		
+		Set<KineticNetwork> networks = new HashSet<>();
+		Set<KineticReference> processed = new HashSet<>();
+		for (KineticReference reference : references) {
+			if (processed.contains(reference)) continue;
+			KineticNetwork network = updateNetwork(reference);
+			if (network == null) continue;
+			processed.addAll(network.getComponents().stream().map(Component::reference).distinct().toList());
+			networks.add(network);
 		}
 		
 		return networks;
@@ -519,8 +527,10 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 							component1 = new Component(node1.reference(), kinetic1, state1);
 							addToNetwork(component1);
 							
-							ChunkPos chunkPos = new ChunkPos(component1.reference().pos());
-							IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunk(chunkPos.x, chunkPos.z)), new SSyncKineticComponentsPackage(component1, chunkPos, SyncRequestType.ADDED));
+							if (!this.level.isClientSide()) {
+								ChunkPos chunkPos = new ChunkPos(component1.reference().pos());
+								IndustriaCore.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunk(chunkPos.x, chunkPos.z)), new SSyncKineticComponentsPackage(component1, chunkPos, SyncRequestType.ADDED));
+							}
 						}
 						
 						if (network == null) {

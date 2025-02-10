@@ -1,6 +1,7 @@
 package de.m_marvin.industria.core.registries;
 
 import de.m_marvin.industria.IndustriaCore;
+import de.m_marvin.industria.core.compound.types.items.CompoundableBlockItem;
 import de.m_marvin.industria.core.conduits.types.items.AbstractConduitItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -23,11 +24,11 @@ public class Items {
 	public static final RegistryObject<BlockItem> VOLTAGE_SOURCE = 	ITEMS.register("voltage_source", () -> new BlockItem(Blocks.VOLTAGE_SOURCE.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<BlockItem> MAGNET =			ITEMS.register("magnet", () -> new BlockItem(Blocks.MAGNET.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<BlockItem> WIRE_HOLDER = 	ITEMS.register("wire_holder", () -> new BlockItem(Blocks.WIRE_HOLDER.get(), new Item.Properties().rarity(Rarity.EPIC)));
-	public static final RegistryObject<BlockItem> GEAR = 			ITEMS.register("gear", () -> new BlockItem(Blocks.GEAR.get(), new Item.Properties().rarity(Rarity.EPIC)));
-	public static final RegistryObject<BlockItem> LARGE_GEAR = 		ITEMS.register("large_gear", () -> new BlockItem(Blocks.LARGE_GEAR.get(), new Item.Properties().rarity(Rarity.EPIC)));
-	public static final RegistryObject<BlockItem> SHAFT = 			ITEMS.register("shaft", () -> new BlockItem(Blocks.SHAFT.get(), new Item.Properties().rarity(Rarity.EPIC)));
-	public static final RegistryObject<BlockItem> SHORT_SHAFT_1 = 	ITEMS.register("short_shaft_1", () -> new BlockItem(Blocks.SHORT_SHAFT_1.get(), new Item.Properties().rarity(Rarity.EPIC)));
-	public static final RegistryObject<BlockItem> SHORT_SHAFT_2 = 	ITEMS.register("short_shaft_2", () -> new BlockItem(Blocks.SHORT_SHAFT_2.get(), new Item.Properties().rarity(Rarity.EPIC)));
+	public static final RegistryObject<BlockItem> GEAR = 			ITEMS.register("gear", () -> new CompoundableBlockItem(Blocks.GEAR.get(), new Item.Properties().rarity(Rarity.EPIC)));
+	public static final RegistryObject<BlockItem> LARGE_GEAR = 		ITEMS.register("large_gear", () -> new CompoundableBlockItem(Blocks.LARGE_GEAR.get(), new Item.Properties().rarity(Rarity.EPIC)));
+	public static final RegistryObject<BlockItem> SHAFT = 			ITEMS.register("shaft", () -> new CompoundableBlockItem(Blocks.SHAFT.get(), new Item.Properties().rarity(Rarity.EPIC)));
+	public static final RegistryObject<BlockItem> SHORT_SHAFT_1 = 	ITEMS.register("short_shaft_1", () -> new CompoundableBlockItem(Blocks.SHORT_SHAFT_1.get(), new Item.Properties().rarity(Rarity.EPIC)));
+	public static final RegistryObject<BlockItem> SHORT_SHAFT_2 = 	ITEMS.register("short_shaft_2", () -> new CompoundableBlockItem(Blocks.SHORT_SHAFT_2.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<BlockItem> MOTOR = 			ITEMS.register("motor", () -> new BlockItem(Blocks.MOTOR.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<BlockItem> COMPOUND_BLOCK =	ITEMS.register("compound_block", () -> new BlockItem(Blocks.COMPOUND_BLOCK.get(), new Item.Properties().rarity(Rarity.EPIC)));
 	

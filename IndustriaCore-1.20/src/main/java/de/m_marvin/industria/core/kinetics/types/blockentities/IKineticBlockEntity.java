@@ -10,8 +10,8 @@ public interface IKineticBlockEntity {
 	
 	public static record CompoundPart(BlockState state, Axis rotationAxis, double axialOffset, double rotationRatio) {}
 	
-	public void setRPM(int partId, int rpm);
-	public int getRPM(int partId);
+	public void setRPM(int partId, double rpm);
+	public double getRPM(int partId);
 	
 	public default int getTorque() {
 		return 0;

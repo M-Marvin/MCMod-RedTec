@@ -13,23 +13,26 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class VirtualBlock<B extends Block, E extends BlockEntity> {
+public class VirtualBlock {
 	
 	protected final Supplier<BlockPos> pos;
 	protected Level level;
-	protected B block;
+	protected Block block;
 	protected BlockState state;
-	protected E blockEntity;
+	protected BlockEntity blockEntity;
 	protected Runnable stateChangeEvent;
 	
 	public VirtualBlock(Supplier<BlockPos> pos) {
 		this.pos = pos;
+		this.block = Blocks.AIR;
+		this.state = Blocks.AIR.defaultBlockState();
 	}
 	
 	public void setStateChangeEvent(Runnable stateChangeEvent) {
@@ -74,16 +77,12 @@ public class VirtualBlock<B extends Block, E extends BlockEntity> {
 		return false;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void setBlock(BlockState state) {
 		try {
-			this.block = (B) state.getBlock();
-			BlockState oldState = this.state;
+			this.block = state.getBlock();
 			this.state = state;
-			if (this.state != null && oldState != null)
-				this.state.onBlockStateChange(getLevel(), getPos(), oldState);
 			if (this.state.hasBlockEntity() && block instanceof EntityBlock entityBlock) {
-				this.blockEntity = (E) entityBlock.newBlockEntity(getPos(), state);
+				this.blockEntity = entityBlock.newBlockEntity(getPos(), state);
 				this.blockEntity.setLevel(this.level);
 			} else {
 				this.blockEntity = null;
@@ -95,18 +94,13 @@ public class VirtualBlock<B extends Block, E extends BlockEntity> {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public void setBlockEntityObj(BlockEntity blockEntity) {
-		this.blockEntity = (E) blockEntity;
-		this.blockEntity.setLevel(getLevel());
-	}
-	
-	public void setBlockEntity(E blockEntity) {
+	public void setBlockEntity(BlockEntity blockEntity) {
 		this.blockEntity = blockEntity;
-		this.blockEntity.setLevel(getLevel());
+		if (this.blockEntity != null)
+			this.blockEntity.setLevel(getLevel());
 	}
 	
-	public B getBlock() {
+	public Block getBlock() {
 		return block;
 	}
 	
@@ -114,7 +108,7 @@ public class VirtualBlock<B extends Block, E extends BlockEntity> {
 		return state;
 	}
 	
-	public E getBlockEntity() {
+	public BlockEntity getBlockEntity() {
 		return blockEntity;
 	}
 	
@@ -127,10 +121,10 @@ public class VirtualBlock<B extends Block, E extends BlockEntity> {
 		return nbt;
 	}
 	
-	public static <B extends Block, E extends BlockEntity> VirtualBlock<B, E> deserialize(Supplier<BlockPos> pos, CompoundTag nbt) {
+	public static VirtualBlock deserialize(Supplier<BlockPos> pos, CompoundTag nbt) {
 		@SuppressWarnings("deprecation")
 		BlockState state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("State"));
-		VirtualBlock<B, E> virtualBlock = new VirtualBlock<B, E>(pos);
+		VirtualBlock virtualBlock = new VirtualBlock(pos);
 		virtualBlock.setBlock(state);
 		if (virtualBlock.blockEntity != null) {
 			virtualBlock.blockEntity.deserializeNBT(nbt.getCompound("BlockEntity"));

@@ -1,6 +1,7 @@
 {
 	"replace": false,
 	"values": [
-		"industriacore:power_source"
+		"industriacore:power_source",
+		"industriacore:motor"
 	]
 }

@@ -67,7 +67,7 @@ public class MagnetismUtility {
 				return BlockParametricsManager.getInstance().getParametrics(state.getBlock()).getMagneticCoefficient();
 			}
 		}
-		return 1.0;
+		return 0.0;
 	}
 	
 }

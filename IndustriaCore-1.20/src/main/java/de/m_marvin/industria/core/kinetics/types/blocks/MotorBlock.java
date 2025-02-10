@@ -1,7 +1,6 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.MotorBlockEntity;
-import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -71,13 +70,7 @@ public class MotorBlock extends BaseEntityBlock implements IKineticBlock {
 	
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-		Direction facing = pContext.getClickedFace();
-		for (Direction d : Direction.values()) {
-			BlockState state = pContext.getLevel().getBlockState(pContext.getClickedPos().relative(d));
-			if (state.is(Tags.Blocks.KINETICS)) {
-				// TODO placement helper
-			}
-		}
+		Direction facing = pContext.getNearestLookingDirection();
 		return this.defaultBlockState().setValue(FACING, facing);
 	}
 

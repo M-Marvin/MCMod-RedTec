@@ -9,6 +9,9 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import de.m_marvin.industria.core.util.GameUtility;
+import de.m_marvin.industria.core.util.UnsafeUtility;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -37,7 +40,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -63,6 +65,7 @@ import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.unsafe.UnsafeHacks;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 class ServerLevelRedirect extends ServerLevel {
 	
@@ -72,24 +75,33 @@ class ServerLevelRedirect extends ServerLevel {
 		this.block = null;
 	}
 	
-	public static ServerLevelRedirect newRedirect(VirtualBlock<?, ?> virtualBlock, ServerLevel level) {
+	public static ServerLevelRedirect newRedirect(VirtualBlock virtualBlock, ServerLevel level) {
 		try {
 			ServerLevelRedirect redirect = UnsafeHacks.newInstance(ServerLevelRedirect.class);
-			Field levelField = ServerLevelRedirect.class.getDeclaredField("level");
-			Field blockField = ServerLevelRedirect.class.getDeclaredField("block");
-			levelField.setAccessible(true);
-			blockField.setAccessible(true);
-			levelField.set(redirect, level);
-			blockField.set(redirect, virtualBlock);
-			redirect.random = level.random;
-			redirect.randomSequences = level.randomSequences;
+			UnsafeUtility.copyClassFields(ServerLevel.class, level, redirect);
+			
+//			UnsafeUtility.setField(ServerLevelRedirect.class, "level", redirect, level);
+//			UnsafeUtility.setField(ServerLevelRedirect.class, "block", redirect, virtualBlock);
+//			UnsafeUtility.setField(Level.class, "_46441_", redirect, level.random);
+//			UnsafeUtility.setField(Level.class, "f_46443_", redirect, false);
+//			UnsafeUtility.setField(ServerLevel.class, "f_286969_", redirect, level.randomSequences);
+//			
+//			UnsafeHacks.setField(ClientLevelRedirect.class.getDeclaredField("level"), redirect, level);
+//			UnsafeHacks.setField(ClientLevelRedirect.class.getDeclaredField("block"), redirect, virtualBlock);
+//			
+//			UnsafeHacks.setField(ObfuscationReflectionHelper.findField(Level.class, "f_46441_"), redirect, level.random);
+//			UnsafeHacks.setField(ObfuscationReflectionHelper.findField(ServerLevel.class, "f_286969_"), redirect, level.randomSequences);
+//			UnsafeHacks.setField(ObfuscationReflectionHelper.findField(Level.class, "f_46443_"), redirect, false);
+//			redirect.random = level.random;
+//			redirect.randomSequences = level.randomSequences;
+//			redirect.isClientSide = false;
 			return redirect;
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+		} catch (SecurityException | IllegalArgumentException e) {
 			throw new RuntimeException("Failed to construct ServerLevelRedirect using Unsafe!", e);
 		}
 	}
 	
-	private VirtualBlock<?,?> block;
+	private VirtualBlock block;
 	private ServerLevel level;
 	
 	@Override
@@ -127,22 +139,10 @@ class ServerLevelRedirect extends ServerLevel {
 	public boolean setBlock(BlockPos pPos, BlockState pState, int pFlags, int pRecursionLeft) {
 		if (pPos.equals(block.getPos())) {
 			block.setBlock(pState);
-			BlockState rstate = level.getBlockState(pPos);
-			level.markAndNotifyBlock(pPos, level.getChunkAt(pPos), rstate, rstate, pFlags, pRecursionLeft);
+			if ((pFlags & 1) > 0) GameUtility.triggerUpdate(level, pPos);
 			return true;
 		}
 		return level.setBlock(pPos, pState, pFlags);
-	}
-	
-	@Override
-	public boolean removeBlock(BlockPos pPos, boolean pIsMoving) {
-		if (pPos.equals(block.getPos())) {
-			block.setBlock(Blocks.AIR.defaultBlockState());
-			BlockState rstate = level.getBlockState(pPos);
-			level.sendBlockUpdated(pPos, rstate, rstate, 3);
-			return true;
-		}
-		return level.removeBlock(pPos, pIsMoving);
 	}
 	
 	@Override
@@ -157,7 +157,7 @@ class ServerLevelRedirect extends ServerLevel {
 	@Override
 	public void setBlockEntity(BlockEntity pBlockEntity) {
 		if (pBlockEntity.getBlockPos().equals(block.getPos())) {
-			block.setBlockEntityObj(pBlockEntity);
+			block.setBlockEntity(pBlockEntity);
 			return;
 		}
 		level.setBlockEntity(pBlockEntity);

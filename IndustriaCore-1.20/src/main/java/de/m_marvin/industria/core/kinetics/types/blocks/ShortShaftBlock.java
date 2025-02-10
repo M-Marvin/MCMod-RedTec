@@ -3,7 +3,6 @@
 import java.util.function.Function;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
-import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
 import de.m_marvin.industria.core.util.types.AxisOffset;
 import net.minecraft.core.BlockPos;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -60,11 +60,10 @@ public class ShortShaftBlock extends BaseEntityBlock implements IKineticBlock {
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
 		Direction facing = pContext.getClickedFace().getOpposite();
-		for (Direction d : Direction.values()) {
-			BlockState state = pContext.getLevel().getBlockState(pContext.getClickedPos().relative(d));
-			if (state.is(Tags.Blocks.KINETICS)) {
-				// TODO placement helper
-			}
+		if (pContext.replacingClickedOnBlock()) {
+			Vec3 v = pContext.getHitResult().getLocation().subtract(pContext.getClickedPos().getX(), pContext.getClickedPos().getY(), pContext.getClickedPos().getZ());
+			double d = facing.getAxis().choose(v.x, v.y, v.z);
+			if (d > 0) facing = facing.getOpposite();
 		}
 		return this.defaultBlockState().setValue(FACING, facing);
 	}

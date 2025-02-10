@@ -2,13 +2,13 @@ package de.m_marvin.industria.core.kinetics.types.blocks;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
 import de.m_marvin.industria.core.registries.Blocks;
-import de.m_marvin.industria.core.registries.Tags;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
 import de.m_marvin.industria.core.util.types.AxisOffset;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -22,7 +22,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class GearBlock extends BaseEntityBlock implements IKineticBlock {
@@ -30,7 +33,7 @@ public class GearBlock extends BaseEntityBlock implements IKineticBlock {
 	public static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
 	public static final EnumProperty<AxisOffset> POS = Blocks.PROP_GEAR_POS;
 	
-	public static final VoxelShape SHAPE = VoxelShapeUtility.box(0, 6, 0, 16, 10, 16);
+	public static final VoxelShape SHAPE = Shapes.join(VoxelShapeUtility.box(0, 6, 0, 16, 10, 16), VoxelShapeUtility.box(6, 6, 6, 10, 10, 10), BooleanOp.ONLY_FIRST);
 	
 	public GearBlock(Properties pProperties) {
 		super(pProperties);
@@ -44,7 +47,6 @@ public class GearBlock extends BaseEntityBlock implements IKineticBlock {
 	@Override
 	public TransmissionNode[] getTransmissionNodes(LevelAccessor level, BlockPos pos, BlockState state) {
 		return new TransmissionNode[] {
-//				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), null, SHAFT),
 				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), state.getValue(POS), GEAR),
 				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), state.getValue(POS), ATTACHMENT)
 		};
@@ -68,14 +70,24 @@ public class GearBlock extends BaseEntityBlock implements IKineticBlock {
 	
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-		Axis axis = pContext.getClickedFace().getAxis();
-		for (Direction d : Direction.values()) {
-			BlockState state = pContext.getLevel().getBlockState(pContext.getClickedPos().relative(d));
-			if (state.is(Tags.Blocks.KINETICS)) {
-				// TODO placement helper
+		Axis axis = pContext.getNearestLookingDirection().getAxis();
+		Vec3 hit = pContext.getHitResult().getLocation().subtract(pContext.getClickedPos().getX(), pContext.getClickedPos().getY(), pContext.getClickedPos().getZ());
+		int axisHit = (int) Math.floor(axis.choose(hit.x, hit.y, hit.z) * 16.0);
+		AxisOffset offset = AxisOffset.CENTER;
+		if (pContext.getClickedFace().getAxis() == axis) {
+			AxisDirection clickDir = pContext.getClickedFace().getAxisDirection();
+			if (clickDir == AxisDirection.POSITIVE) {
+				if (axisHit < 2) offset = AxisOffset.BACK;
+				if (axisHit > 8) offset = AxisOffset.FRONT;
+			} else {
+				if (axisHit > 14) offset = AxisOffset.FRONT;
+				if (axisHit < 8) offset = AxisOffset.BACK;
 			}
+		} else {
+			if (axisHit < 5) offset = AxisOffset.BACK;
+			if (axisHit > 10) offset = AxisOffset.FRONT;
 		}
-		return this.defaultBlockState().setValue(AXIS, axis).setValue(POS, AxisOffset.CENTER);
+		return this.defaultBlockState().setValue(AXIS, axis).setValue(POS, offset);
 	}
 
 	@Override

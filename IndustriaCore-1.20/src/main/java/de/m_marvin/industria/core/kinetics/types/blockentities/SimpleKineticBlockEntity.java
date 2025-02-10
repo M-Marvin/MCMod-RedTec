@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class SimpleKineticBlockEntity extends BlockEntity implements IKineticBlockEntity {
 
-	protected int rpm;
+	protected double rpm;
 	
 	protected final double rotationalOffset;
 
@@ -57,13 +57,13 @@ public class SimpleKineticBlockEntity extends BlockEntity implements IKineticBlo
 	}
 	
 	@Override
-	public void setRPM(int partId, int rpm) {
+	public void setRPM(int partId, double rpm) {
 		this.rpm = rpm;
 		this.setChanged();
 	}
 
 	@Override
-	public int getRPM(int partId) {
+	public double getRPM(int partId) {
 		return this.rpm;
 	}
 
@@ -75,7 +75,7 @@ public class SimpleKineticBlockEntity extends BlockEntity implements IKineticBlo
 	@Override
 	public CompoundTag getUpdateTag() {
 		CompoundTag tag = new CompoundTag();
-		tag.putInt("RPM", this.rpm);
+		tag.putDouble("RPM", this.rpm);
 		return tag;
 	}
 	
@@ -86,12 +86,12 @@ public class SimpleKineticBlockEntity extends BlockEntity implements IKineticBlo
 	
 	@Override
 	public void load(CompoundTag pTag) {
-		this.rpm = pTag.getInt("RPM");
+		this.rpm = pTag.getDouble("RPM");
 	}
 	
 	@Override
 	protected void saveAdditional(CompoundTag pTag) {
-		pTag.putInt("RPM", this.rpm);
+		pTag.putDouble("RPM", this.rpm);
 	}
 	
 }
