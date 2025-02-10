@@ -22,7 +22,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class MotorBlock extends BaseEntityBlock implements IKineticBlock {
-	// TODO incomplete, just for testing
+	// TODO motor incomplete, just for testing
 	
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	

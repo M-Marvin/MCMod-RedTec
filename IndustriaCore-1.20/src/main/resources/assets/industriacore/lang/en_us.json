@@ -99,6 +99,8 @@
 "block.industriacore.gear":												"Small Cogwheel",
 "block.industriacore.large_gear":										"Large Cogwheel",
 "block.industriacore.shaft":											"Shaft",
+"block.industriacore.short_shaft_1":									"Tiny Shaft",
+"block.industriacore.short_shaft_2":									"Small Shaft",
 "block.industriacore.motor":											"Rotation source",
 "block.industriacore.compound_block":									"Compound Block",
 "item.industriacore.electric_wire":										"Cable",

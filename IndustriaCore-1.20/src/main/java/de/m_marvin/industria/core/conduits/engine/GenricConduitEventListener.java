@@ -45,8 +45,6 @@ public class GenricConduitEventListener {
 					toolItem.hurtAndBreak(1, player, (p) -> {});
 				}
 				
-				// TODO cutter sound
-				
 				event.setCanceled(true);
 				event.setCancellationResult(InteractionResult.SUCCESS);
 			}

@@ -130,7 +130,7 @@ public class Conduit {
 		
 		level.playLocalSound(middle.x, middle.y, middle.z, this.getSoundType().getBreakSound(), SoundSource.BLOCKS, this.getSoundType().getVolume(), this.getSoundType().getPitch(), false);
 		
-		if (dropItems && !level.isClientSide()) {
+		if (!level.isClientSide()) {
 			for (Vec3d node : conduitState.getShape().nodes) {
 				((ServerLevel) level).sendParticles(new ConduitParticleOption(ParticleTypes.CONDUIT.get(), conduitState.getConduit()), node.x + nodeOrigin.x, node.y + nodeOrigin.y, node.z + nodeOrigin.z, 10, 0.2F, 0.2F, 0.2F, 1);
 			}
