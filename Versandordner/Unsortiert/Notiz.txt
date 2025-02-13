@@ -1,4 +1,4 @@
-Kleine Details, die man noch ergänzen könnte:
+Features und Details, die man noch ergänzen könnte:
 
 1. Kleine Flammen-/Rauch-Partikel beim Generator vor dem unteren Gitter, wenn er an ist, wie beim normalen Ofen. Bei den elektrische betriebenen Öfen evtl etwas ähnliches, aber keine Flammen. Vllt rötlich-transparente kleine Wölkchen?
 
@@ -24,13 +24,13 @@ Laubhaufen, die vom Spieler platziert wurden, werden nicht weggeweht.
 
 8. Geringere Chance auf Natrium beim thermalen Zentrifugieren von Salz, außerdem kleineres Natriumstück beim th Z, Geringere Chance auf Salz und Kalk beim Wasserdestillieren -> Chance von 50% auf Kalkpulver beim Destillieren, 30% auf Salz, 50% auf 3x kleines Salz beim Destillieren, Chance von 50% auf 3x kleines Natrium beim _th Z je Slot_
 
-9. Fluoritmodell -> X, Item anpassen (Glanz)
+9. Fluoritmodell -> X, Item anpassen (Glanz), neue Modelle für Gräser
 
 10. Bauxit und Wolframit sollten nur durch die Schredder, nicht durch den Hammer, mahlbar sein, da man weder Alu noch Wolfram für Stahl braucht.
 
 11. keine zu unterschiedlichen neuen Varianten von Blumen (Varianten-Texturen), sondern eher ähnliche Varianten und dann verschiedene Anzahl an Blumen pro Block? (1-4 wie bei Bodenblumen?)
 
-12. Gamerule, mit der man einstellen kann, ob Schnee durch Laub schneien und Schneeschichten erzeugen kann. (Und die auch durch Laub Schnee bei Sonne schmelzen kann). Zahlenwert = Anzahl der Blöcke Laub, durch die der Schnee (vertikal) durch schneien kann (evtl begrenzt), 0=kann gar nicht durch schneien. (Falls es mal Jahrenzeiten geben sollte, wäre das nötig, da in Wäldern sonst im Winter bei einsetzendem Schnee um die Bäume Graskreise wären. Sollte es keine geben, ist die Gamerule unnötig). Standartwert = zwischen 8 und 16?
+12. Gamerule, mit der man einstellen kann, ob Schnee durch Laub schneien und Schneeschichten erzeugen kann. (Und die auch durch Laub Schnee bei Sonne schmelzen kann). Zahlenwert = Anzahl der Blöcke Laub, durch die der Schnee (vertikal) durch schneien kann (evtl begrenzt), 0=kann gar nicht durch schneien. (Falls es mal Jahreszeiten geben sollte, wäre das nötig, da in Wäldern sonst im Winter bei einsetzendem Schnee um die Bäume Graskreise wären. Sollte es keine geben, ist die Gamerule unnötig). Standartwert = zwischen 8 und 16?
 
 13. Rissiger vertrockneter Ackerboden mit Erdschollen (z.B. im Sommer)?
 -> Da Blöcke vermutlich nicht einfach ein neues Verhalten zugewiesen bekommen können, das eine jahreszeitliche Umwandlung auslöst, bräuchte man wohl ein Feature, das eher aktiv in der Welt nach Blöcken zum Umwandeln sucht und diese anpasst. Die Aktion geht also nicht vom umzuwandelnden Block aus, sondern von einem eigenen System.
@@ -49,3 +49,11 @@ Laubhaufen, die vom Spieler platziert wurden, werden nicht weggeweht.
         i) Maschine zum Abbau muss mit nachwachsend erzeugbarem Rohstoff versorgt werden, um arbeiten zu können (etwa Schmieröl), also etwa "Fracking" (vgl. Lehm und Schmieröl für Helium in Anno 1800)
 
 16. Aus Windkugeln oder Böenruten hergestellte Bauteile / Treibstoffe, die zum Fliegen benötigt werden.
+
+17. In warmen Meeresbiomen (Warmer Ozean, lauwarmer Ozean, Strand) lagert sich an der Küste bei gleichzeitigem Auftreten von warmen Temperaturen, starkem Wind und sonnigem Wetter am Tag eine feine Salzschicht über dem Wasser ab, verteilt in kleinen Flecken, die nahe an der Küste liegen. Diese können mit einem Netz als Fleur de Sel geerntet werden. Bei Regen und Kälte verschwinden die Schichten schnell wieder.
+
+18. Beim Herstellen von Gerichten können bestimmte Zutaten hinzugefügt werden, die für die Herstellung nicht benötigt werden oder benötigte durch andere ausgetauscht werden. Das Gericht erhält dann eine höhere "(Nähr-)Qualität", die sich etwa in höherer Sättigung, längerer Sättigungsdauer oder Effekten auswirkt.
+	Beispiele: Salz kann durch Fleur de Sel ersetzt werden. Einem Kuchen kann zusätzlich Backpulver hinzugefügt werden, das nicht zwingend erforderlich ist.
+
+    Zudem können auch minderqualitative Zutaten verwendet werden, die die Qualität absenken.
+	Darunter fallen etwa Spinnenaugen und Gammelfleisch.
