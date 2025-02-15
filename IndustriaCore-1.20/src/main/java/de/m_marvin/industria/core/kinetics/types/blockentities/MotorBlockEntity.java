@@ -1,34 +1,97 @@
 package de.m_marvin.industria.core.kinetics.types.blockentities;
 
-import de.m_marvin.industria.core.kinetics.types.blocks.ShaftBlock;
+import de.m_marvin.industria.core.kinetics.types.blocks.ShortShaftBlock;
+import de.m_marvin.industria.core.kinetics.types.containers.MotorContainer;
 import de.m_marvin.industria.core.registries.BlockEntityTypes;
 import de.m_marvin.industria.core.registries.Blocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class MotorBlockEntity extends SimpleKineticBlockEntity {
+public class MotorBlockEntity extends SimpleKineticBlockEntity implements MenuProvider {
+	
+	protected double sourceRPM = 16;
+	protected double sourceTorque = 100;
 	
 	public MotorBlockEntity(BlockPos pPos, BlockState pBlockState) {
 		super(BlockEntityTypes.MOTOR.get(), pPos, pBlockState);
 	}
 	
+	public double getSourceRPM() {
+		return sourceRPM;
+	}
+	
+	public double getSourceTorque() {
+		return Math.max(0, sourceTorque);
+	}
+	
+	public void setSourceRPM(double sourceRPM) {
+		this.sourceRPM = sourceRPM;
+		setChanged();
+	}
+	
+	public void setSourceTorque(double sourceTorque) {
+		this.sourceTorque = sourceTorque;
+		setChanged();
+	}
+	
+	@Override
+	protected void saveAdditional(CompoundTag pTag) {
+		pTag.putDouble("SourceRPM", this.sourceRPM);
+		pTag.putDouble("SourceTorque", this.sourceTorque);
+		super.saveAdditional(pTag);
+	}
+	
+	@Override
+	public void load(CompoundTag pTag) {
+		this.sourceRPM = pTag.getDouble("SourceRPM");
+		this.sourceTorque = pTag.getDouble("SourceTorque");
+		super.load(pTag);
+	}
+	
+	@Override
+	public CompoundTag getUpdateTag() {
+		CompoundTag pTag = super.getUpdateTag();
+		pTag.putDouble("SourceRPM", this.sourceRPM);
+		pTag.putDouble("SourceTorque", this.sourceTorque);
+		return pTag;
+	}
+	
 	@Override
 	public CompoundPart[] getVisualParts() {
-		Axis axis = this.getBlockState().getValue(BlockStateProperties.FACING).getAxis();
+		Direction facing = this.getBlockState().getValue(BlockStateProperties.FACING);
 		return new CompoundPart[] {
 				new CompoundPart(
-						Blocks.SHAFT.get().defaultBlockState().setValue(ShaftBlock.AXIS, axis), 
-						axis, 
+						Blocks.SHORT_SHAFT_2.get().defaultBlockState().setValue(ShortShaftBlock.FACING, facing), 
+						facing.getAxis(), 
 						DEFAULT_ROTATIONAL_OFFSET, 
 						1.0),
 				new CompoundPart(
 						getBlockState(), 
-						axis, 
+						facing.getAxis(), 
 						0.0, 
 						0.0)
 		};
+	}
+
+	@Override
+	public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
+		return new MotorContainer(pContainerId, pPlayerInventory, this);
+	}
+
+	@Override
+	public Component getDisplayName() {
+		return this.getBlockState().getBlock().getName();
 	}
 	
 }

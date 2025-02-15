@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
 /*
- * Tells the server if the edited an power source blocks settings
+ * Tells the server if the player edited an power source blocks settings
  */
 public class CEditPowerSourcePackage {
 	

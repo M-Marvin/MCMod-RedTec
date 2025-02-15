@@ -77,6 +77,8 @@ public class VoltageSourceScreen extends AbstractContainerWidgetScreen<VoltageSo
 	@Override
 	protected void renderLabels(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY) {
 		pGuiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 0xFFFFFF, true);
+		pGuiGraphics.drawString(this.font, Component.translatable("industriacore.ui.voltage_source.voltage"), 95, 20, 0xFFFFFF, true);
+		pGuiGraphics.drawString(this.font, Component.translatable("industriacore.ui.voltage_source.power"), 95, 53, 0xFFFFFF, true);
 	}
 	
 	@Override

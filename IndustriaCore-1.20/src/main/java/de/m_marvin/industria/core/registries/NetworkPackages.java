@@ -12,6 +12,7 @@ import de.m_marvin.industria.core.electrics.engine.network.CUpdateJunctionLanesP
 import de.m_marvin.industria.core.electrics.engine.network.SSyncCircuitTemplatesPackage;
 import de.m_marvin.industria.core.electrics.engine.network.SSyncElectricComponentsPackage;
 import de.m_marvin.industria.core.electrics.engine.network.SUpdateElectricNetworkPackage;
+import de.m_marvin.industria.core.kinetics.engine.network.CEditMotorPackage;
 import de.m_marvin.industria.core.kinetics.engine.network.SSyncKineticComponentsPackage;
 import de.m_marvin.industria.core.magnetism.engine.network.SMagneticInfluencePackage;
 import de.m_marvin.industria.core.magnetism.engine.network.SSyncMagneticPackage;
@@ -45,6 +46,7 @@ public class NetworkPackages {
 		network.registerMessage(id++, CPlayerSwitchNetworkPackage.class, CPlayerSwitchNetworkPackage::encode, CPlayerSwitchNetworkPackage::decode, CPlayerSwitchNetworkPackage::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
 		network.registerMessage(id++, SSyncVS2BlockInfoPackage.class, SSyncVS2BlockInfoPackage::encode, SSyncVS2BlockInfoPackage::decode, SSyncVS2BlockInfoPackage::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 		network.registerMessage(id++, SSyncKineticComponentsPackage.class, SSyncKineticComponentsPackage::encode, SSyncKineticComponentsPackage::decode, SSyncKineticComponentsPackage::handle);
+		network.registerMessage(id++, CEditMotorPackage.class, CEditMotorPackage::encode, CEditMotorPackage::decode, CEditMotorPackage::handle);
 	}
 	
 }
