@@ -62,8 +62,8 @@ public class MotorScreen extends AbstractContainerWidgetScreen<MotorContainer> {
 	@Override
 	protected void renderLabels(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY) {
 		pGuiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 0xFFFFFF, true);
-		pGuiGraphics.drawString(this.font, Component.translatable("industriacore.ui.motor.rpm"), 5, 20, 0xFFFFFF, true);
-		pGuiGraphics.drawString(this.font, Component.translatable("industriacore.ui.motor.torque"), 95, 20, 0xFFFFFF, true);
+		pGuiGraphics.drawString(this.font, Component.translatable("industriacore.ui.motor.torque"), 5, 20, 0xFFFFFF, true);
+		pGuiGraphics.drawString(this.font, Component.translatable("industriacore.ui.motor.rpm"), 95, 20, 0xFFFFFF, true);
 	}
 	
 	@Override
