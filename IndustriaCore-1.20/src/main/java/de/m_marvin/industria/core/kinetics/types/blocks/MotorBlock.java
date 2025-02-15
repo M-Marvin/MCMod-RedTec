@@ -5,7 +5,6 @@ import de.m_marvin.industria.core.util.GameUtility;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +31,7 @@ public class MotorBlock extends BaseEntityBlock implements IKineticBlock {
 	
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	
-	public static final VoxelShape SHAPE = Shapes.or(VoxelShapeUtility.box(6, 14, 6, 10, 16, 10), VoxelShapeUtility.box(3, 1, 3, 13, 15, 13));
+	public static final VoxelShape SHAPE = Shapes.or(VoxelShapeUtility.box(6, 6, 0, 10, 10, 1), VoxelShapeUtility.box(3, 3, 1, 13, 13, 15));
 	
 	public MotorBlock(Properties pProperties) {
 		super(pProperties);
@@ -52,7 +51,7 @@ public class MotorBlock extends BaseEntityBlock implements IKineticBlock {
 	public TransmissionNode[] getTransmissionNodes(LevelAccessor level, BlockPos pos, BlockState state) {
 		Direction facing = state.getValue(FACING);
 		return new TransmissionNode[] {
-				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), null, facing.getAxisDirection() == AxisDirection.POSITIVE ? SHAFT_POS : SHAFT_NEG)
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), null, facing.getAxisDirection(), SHAFT)
 		};
 	}
 	
@@ -81,7 +80,7 @@ public class MotorBlock extends BaseEntityBlock implements IKineticBlock {
 	public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
 		return VoxelShapeUtility.transformation()
 				.centered()
-				.rotateFromAxisY(pState.getValue(FACING).getAxis())
+				.rotateFromNorth(pState.getValue(FACING))
 				.uncentered()
 				.transform(SHAPE);
 	}
