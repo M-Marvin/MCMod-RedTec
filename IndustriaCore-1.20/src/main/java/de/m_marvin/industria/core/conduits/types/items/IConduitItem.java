@@ -100,7 +100,7 @@ public interface IConduitItem {
 			itemTag.remove("FirstNode");
 			itemTag.remove("Length");
 			context.getItemInHand().setTag(itemTag.isEmpty() ? null : itemTag);
-			return InteractionResult.SUCCESS;
+			return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
 		} else {
 			
 			if (itemTag.contains("FirstNode")) {
@@ -121,7 +121,8 @@ public interface IConduitItem {
 						if (conduitLengthBlocks <= maxLength) {
 							
 							itemTag.remove("FirstNode");
-							context.getItemInHand().setTag(itemTag);
+							itemTag.remove("Length");
+							context.getItemInHand().setTag(itemTag.isEmpty() ? null : itemTag);
 							if (!context.getLevel().isClientSide()) {
 								if (ConduitUtility.setConduit(context.getLevel(), conduitPos, this.getConduit(), conduitLengthBlocks)) {
 									context.getPlayer().displayClientMessage(Component.translatable("industriacore.item.info.conduit.placed"), true);
@@ -130,7 +131,7 @@ public interface IConduitItem {
 									context.getPlayer().displayClientMessage(Component.translatable("industriacore.item.info.conduit.failed"), true);
 								}
 							}
-							return InteractionResult.SUCCESS;
+							return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
 							
 						} else {
 							context.getPlayer().displayClientMessage(Component.translatable("industriacore.item.info.conduit.toFarNodes", conduitLengthBlocks, maxLength), true);
@@ -151,7 +152,7 @@ public interface IConduitItem {
 					itemTag.put("FirstNode", nodeTag);
 					context.getItemInHand().setTag(itemTag);
 					context.getPlayer().displayClientMessage(Component.translatable("industriacore.item.info.conduit.nodeSelect"), true);
-					return InteractionResult.SUCCESS;
+					return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
 				}
 				return InteractionResult.FAIL;
 				
