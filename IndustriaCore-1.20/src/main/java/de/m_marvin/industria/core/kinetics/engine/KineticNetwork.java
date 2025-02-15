@@ -36,13 +36,13 @@ public class KineticNetwork {
 	
 	public CompoundTag saveNBT(KineticHandlerCapabillity handler) {
 		CompoundTag tag = new CompoundTag();
-		
 		ListTag componentsTag = new ListTag();
 		for (Component component : this.components.values()) {
 			if (component == null) continue;
 			try {
 				CompoundTag compTag = new CompoundTag();
 				component.serializeNbt(compTag);
+				compTag.putDouble("Ratio", this.component2ratioMap.getOrDefault(component, 0.0));
 				componentsTag.add(compTag);
 			} catch (Exception e) {
 				IndustriaCore.LOGGER.error("Failed to serialize kinetic component at " + component.reference() + "!");
@@ -59,6 +59,7 @@ public class KineticNetwork {
 		componentsTag.stream().forEach((componentTag) -> {
 			Component component = Component.deserializeNbt((CompoundTag) componentTag);
 			this.components.put(component.reference(), component);
+			this.component2ratioMap.put(component, ((CompoundTag) componentTag).getDouble("Ratio"));
 		});
 		this.state = PowerNetState.valueOf(tag.getString("State").toUpperCase());
 	}

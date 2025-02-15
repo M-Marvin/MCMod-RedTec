@@ -195,6 +195,12 @@ dependencies {
     // Industria Core
  	implementation "de.m_marvin.industria:industriacore:${minecraft_version}-${industriacore_version}:mojmap"
  	
+	// Debugging
+	runtimeOnly fg.deobf("curse.maven:atlasviewer-633577:4882554")
+	runtimeOnly fg.deobf("curse.maven:oculus-581495:6020952")
+	runtimeOnly fg.deobf("curse.maven:embeddium-908741:5681725")
+	runtimeOnly fg.deobf("curse.maven:jei-238222:6075247")
+	
 }
 
 mixin {

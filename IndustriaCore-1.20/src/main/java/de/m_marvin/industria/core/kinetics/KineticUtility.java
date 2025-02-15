@@ -27,7 +27,7 @@ public class KineticUtility {
 	/**
 	 * Triggers an update for the network at the reference
 	 */
-	public static KineticNetwork updateNetwork(Level level, KineticReference reference) {
+	public static Collection<KineticNetwork> updateNetwork(Level level, KineticReference reference) {
 		KineticHandlerCapabillity handler = GameUtility.getLevelCapability(level, Capabilities.KINETIC_HANDLER_CAPABILITY);
 		return handler.updateNetwork(reference);
 	}

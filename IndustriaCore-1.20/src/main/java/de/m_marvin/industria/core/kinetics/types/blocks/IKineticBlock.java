@@ -102,7 +102,7 @@ public interface IKineticBlock {
 		return level.getBlockState(pos);
 	}
 	
-	public default int getSourceSpeed(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
+	public default double getSourceSpeed(LevelAccessor level, BlockPos pos, int partId, BlockState state) {
 		return 0;
 	}
 	

@@ -1,7 +1,9 @@
 package de.m_marvin.industria.core.kinetics.engine;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -220,13 +222,13 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 			return null;
 		}
 		
-		public int getSourceSpeed(Level level) {
+		public double getSourceSpeed(Level level) {
 			return this.type.getSourceSpeed(level, reference.pos(), reference.partId(), instance);
 		}
 		public double getTorque(Level level) {
 			return this.type.getTorque(level, reference.pos(), reference.partId(), instance);
 		}
-		public void setRPM(Level level, int rpm) {
+		public void setRPM(Level level, double rpm) {
 			this.type.setRPM(level, reference.pos(), reference.partId(), instance, rpm);
 		}
 		public double getRPM(Level level) {
@@ -309,10 +311,10 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 		Set<KineticReference> processed = new HashSet<>();
 		for (KineticReference reference : references) {
 			if (processed.contains(reference)) continue;
-			KineticNetwork network = updateNetwork(reference);
+			Collection<KineticNetwork> network = updateNetwork(reference);
 			if (network == null) continue;
-			processed.addAll(network.getComponents().stream().map(Component::reference).distinct().toList());
-			networks.add(network);
+			processed.addAll(network.stream().map(KineticNetwork::getComponents).flatMap(Collection::stream).map(Component::reference).distinct().toList());
+			networks.addAll(network);
 		}
 		
 		return networks;
@@ -322,21 +324,40 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	/**
 	 * Updates the network which has a component at the given reference.
 	 */
-	public KineticNetwork updateNetwork(KineticReference reference) {
+	public Collection<KineticNetwork> updateNetwork(KineticReference reference) {
 		
-		KineticNetwork network = makeNetwork(reference);
-		if (network == null) return null;
+		// We have to ensure that we start the updates with references of valid sub blocks, not the compounds!
+		BlockState refState = reference.state(this.level);
+		if (refState.getBlock() instanceof IKineticBlock refKinetic) {
+			TransmissionNode[] refNodes = refKinetic.getTransmissionNodes(this.level, reference.pos(), refState);
+			
+			List<KineticReference> blockReferences = Stream.of(refNodes)
+				.map(TransmissionNode::reference)
+				.distinct()
+				.toList();
+			
+			List<KineticNetwork> networks = new ArrayList<KineticNetwork>();
+			for (KineticReference blockReference : blockReferences) {
+				KineticNetwork network = makeNetwork(blockReference);
+				if (network == null) return null;
+				
+				recalculateNetwork(network);
+				
+				networks.add(network);
+			}
+			
+			return networks;
+		}
 		
-		recalculateNetwork(network);
-		
-		return network;
-		
+		return Collections.emptyList();
 	}
 	
 	/**
 	 * Recalculates torque and speeds in the network, without rebuilding it
 	 */
 	public void recalculateNetwork(KineticNetwork network) {
+		
+		network.setState(PowerNetState.ACTIVE);
 		
 		// Check for opposite rotations, if so, skip calculations
 		if (network.isTripped()) {
@@ -358,7 +379,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 				network.setNetworkSpeed(0.0);
 				network.setState(PowerNetState.INACTIVE);
 			} 
-
+			
 			// Check for reversed sources
 			else if (maxSpeedH.isPresent() && maxSpeedL.isPresent()) {
 				network.setNetworkSpeed(0.0);
@@ -401,7 +422,8 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 		
 		// Update rotation speeds
 		for (Component c : network.getComponents()) {
-			int cspeed = (int) Math.round(network.getSpeed() / network.getTransmission(c));
+			double ratio = network.getTransmission(c);
+			double cspeed = ratio == 0.0 ? 0.0 : (network.getSpeed() / ratio);
 			c.setRPM(level, cspeed);
 		}
 		
@@ -503,25 +525,52 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 		Queue<KineticReference> neighbors = new ArrayDeque<>();
 		neighbors.add(startReference);
 		
+		// Process queued component references
 		while (!neighbors.isEmpty()) {
 			
 			KineticReference ref = neighbors.poll();
 			
+			// Get block at reference
 			BlockPos pos1a = ref.pos();
 			BlockState state1a = this.level.getBlockState(pos1a);
 			
+			// Check if valid kinetic block
 			if (state1a.getBlock() instanceof IKineticBlock kinetic1a) {
 				
+//				// Get all transmission nodes, skip if no nodes
+//				TransmissionNode[] nodes = kinetic1a.getTransmissionNodes(level, pos1a, state1a);
+//				if (nodes.length == 0) continue;
+//				
+//				// Check if there are nodes that match with this reference, if not, the reference points the an compound containing multiple sub blocks
+//				List<TransmissionNode> nodeMatch = Stream.of(nodes)
+//						.filter(n -> n.reference().equals(ref))
+//						.toList();
+//				
+//				// If no node matches, add all sub block references to the queue of references to process
+//				if (nodeMatch.isEmpty()) {
+//					Stream.of(nodes)
+//						.map(TransmissionNode::reference)
+//						.distinct()
+//						.forEach(neighbors::add);
+//					continue;
+//				}
+				
+				// Iterate over all nodes that match the reference
 				for (TransmissionNode node1 : kinetic1a.getTransmissionNodes(level, pos1a, state1a)) {
 					
+					// Ignore nodes not part of this component (possible other sub blocks)
 					if (!node1.reference().equals(ref)) continue;
-					
+
+					// Get block of node (might differ from reference, since it could be a sub block)
 					BlockState state1 = node1.reference().state(level);
 					
+					// Check if block is a valid kinetic block
 					if (state1.getBlock() instanceof IKineticBlock kinetic1) {
 
+						// Add reference to list of already processed references, to avoid endless loop
 						tnd.add(node1.reference());
 						
+						// Get component, add new one if not yet registered
 						Component component1 = findComponentAt(node1.reference());
 						if (component1 == null) {
 							component1 = new Component(node1.reference(), kinetic1, state1);
@@ -533,6 +582,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 							}
 						}
 						
+						// Create or add to network
 						if (network == null) {
 							network = this.component2kineticMap.get(component1);
 							if (network == null) {
@@ -549,33 +599,44 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 						}
 						
 						network.addComponent(component1);
-
+						
+						// Iterate over all possible positions this node could connect to
 						for (BlockPos pos2a : node1.type().pos(node1)) {
 							
+							// Get block at possible connection position
 							BlockState state2a = this.level.getBlockState(pos2a);
 							
+							// Check if block is valid kinetic block
 							if (state2a.getBlock() instanceof IKineticBlock kinetic2a) {
 								
+								// Iterate over the blocks transmission nodes
 								for (TransmissionNode node2 : kinetic2a.getTransmissionNodes(level, pos2a, state2a)) {
 									
+									// If node was already processed, skip to avoid endless loop
 									if (tnd.contains(node2.reference())) continue;
 									
+									// Get block of node, might differ from previous if its an sub block
 									BlockState state2 = node2.reference().state(level);
 									
+									// Check if block is a valid kinetic block
 									if (state2.getBlock() instanceof IKineticBlock kinetic2) {
-
+										
+										// Calculate transmission ratio to the block, skip if zero (no connection)
 										double transmission = node1.type().apply(node1, node2);
 										if (transmission == 0.0) continue;
-
+										
+										// Add component to network
 										Component component2 = findComponentAt(node2.reference());
 										if (component2 == null) {
 											component2 = new Component(node2.reference(), kinetic2, state2);
 											addToNetwork(component1);
 										}
 										
+										// Set transmission ratio in network
 										if (!network.addTransmission(component1, component2, transmission))
 											network.tripFuse();
 										
+										// Add this nodes reference to queue of references to process
 										if (!neighbors.contains(node2.reference())) neighbors.add(node2.reference());
 										
 									}
