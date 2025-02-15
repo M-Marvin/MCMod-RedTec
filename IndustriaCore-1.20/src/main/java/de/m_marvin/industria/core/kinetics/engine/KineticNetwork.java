@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.kinetics.engine.KineticHandlerCapabillity.Component;
+import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock;
 import de.m_marvin.industria.core.kinetics.types.blocks.IKineticBlock.KineticReference;
 import de.m_marvin.industria.core.util.types.PowerNetState;
 import net.minecraft.nbt.CompoundTag;
@@ -117,7 +118,7 @@ public class KineticNetwork {
 	public void removeInvalidComponents() {
 		List<Component> invalid = new ArrayList<>();
 		for (Component component : this.components.values()) {
-			if (component == null || component.instance(null) == null) invalid.add(component);
+			if (component == null || component.instance(null) == null || !(component.instance(null).getBlock() instanceof IKineticBlock)) invalid.add(component);
 		}
 		invalid.forEach(c -> components.remove(c.reference()));
 	}
