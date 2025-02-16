@@ -31,7 +31,7 @@ public class ScrollInputListener {
 		ItemStack heldItem = player.getItemInHand(hand);
 		UseOnContext context = MathUtility.getPlayerPOVUseContext(level, player, hand, player.getBlockReach());
 		
-		if (!heldItem.isEmpty() && heldItem.getItem() instanceof IScrollOverride && ((IScrollOverride) heldItem.getItem()).overridesScroll(context, heldItem)) {
+		if (context != null && !heldItem.isEmpty() && heldItem.getItem() instanceof IScrollOverride && ((IScrollOverride) heldItem.getItem()).overridesScroll(context, heldItem)) {
 			
 			event.setCanceled(true);
 			((IScrollOverride) heldItem.getItem()).onScroll(context, event.getScrollDelta());

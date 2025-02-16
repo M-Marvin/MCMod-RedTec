@@ -3,6 +3,7 @@ package de.m_marvin.industria.core.compound.types.items;
 import de.m_marvin.industria.core.compound.types.blockentities.CompoundBlockEntity;
 import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.registries.Tags;
+import de.m_marvin.industria.core.util.virtualblock.VirtualBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
@@ -75,6 +76,51 @@ public class CompoundableBlockItem extends BlockItem {
 		
 		if (!replaceState.canBeReplaced(pContext)) return InteractionResult.FAIL;
 		return super.place(pContext);
+	}
+	
+	public boolean tryPlaceCompound(Level level, BlockPos pos, BlockState state, boolean simulate) {
+		BlockState replaceState = level.getBlockState(pos);
+		
+		if (replaceState.is(Tags.Blocks.COMPOUNDABLE)) {
+			
+			if (canCompound(level, pos, replaceState, null, null, state)) {
+				if (simulate) return true;
+				
+				BlockEntity replaceEntity = level.getBlockEntity(pos);
+				level.setBlockAndUpdate(pos, Blocks.COMPOUND_BLOCK.get().defaultBlockState());
+				if (level.getBlockEntity(pos) instanceof CompoundBlockEntity compound) {
+					level.setBlockAndUpdate(pos, Blocks.COMPOUND_BLOCK.get().defaultBlockState());
+					compound.addPart(replaceState, replaceEntity);
+					replaceState = level.getBlockState(pos);
+				}
+			}
+			
+		}
+		
+		if (replaceState.is(Blocks.COMPOUND_BLOCK.get())) {
+			
+			if (level.getBlockEntity(pos) instanceof CompoundBlockEntity compound) {
+				
+				for (var part : compound.getParts().values()) {
+					if (!canCompound(part.getLevel(), part.getPos(), part.getState(), null, null, state))
+						return false;
+				}
+				
+				if (simulate) return true;
+				
+				int partId = compound.addPart(net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+				VirtualBlock part = compound.getParts().get(partId);
+				part.getLevel().setBlockAndUpdate(part.getPos(), state);
+				return true;
+			}
+			
+		}
+
+		if (!replaceState.canBeReplaced()) return false;
+		if (simulate) return true;
+		
+		level.setBlockAndUpdate(pos, state);
+		return true;
 	}
 	
 	public static boolean canCompound(Level level1, BlockPos pos1, BlockState state1, Level level2, BlockPos pos2,  BlockState state2) {

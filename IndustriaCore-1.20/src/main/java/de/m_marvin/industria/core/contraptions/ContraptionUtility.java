@@ -22,7 +22,6 @@ import de.m_marvin.industria.core.registries.Capabilities;
 import de.m_marvin.industria.core.util.GameUtility;
 import de.m_marvin.industria.core.util.MathUtility;
 import de.m_marvin.univec.impl.Vec3d;
-import de.m_marvin.univec.impl.Vec3i;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -69,9 +68,9 @@ public class ContraptionUtility {
 	/* Translating of positions and moving of contraptions */
 
 	public static Direction toWorldDirection(ShipTransform contraption, Direction direction) {
-		Vec3d vec = new Vec3d(MathUtility.getDirectionVec(direction));
+		Vec3d vec = Vec3d.fromVec(direction.getNormal());
 		Vec3d worldVec = toWorldVector(contraption, vec);
-		return MathUtility.getVecDirection(new Vec3i((int) Math.round(worldVec.x), (int) Math.round(worldVec.x), (int) Math.round(worldVec.x)));
+		return Direction.getNearest(worldVec.x, worldVec.y, worldVec.z);
 	}
 	
 	public static Vec3d toWorldVector(ShipTransform contraption, Vec3d vector) {
@@ -80,9 +79,9 @@ public class ContraptionUtility {
 	}
 
 	public static Direction toContraptionDirection(ShipTransform contraption, Direction direction) {
-		Vec3d vec = new Vec3d(MathUtility.getDirectionVec(direction));
+		Vec3d vec = Vec3d.fromVec(direction.getNormal());
 		Vec3d shipVec = toContraptionVector(contraption, vec);
-		return MathUtility.getVecDirection(new Vec3i((int) Math.round(shipVec.x), (int) Math.round(shipVec.x), (int) Math.round(shipVec.x)));
+		return Direction.getNearest(shipVec.x, shipVec.y, shipVec.z);
 	}
 	
 	public static Vec3d toContraptionVector(ShipTransform contraption, Vec3d vector) {

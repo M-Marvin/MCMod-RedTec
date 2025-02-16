@@ -11,7 +11,7 @@ import de.m_marvin.industria.core.conduits.types.ConduitPos.NodePos;
 import de.m_marvin.industria.core.electrics.types.blockentities.IJunctionEdit;
 import de.m_marvin.industria.core.electrics.types.containers.AbstractJunctionEditContainer;
 import de.m_marvin.industria.core.util.MathUtility;
-import de.m_marvin.industria.core.util.types.Direction2d;
+import de.m_marvin.industria.core.util.types.PlanarDirection;
 import de.m_marvin.univec.impl.Vec2f;
 import de.m_marvin.univec.impl.Vec2i;
 import net.minecraft.client.gui.GuiGraphics;
@@ -68,11 +68,11 @@ public abstract class AbstractJunctionEditScreen<B extends BlockEntity & IJuncti
 			public Vec2i getPosition() {
 				Vec2i pos = cableNode.position;
 				switch (cableNode.orientation) {
-				case LEFT:
-				case RIGHT:
+				case X_NEG:
+				case X_POS:
 					return pos.add(0, this.offset);
-				case UP:
-				case DOWN:
+				case Y_POS:
+				case Y_NEG:
 					return pos.add(this.offset, 0);
 				}
 				return pos;
@@ -116,22 +116,22 @@ public abstract class AbstractJunctionEditScreen<B extends BlockEntity & IJuncti
 				int color = WIRE_COLORS[this.id % WIRE_COLORS.length];
 				
 				switch (this.cableNode.orientation) {
-				case UP:
+				case Y_POS:
 					pGuiGraphics.blit(this.cableNode.getScreen().getJunctionBoxTexture(), i + uiPos.x(), j + uiPos.y(), 238, h, w, h);
 					RenderSystem.setShaderColor(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, ((color >> 0) & 0xFF) / 255F, 1F);
 					pGuiGraphics.blit(this.cableNode.getScreen().getJunctionBoxTexture(), i + uiPos.x(), j + uiPos.y(), 238 + w, h, w, h);
 					break;
-				case DOWN:
+				case Y_NEG:
 					pGuiGraphics.blit(this.cableNode.getScreen().getJunctionBoxTexture(), i + uiPos.x(), j + uiPos.y(), 238 + w, 54, w, h);
 					RenderSystem.setShaderColor(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, ((color >> 0) & 0xFF) / 255F, 1F);
 					pGuiGraphics.blit(this.cableNode.getScreen().getJunctionBoxTexture(), i + uiPos.x(), j + uiPos.y(), 238, 54, w, h);
 					break;
-				case LEFT:
+				case X_NEG:
 					pGuiGraphics.blit(this.cableNode.getScreen().getJunctionBoxTexture(), i + uiPos.x(), j + uiPos.y(), 238, 36 + w, h, w);
 					RenderSystem.setShaderColor(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, ((color >> 0) & 0xFF) / 255F, 1F);
 					pGuiGraphics.blit(this.cableNode.getScreen().getJunctionBoxTexture(), i + uiPos.x(), j + uiPos.y(), 238, 36, h, w);
 					break;
-				case RIGHT:
+				case X_POS:
 					pGuiGraphics.blit(this.cableNode.getScreen().getJunctionBoxTexture(), i + uiPos.x(), j + uiPos.y(), 238, 0, h, w);
 					RenderSystem.setShaderColor(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, ((color >> 0) & 0xFF) / 255F, 1F);
 					pGuiGraphics.blit(this.cableNode.getScreen().getJunctionBoxTexture(), i + uiPos.x(), j + uiPos.y(), 238, 0 + w, h, w);
@@ -154,11 +154,11 @@ public abstract class AbstractJunctionEditScreen<B extends BlockEntity & IJuncti
 		
 		protected final AbstractJunctionEditScreen<?, ?> screen;
 		protected Vec2i position;
-		protected Direction2d orientation;
+		protected PlanarDirection orientation;
 		protected NodePos cableNode;
 		protected WireNode[] wireNodes;
 		
-		public CableNode(AbstractJunctionEditScreen<?, ?> screen, Vec2i position, Direction2d orientation, NodePos cableNode) {
+		public CableNode(AbstractJunctionEditScreen<?, ?> screen, Vec2i position, PlanarDirection orientation, NodePos cableNode) {
 			this.screen = screen;
 			this.position = position;
 			this.orientation = orientation;
@@ -187,7 +187,7 @@ public abstract class AbstractJunctionEditScreen<B extends BlockEntity & IJuncti
 		}
 
 		public boolean isHorizontal() {
-			return this.orientation != Direction2d.DOWN && CableNode.this.orientation != Direction2d.UP;
+			return this.orientation != PlanarDirection.Y_NEG && CableNode.this.orientation != PlanarDirection.Y_POS;
 		}
 		
 		public int getNodeId() {
@@ -228,7 +228,7 @@ public abstract class AbstractJunctionEditScreen<B extends BlockEntity & IJuncti
 
 		protected int id;
 		
-		public InternalNode(AbstractJunctionEditScreen<?, ?> screen, Vec2i position, Direction2d orientation, int id) {
+		public InternalNode(AbstractJunctionEditScreen<?, ?> screen, Vec2i position, PlanarDirection orientation, int id) {
 			super(screen, position, orientation, null);
 			this.id = id;
 			
@@ -316,8 +316,8 @@ public abstract class AbstractJunctionEditScreen<B extends BlockEntity & IJuncti
 		
 		Vec2f p1 = new Vec2f(nodeA.getPosition()).add(WireNode.WIRE_NODE_WIDTH / 2F, WireNode.WIRE_NODE_WIDTH / 2F);
 		Vec2f p2 = new Vec2f(nodeB.getPosition()).add(WireNode.WIRE_NODE_WIDTH / 2F, WireNode.WIRE_NODE_WIDTH / 2F);
-		Vec2f v1 = new Vec2f(MathUtility.getDirectionVec2D(nodeA.getNode().orientation));
-		Vec2f v2 = new Vec2f(MathUtility.getDirectionVec2D(nodeB.getNode().orientation));
+		Vec2f v1 = new Vec2f(nodeA.getNode().orientation.getNormal());
+		Vec2f v2 = new Vec2f(nodeB.getNode().orientation.getNormal());
 		Vec2f[] va = MathUtility.makeBezierVectors2D(p1, v1, p2, v2, 10F);
 
 		Vec2f p = p1.add((float) this.leftPos, (float) this.topPos);

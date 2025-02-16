@@ -79,14 +79,14 @@ public class ShortShaftBlock extends BaseEntityBlock implements IKineticBlock {
 		boolean positive = facing.getAxisDirection() == AxisDirection.POSITIVE;
 		if (this.isLong) {
 			return new TransmissionNode[] {
-				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), null, positive ? SHAFT_POS : SHAFT_NEG),
-				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), positive ? AxisOffset.FRONT : AxisOffset.BACK, AXLE),
-				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), AxisOffset.CENTER, AXLE)
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), null, facing.getAxisDirection(), SHAFT),
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), positive ? AxisOffset.FRONT : AxisOffset.BACK, null, AXLE),
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), AxisOffset.CENTER, null, AXLE)
 			};
 		} else {
 			return new TransmissionNode[] {
-				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), null, positive ? SHAFT_POS : SHAFT_NEG),
-				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), positive ? AxisOffset.FRONT : AxisOffset.BACK, AXLE)
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), null, facing.getAxisDirection(), SHAFT),
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, facing.getAxis(), positive ? AxisOffset.FRONT : AxisOffset.BACK, null, AXLE)
 			};
 		}
 	}

@@ -10,7 +10,7 @@ public class AxleTransmission implements IKineticBlock.TransmissionType {
 	public static final TransmissionType ATTACHMENT = new AxleTransmission(true);
 	public static final TransmissionType AXLE = new AxleTransmission(false);
 	
-	private final boolean insert;
+	protected final boolean insert;
 	
 	public AxleTransmission(boolean insert) {
 		this.insert = insert;
@@ -23,7 +23,7 @@ public class AxleTransmission implements IKineticBlock.TransmissionType {
 		if (!a.pos().equals(b.pos())) return 0.0;
 		if (a.type() instanceof AxleTransmission typeA && b.type() instanceof AxleTransmission typeB) {
 			if (typeA.insert == typeB.insert) return 0.0;
-			return a.ratio() / b.ratio();
+			return 1.0;
 		}
 		return 0.0;
 	}

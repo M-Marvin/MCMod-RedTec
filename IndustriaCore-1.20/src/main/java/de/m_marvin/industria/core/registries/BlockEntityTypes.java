@@ -26,7 +26,9 @@ public class BlockEntityTypes {
 			Blocks.LARGE_GEAR.get(),
 			Blocks.SHAFT.get(),
 			Blocks.SHORT_SHAFT_1.get(), 
-			Blocks.SHORT_SHAFT_2.get()
+			Blocks.SHORT_SHAFT_2.get(),
+			Blocks.BELT.get(),
+			Blocks.BELT_SHAFT.get()
 		).build(null));
 	public static final RegistryObject<BlockEntityType<MotorBlockEntity>> MOTOR = BLOCK_ENTITY_TYPES.register("motor", () -> BlockEntityType.Builder.of(MotorBlockEntity::new, Blocks.MOTOR.get()).build(null));
 	public static final RegistryObject<BlockEntityType<CompoundBlockEntity>> COMPOUND_BLOCK = BLOCK_ENTITY_TYPES.register("compound_block", () -> BlockEntityType.Builder.of(CompoundBlockEntity::new, Blocks.COMPOUND_BLOCK.get()).build(null));

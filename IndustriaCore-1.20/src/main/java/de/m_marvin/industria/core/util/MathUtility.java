@@ -9,11 +9,9 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.m_marvin.industria.core.util.types.Direction2d;
 import de.m_marvin.unimat.impl.Quaterniond;
 import de.m_marvin.unimat.impl.Quaternionf;
 import de.m_marvin.univec.impl.Vec2f;
-import de.m_marvin.univec.impl.Vec2i;
 import de.m_marvin.univec.impl.Vec3d;
 import de.m_marvin.univec.impl.Vec3f;
 import de.m_marvin.univec.impl.Vec3i;
@@ -172,14 +170,6 @@ public class MathUtility {
 	public static Direction getPosDirection(BlockPos pos1, BlockPos pos2) {
 		if (pos1.equals(pos2)) return null;
 		return getVecDirection(Vec3d.fromVec(pos1.subtract(pos2)).normalize());
-	}
-	
-	public static Vec3i getDirectionVec(Direction d) {
-		return new Vec3i(d.getStepX(), d.getStepY(), d.getStepZ());
-	}
-
-	public static Vec2i getDirectionVec2D(Direction2d d) {
-		return new Vec2i(d.getStepX(), d.getStepY());
 	}
 	
 	public static Direction getVecDirection(Vec3i v) {

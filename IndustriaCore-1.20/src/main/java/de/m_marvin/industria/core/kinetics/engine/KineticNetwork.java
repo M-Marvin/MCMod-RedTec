@@ -109,6 +109,7 @@ public class KineticNetwork {
 	public void reset() {
 		this.components.clear();
 		this.component2ratioMap.clear();
+		this.state = PowerNetState.INACTIVE;
 	}
 	
 	public boolean isEmpty() {
@@ -123,7 +124,7 @@ public class KineticNetwork {
 		invalid.forEach(c -> components.remove(c.reference()));
 	}
 	
-	public void tripFuse() {
+	public void setLocked() {
 		setState(PowerNetState.FAILED);
 	}
 	
@@ -135,7 +136,7 @@ public class KineticNetwork {
 		return state;
 	}
 	
-	public boolean isTripped() {
+	public boolean isLocked() {
 		return this.state == PowerNetState.FAILED;
 	}
 	

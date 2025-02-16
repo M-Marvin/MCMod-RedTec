@@ -129,7 +129,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 	
 	/* Helper functions for block redirects */
 	
-	protected <T> T performOnTargetedAndReturn(BlockGetter level, BlockPos pos, Player player, Supplier<T> fallback, BiFunction<CompoundBlockEntity, VirtualBlock, T> action) {
+	public static <T> T performOnTargetedAndReturn(BlockGetter level, BlockPos pos, Player player, Supplier<T> fallback, BiFunction<CompoundBlockEntity, VirtualBlock, T> action) {
 		if (level == null) return fallback.get();
 		ClipContext clip = MathUtility.getPlayerPOVClipContext(level, player, Fluid.ANY, player.getBlockReach());
 		BlockHitResult hit = level.clip(clip);
@@ -145,7 +145,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return fallback.get();
 	}
 
-	protected boolean performOnTargeted(BlockGetter level, BlockPos pos, Player player, BiConsumer<CompoundBlockEntity, VirtualBlock> action) {
+	public static boolean performOnTargeted(BlockGetter level, BlockPos pos, Player player, BiConsumer<CompoundBlockEntity, VirtualBlock> action) {
 		if (level == null) return false;
 		ClipContext clip = MathUtility.getPlayerPOVClipContext(level, player, Fluid.ANY, player.getBlockReach());
 		BlockHitResult hit = level.clip(clip);
@@ -162,7 +162,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return false;
 	}
 	
-	protected <T> T performOnAllAndCombine(BlockGetter level, BlockPos pos, Supplier<T> fallback, BiFunction<CompoundBlockEntity, VirtualBlock, T> action, BinaryOperator<T> accumulator) {
+	public static <T> T performOnAllAndCombine(BlockGetter level, BlockPos pos, Supplier<T> fallback, BiFunction<CompoundBlockEntity, VirtualBlock, T> action, BinaryOperator<T> accumulator) {
 		if (level == null) return fallback.get();
 		if (level.getBlockEntity(pos) instanceof CompoundBlockEntity compound) {
 			Optional<T> result = compound.getParts().values().stream()
@@ -173,7 +173,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return fallback.get();
 	}
 
-	protected <T> T performOnAllAndChoseCommon(BlockGetter level, BlockPos pos, Supplier<T> fallback, BiFunction<CompoundBlockEntity, VirtualBlock, T> action) {
+	public static <T> T performOnAllAndChoseCommon(BlockGetter level, BlockPos pos, Supplier<T> fallback, BiFunction<CompoundBlockEntity, VirtualBlock, T> action) {
 		if (level == null) return fallback.get();
 		if (level.getBlockEntity(pos) instanceof CompoundBlockEntity compound) {
 			Optional<Entry<T, Long>> result = compound.getParts().values().stream()
@@ -187,7 +187,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return fallback.get();
 	}
 	
-	protected void performOnAll(BlockGetter level, BlockPos pos, BiConsumer<CompoundBlockEntity, VirtualBlock> action) {
+	public static void performOnAll(BlockGetter level, BlockPos pos, BiConsumer<CompoundBlockEntity, VirtualBlock> action) {
 		if (level == null) return;
 		if (level.getBlockEntity(pos) instanceof CompoundBlockEntity compound) {
 			compound.getParts().values()
@@ -195,27 +195,27 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		}
 	}
 	
-	protected boolean trueIfAny(boolean a, boolean b) {
+	public static boolean trueIfAny(boolean a, boolean b) {
 		return a || b;
 	}
 	
-	protected boolean trueIfAll(boolean a, boolean b) {
+	public static boolean trueIfAll(boolean a, boolean b) {
 		return a && b;
 	}
 	
-	protected int sumInt(int a, int b) {
+	public static int sumInt(int a, int b) {
 		return a + b;
 	}
 	
-	protected float sumFloat(float a, float b) {
+	public static float sumFloat(float a, float b) {
 		return a + b;
 	}
 
-	protected float maxFloat(float a, float b) {
+	public static float maxFloat(float a, float b) {
 		return a > b ? a : b;
 	}
 	
-	protected double sumDouble(double a, double b) {
+	public static double sumDouble(double a, double b) {
 		return a + b;
 	}
 	
@@ -351,7 +351,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.addLandingEffects(state1, level, pos, state2, entity, numberOfParticles), 
 				(compound, p) -> p.getState().addLandingEffects((ServerLevel) p.getLevel(), p.getPos(), state2, entity, numberOfParticles), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@SuppressWarnings("resource")
@@ -360,7 +360,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.addRunningEffects(state, level, pos, entity),
 				(compound, p) -> p.getState().addRunningEffects(p.getLevel(), p.getPos(), entity), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 
 	@Override
@@ -368,7 +368,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(getter, pos, 
 				() -> super.canBeHydrated(state, getter, pos, fluid, fluidPos), 
 				(compound, p) -> p.getState().canBeHydrated(p.getLevel(), p.getPos(), fluid, fluidPos), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@Override
@@ -376,7 +376,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.canConnectRedstone(state, level, pos, direction), 
 				(compound, p) -> p.getState().canRedstoneConnectTo(p.getLevel(), p.getPos(), direction), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@Override
@@ -384,7 +384,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.canDropFromExplosion(state, level, pos, explosion), 
 				(compound, p) -> p.getState().canDropFromExplosion(p.getLevel(), p.getPos(), explosion), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@Override
@@ -392,7 +392,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.canEntityDestroy(state, level, pos, entity), 
 				(compound, p) -> p.getState().canEntityDestroy(p.getLevel(), p.getPos(), entity), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@Override
@@ -400,7 +400,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.collisionExtendsVertically(state, level, pos, collidingEntity), 
 				(compound, p) -> p.getState().collisionExtendsVertically(p.getLevel(), p.getPos(), collidingEntity), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 
 	@Override
@@ -408,7 +408,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.getWeakChanges(state, level, pos), 
 				(compound, p) -> p.getState().getWeakChanges(p.getLevel(), p.getPos()), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@Override
@@ -416,7 +416,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.hidesNeighborFace(level, pos, state, neighborState, dir), 
 				(compound, p) -> p.getState().hidesNeighborFace(p.getLevel(), p.getPos(), neighborState, dir), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@Override
@@ -424,7 +424,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.isBurning(state, level, pos), 
 				(compound, p) -> p.getState().isBurning(p.getLevel(), p.getPos()), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@Override
@@ -432,21 +432,21 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.isConduitFrame(state, level, pos, conduit), 
 				(compound, p) -> p.getState().isConduitFrame(p.getLevel(), p.getPos(), conduit), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	@Override
 	public boolean isFertile(BlockState state, BlockGetter level, BlockPos pos) {
 		return performOnAllAndCombine(level, pos, 
 				() -> super.isFertile(state, level, pos), 
 				(compound, p) -> p.getState().isFertile(p.getLevel(), p.getPos()), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	@Override
 	public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction direction) {
 		return performOnAllAndCombine(level, pos, 
 				() -> super.isFireSource(state, level, pos, direction), 
 				(compound, p) -> p.getState().isFireSource(p.getLevel(), p.getPos(), direction), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@Override
@@ -454,7 +454,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.isFlammable(state, level, pos, direction), 
 				(compound, p) -> p.getState().isFlammable(p.getLevel(), p.getPos(), direction), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@Override
@@ -462,7 +462,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.isLadder(state, level, pos, entity), 
 				(compound, p) -> p.getState().isLadder(p.getLevel(), p.getPos(), entity), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -471,7 +471,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(pLevel, pPos, 
 				() -> super.isOcclusionShapeFullBlock(pState, pLevel, pPos), 
 				(compound, p) -> p.getBlock().isOcclusionShapeFullBlock(p.getState(), p.getLevel(), p.getPos()), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -480,7 +480,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(pLevel, pPos, 
 				() -> super.isPathfindable(pState, pLevel, pPos, pType), 
 				(compound, p) -> p.getState().isPathfindable(p.getLevel(), p.getPos(), pType), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@Override
@@ -488,7 +488,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.isPortalFrame(state, level, pos), 
 				(compound, p) -> p.getState().isPortalFrame(p.getLevel(), p.getPos()), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 	
 	@Override
@@ -496,7 +496,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.isScaffolding(state, level, pos, entity), 
 				(compound, p) -> p.getBlock().isScaffolding(p.getState(), p.getLevel(), p.getPos(), entity), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 
 	}
 	
@@ -510,7 +510,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.makesOpenTrapdoorAboveClimbable(state, level, pos, trapdoorState), 
 				(compound, p) -> p.getBlock().makesOpenTrapdoorAboveClimbable(p.getState(), p.getLevel(), p.getPos(), trapdoorState), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -519,7 +519,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(pLevel, pPos, 
 				() -> super.canSurvive(pState, pLevel, pPos), 
 				(compound, p) -> p.getBlock().canSurvive(p.getState(), p.getLevel(), p.getPos()), 
-				this::trueIfAll);
+				CompoundBlock::trueIfAll);
 	}
 	
 	@Override
@@ -527,7 +527,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(world, pos, 
 				() -> super.canSustainPlant(state, world, pos, facing, plantable), 
 				(compound, p) -> p.getBlock().canSustainPlant(p.getState(), p.getLevel(), p.getPos(), facing, plantable), 
-				this::trueIfAll);
+				CompoundBlock::trueIfAll);
 	}
 
 	@SuppressWarnings({ "deprecation", "resource" })
@@ -536,7 +536,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(pLevel, pPos, 
 				() -> super.triggerEvent(pState, pLevel, pPos, pId, pParam), 
 				(compound, p) -> p.getBlock().triggerEvent(p.getState(), p.getLevel(), p.getPos(), pId, pParam), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 
 	@Override
@@ -544,7 +544,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(pLevel, pPos, 
 				() -> true, 
 				(compound, p) -> p.getBlock().propagatesSkylightDown(p.getState(), p.getLevel(), p.getPos()), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -553,7 +553,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(pLevel, pPos, 
 				() -> super.isCollisionShapeFullBlock(pState, pLevel, pPos), 
 				(compound, p) -> p.getBlock().isCollisionShapeFullBlock(p.getState(), p.getLevel(), p.getPos()), 
-				this::trueIfAny);
+				CompoundBlock::trueIfAny);
 	}
 
 	@Override
@@ -599,7 +599,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.getExpDrop(state, level, randomSource, pos, fortuneLevel, silkTouchLevel), 
 				(compound, p) -> p.getState().getExpDrop(p.getLevel(), randomSource, p.getPos(), fortuneLevel, silkTouchLevel), 
-				this::sumInt);
+				CompoundBlock::sumInt);
 	}
 
 	@Override
@@ -607,7 +607,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return Math.min(15, performOnAllAndCombine(level, pos, 
 				() -> super.getLightEmission(state, level, pos), 
 				(compound, p) -> p.getState().getLightBlock(p.getLevel(), p.getPos()), 
-				this::sumInt));
+				CompoundBlock::sumInt));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -616,7 +616,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return Math.min(15, performOnAllAndCombine(pLevel, pPos, 
 				() -> super.getSignal(pState, pLevel, pPos, pDirection), 
 				(compound, p) -> p.getBlock().getSignal(p.getState(), p.getLevel(), p.getPos(), pDirection), 
-				this::sumInt));
+				CompoundBlock::sumInt));
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -625,7 +625,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return Math.min(15, performOnAllAndCombine(pLevel, pPos, 
 				() -> super.getDirectSignal(pState, pLevel, pPos, pDirection), 
 				(compound, p) -> p.getBlock().getDirectSignal(p.getState(), p.getLevel(), p.getPos(), pDirection), 
-				this::sumInt));
+				CompoundBlock::sumInt));
 	}
 
 	@SuppressWarnings({ "deprecation", "resource" })
@@ -634,7 +634,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return Math.min(15, performOnAllAndCombine(pLevel, pPos, 
 				() -> super.getAnalogOutputSignal(pState, pLevel, pPos), 
 				(compound, p) -> p.getBlock().getAnalogOutputSignal(p.getState(), p.getLevel(), p.getPos()), 
-				this::sumInt));
+				CompoundBlock::sumInt));
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -650,7 +650,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.getExplosionResistance(state, level, pos, explosion),
 				(compound, p) -> p.getBlock().getExplosionResistance(state, level, pos, explosion), 
-				this::maxFloat);
+				CompoundBlock::maxFloat);
 	}
 	
 	@Override
@@ -658,7 +658,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.getEnchantPowerBonus(state, level, pos),
 				(compound, p) -> p.getState().getEnchantPowerBonus(p.getLevel(), p.getPos()), 
-				this::sumFloat);
+				CompoundBlock::sumFloat);
 	}
 	
 	@Override
@@ -666,7 +666,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> super.getFriction(state, level, pos, entity),
 				(compound, p) -> p.getState().getFriction(p.getLevel(), p.getPos(), entity) / (float) compound.getParts().size(), 
-				this::sumFloat);
+				CompoundBlock::sumFloat);
 	}
 
 	@SuppressWarnings("resource")
@@ -675,7 +675,7 @@ public class CompoundBlock extends BaseEntityBlock implements IKineticBlock, IMa
 		return performOnAllAndCombine(level, pos, 
 				() -> 0.0, 
 				(compound, p) -> MagnetismUtility.getBlockCoefficient(p.getLevel(), p.getState(), p.getPos()) / compound.getParts().size(), 
-				this::sumDouble);
+				CompoundBlock::sumDouble);
 	}
 
 	@Override

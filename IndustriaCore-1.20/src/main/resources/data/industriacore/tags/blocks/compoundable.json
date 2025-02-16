@@ -5,6 +5,8 @@
 		"industriacore:large_gear",
 		"industriacore:shaft",
 		"industriacore:short_shaft_1",
-		"industriacore:short_shaft_2"
+		"industriacore:short_shaft_2",
+		"industriacore:belt",
+		"industriacore:belt_shaft"
 	]
 }

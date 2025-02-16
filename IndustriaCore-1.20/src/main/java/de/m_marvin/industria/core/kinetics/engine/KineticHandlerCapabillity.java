@@ -357,10 +357,8 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 	 */
 	public void recalculateNetwork(KineticNetwork network) {
 		
-		network.setState(PowerNetState.ACTIVE);
-		
 		// Check for opposite rotations, if so, skip calculations
-		if (network.isTripped()) {
+		if (network.isLocked()) {
 			network.setNetworkSpeed(0.0);
 		} else {
 			
@@ -383,8 +381,8 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 			// Check for reversed sources
 			else if (maxSpeedH.isPresent() && maxSpeedL.isPresent()) {
 				network.setNetworkSpeed(0.0);
-				network.tripFuse();
-			} 
+				network.setState(PowerNetState.INACTIVE);
+			}
 			
 			else {
 				
@@ -405,7 +403,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 				// Check for overload
 				if (load > torque) {
 					network.setNetworkSpeed(0.0);
-					network.tripFuse();
+					network.setState(PowerNetState.INACTIVE);
 				} 
 				
 				else {
@@ -537,24 +535,6 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 			// Check if valid kinetic block
 			if (state1a.getBlock() instanceof IKineticBlock kinetic1a) {
 				
-//				// Get all transmission nodes, skip if no nodes
-//				TransmissionNode[] nodes = kinetic1a.getTransmissionNodes(level, pos1a, state1a);
-//				if (nodes.length == 0) continue;
-//				
-//				// Check if there are nodes that match with this reference, if not, the reference points the an compound containing multiple sub blocks
-//				List<TransmissionNode> nodeMatch = Stream.of(nodes)
-//						.filter(n -> n.reference().equals(ref))
-//						.toList();
-//				
-//				// If no node matches, add all sub block references to the queue of references to process
-//				if (nodeMatch.isEmpty()) {
-//					Stream.of(nodes)
-//						.map(TransmissionNode::reference)
-//						.distinct()
-//						.forEach(neighbors::add);
-//					continue;
-//				}
-				
 				// Iterate over all nodes that match the reference
 				for (TransmissionNode node1 : kinetic1a.getTransmissionNodes(level, pos1a, state1a)) {
 					
@@ -634,7 +614,7 @@ public class KineticHandlerCapabillity implements ICapabilitySerializable<ListTa
 										
 										// Set transmission ratio in network
 										if (!network.addTransmission(component1, component2, transmission))
-											network.tripFuse();
+											network.setLocked();
 										
 										// Add this nodes reference to queue of references to process
 										if (!neighbors.contains(node2.reference())) neighbors.add(node2.reference());

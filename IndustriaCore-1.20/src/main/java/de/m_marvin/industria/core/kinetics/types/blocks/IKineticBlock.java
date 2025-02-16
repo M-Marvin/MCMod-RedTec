@@ -1,6 +1,9 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
+import javax.annotation.Nullable;
+
 import de.m_marvin.industria.core.kinetics.engine.transmission.AxleTransmission;
+import de.m_marvin.industria.core.kinetics.engine.transmission.BeltTransmissions;
 import de.m_marvin.industria.core.kinetics.engine.transmission.GearTransmissions;
 import de.m_marvin.industria.core.kinetics.engine.transmission.ShaftTransmission;
 import de.m_marvin.industria.core.kinetics.types.blockentities.IKineticBlockEntity;
@@ -61,7 +64,8 @@ public interface IKineticBlock {
 	 * @param pos Position of this node in the world
 	 * @param ratio The RPM ratio for this transmission node
 	 * @param axis The axis of rotation of this node
-	 * @param offset Where the node is placed along the axis (front/center/back)
+	 * @param offset Where the node is placed along the axis (front/center/back) (only relevant for some types)
+	 * @param arg An transmission type specific argument (only relevant for some types)
 	 * @param type The type of transmission of this node
 	 */
 	public static record TransmissionNode(
@@ -69,21 +73,18 @@ public interface IKineticBlock {
 			BlockPos pos, 
 			double ratio, 
 			Axis axis, 
-			AxisOffset offset, 
+			@Nullable AxisOffset offset,
+			@Nullable Object arg,
 			TransmissionType type
 	) {
 		public TransmissionNode withReference(KineticReference reference) {
-			return new TransmissionNode(reference, pos, ratio, axis, offset, type);
+			return new TransmissionNode(reference, pos, ratio, axis, offset, arg, type);
 		}
 	}
 	
 	
-	/** Shaft which connects in both directions **/
+	/** Shaft which connects along its axis to other shafts, can be set to only connect in one AxisDirection by the node arg value **/
 	public static final TransmissionType SHAFT = ShaftTransmission.SHAFT;
-	/** Shaft which connects only in the axis positive direction **/
-	public static final TransmissionType SHAFT_POS = ShaftTransmission.SHAFT_POS;
-	/** Shaft which connects only in the axis negative direction **/
-	public static final TransmissionType SHAFT_NEG = ShaftTransmission.SHAFT_NEG;
 	/** Gear which connects only to touching neighbor gears with the same axis **/
 	public static final TransmissionType GEAR = GearTransmissions.GEAR;
 	/** Gear which connects on an 90 degree orthogonal axis to other gears of the same type **/
@@ -94,7 +95,12 @@ public interface IKineticBlock {
 	public static final TransmissionType ATTACHMENT = AxleTransmission.ATTACHMENT;
 	/** Axle connection which connects to inserts (gears) placed onto the shaft **/
 	public static final TransmissionType AXLE = AxleTransmission.AXLE;
-	
+	/** Belt connection which connects to other belts in the DiagonalDirection configured by the arg value of the node */
+	public static final TransmissionType BELT = BeltTransmissions.BELT;
+	/** Belt connection which connects to belts placed on top of this block **/
+	public static final TransmissionType BELT_AXLE = BeltTransmissions.AXLE;
+	/** Belt connection which connects to shafts placed inside a belt **/
+	public static final TransmissionType BELT_ATTACHMENT = BeltTransmissions.ATTACHMENT;
 	
 	public TransmissionNode[] getTransmissionNodes(LevelAccessor level, BlockPos pos, BlockState state);
 

@@ -33,7 +33,7 @@ public class GearBlock extends BaseEntityBlock implements IKineticBlock {
 	public static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
 	public static final EnumProperty<AxisOffset> POS = Blocks.PROP_GEAR_POS;
 	
-	public static final VoxelShape SHAPE = Shapes.join(VoxelShapeUtility.box(0, 6, 0, 16, 10, 16), VoxelShapeUtility.box(6, 6, 6, 10, 10, 10), BooleanOp.ONLY_FIRST);
+	public static final VoxelShape SHAPE = Shapes.join(VoxelShapeUtility.box(0, 6, 0, 16, 10, 16), ShaftBlock.SHAPE, BooleanOp.ONLY_FIRST);
 	
 	public GearBlock(Properties pProperties) {
 		super(pProperties);
@@ -47,8 +47,8 @@ public class GearBlock extends BaseEntityBlock implements IKineticBlock {
 	@Override
 	public TransmissionNode[] getTransmissionNodes(LevelAccessor level, BlockPos pos, BlockState state) {
 		return new TransmissionNode[] {
-				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), state.getValue(POS), GEAR),
-				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), state.getValue(POS), ATTACHMENT)
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), state.getValue(POS), null, GEAR),
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), state.getValue(POS), null, ATTACHMENT)
 		};
 	}
 	

@@ -11,7 +11,7 @@ import de.m_marvin.industria.core.parametrics.engine.BlockParametricsManager;
 import de.m_marvin.industria.core.registries.BlockEntityTypes;
 import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.util.GameUtility;
-import de.m_marvin.industria.core.util.types.Direction2d;
+import de.m_marvin.industria.core.util.types.PlanarDirection;
 import de.m_marvin.univec.impl.Vec2i;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -117,8 +117,8 @@ public class VoltageSourceBlockEntity extends BlockEntity implements MenuProvide
 	
 	@Override
 	public <B extends BlockEntity & IJunctionEdit> void setupScreenConduitNodes(JunctionBoxContainer<B> abstractJunctionBoxScreen, NodePos[] conduitNodes,ExternalNodeConstructor externalNodeConstructor, InternalNodeConstructor internalNodeConstructor) {
-		externalNodeConstructor.construct(new Vec2i(69, 8), 	Direction2d.UP, 	conduitNodes[0]);
-		internalNodeConstructor.construct(new Vec2i(69, 112), 	Direction2d.DOWN, 	0);
+		externalNodeConstructor.construct(new Vec2i(69, 8), 	PlanarDirection.Y_POS, 	conduitNodes[0]);
+		internalNodeConstructor.construct(new Vec2i(69, 112), 	PlanarDirection.Y_NEG, 	0);
 	}
 
 	@Override

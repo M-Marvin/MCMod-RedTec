@@ -1,39 +1,43 @@
- package de.m_marvin.industria.core.kinetics.types.blocks;
+package de.m_marvin.industria.core.kinetics.types.blocks;
 
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
-import de.m_marvin.industria.core.util.MathUtility;
+import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
+import de.m_marvin.industria.core.util.types.DiagonalDirection;
+import de.m_marvin.industria.core.util.types.DiagonalPlanarDirection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class ShaftBlock extends BaseEntityBlock implements IKineticBlock {
-
-	public static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
-
-	public static final VoxelShape SHAPE = VoxelShapeUtility.box(6, 0, 6, 10, 16, 10);
+public class BeltBlock extends BaseEntityBlock implements IKineticBlock {
 	
-	public ShaftBlock(Properties pProperties) {
+	public static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
+	public static final EnumProperty<DiagonalPlanarDirection> ORIENTATION = Blocks.PROP_PLANAR_ORIENTATION;
+	public static final BooleanProperty IS_END = Blocks.PROP_IS_END;
+	
+	public BeltBlock(Properties pProperties) {
 		super(pProperties);
 	}
-	
+
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
 		pBuilder.add(AXIS);
+		pBuilder.add(ORIENTATION);
+		pBuilder.add(IS_END);
 	}
 	
 	@Override
@@ -47,13 +51,7 @@ public class ShaftBlock extends BaseEntityBlock implements IKineticBlock {
 				.centered()
 				.rotateFromAxisY(pState.getValue(AXIS))
 				.uncentered()
-				.transform(SHAPE);
-	}
-	
-	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-		Axis axis = pContext.getClickedFace().getAxis();
-		return this.defaultBlockState().setValue(AXIS, axis);
+				.transform(Shapes.join(VoxelShapeUtility.box(0, 0, 0, 16, 16, 16), Shapes.or(ShaftBlock.SHAPE, BeltShaftBlock.SHAPE), BooleanOp.ONLY_FIRST));
 	}
 	
 	@Override
@@ -63,20 +61,21 @@ public class ShaftBlock extends BaseEntityBlock implements IKineticBlock {
 
 	@Override
 	public TransmissionNode[] getTransmissionNodes(LevelAccessor level, BlockPos pos, BlockState state) {
-		return new TransmissionNode[] {
-			new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), null, null, SHAFT),
-			new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), null, null, AXLE)
-		};
+		Axis axis = state.getValue(AXIS);
+		DiagonalPlanarDirection orientation = state.getValue(ORIENTATION);
+		DiagonalDirection connectDirection = DiagonalDirection.fromPlanarAndAxis(orientation, axis);
+		if (state.getValue(IS_END)) {
+			return new TransmissionNode[] {
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, axis, null, connectDirection, BELT),
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, axis, null, null, BELT_ATTACHMENT)
+			};
+		} else {
+			return new TransmissionNode[] {
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, axis, null, connectDirection, BELT),
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, axis, null, connectDirection.getOposite(), BELT),
+				new TransmissionNode(KineticReference.simple(pos), pos, 1.0, axis, null, null, BELT_ATTACHMENT)
+			};
+		}
 	}
 
-	@Override
-	public BlockState rotate(BlockState pState, Rotation pRotation) {
-		return pState.setValue(AXIS, MathUtility.rotate(pRotation, pState.getValue(AXIS)));
-	}
-	
-	@Override
-	public BlockState mirror(BlockState pState, Mirror pMirror) {
-		return pState;
-	}
-	
 }

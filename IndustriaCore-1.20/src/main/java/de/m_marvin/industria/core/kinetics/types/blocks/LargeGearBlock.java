@@ -90,14 +90,14 @@ public class LargeGearBlock extends BaseEntityBlock implements IKineticBlock {
 		AxisOffset offset = state.getValue(POS);
 		if (offset == AxisOffset.CENTER) {
 			return new TransmissionNode[] {
-					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), AxisOffset.CENTER, GEAR_DIAG),
-					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), AxisOffset.CENTER, GEAR_ANGLE),
-					new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), AxisOffset.CENTER, ATTACHMENT)
+					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), AxisOffset.CENTER, null, GEAR_DIAG),
+					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), AxisOffset.CENTER, null, GEAR_ANGLE),
+					new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), AxisOffset.CENTER, null, ATTACHMENT)
 			};
 		} else {
 			return new TransmissionNode[] {
-					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), offset, GEAR_DIAG),
-					new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), offset, ATTACHMENT)
+					new TransmissionNode(KineticReference.simple(pos), pos, 2.0, state.getValue(AXIS), offset, null, GEAR_DIAG),
+					new TransmissionNode(KineticReference.simple(pos), pos, 1.0, state.getValue(AXIS), offset, null, ATTACHMENT)
 			};
 		}
 		
