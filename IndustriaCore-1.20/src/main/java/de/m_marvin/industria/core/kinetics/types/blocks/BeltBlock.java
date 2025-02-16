@@ -1,5 +1,6 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
+import de.m_marvin.industria.core.compound.types.blocks.CompoundBlock;
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
 import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
@@ -8,7 +9,9 @@ import de.m_marvin.industria.core.util.types.DiagonalPlanarDirection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -52,6 +55,80 @@ public class BeltBlock extends BaseEntityBlock implements IKineticBlock {
 				.rotateFromAxisY(pState.getValue(AXIS))
 				.uncentered()
 				.transform(Shapes.join(VoxelShapeUtility.box(0, 0, 0, 16, 16, 16), Shapes.or(ShaftBlock.SHAPE, BeltShaftBlock.SHAPE), BooleanOp.ONLY_FIRST));
+	}
+	
+	@Override
+	public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
+		DiagonalDirection direction1 = DiagonalDirection.fromPlanarAndAxis(pState.getValue(ORIENTATION), pState.getValue(AXIS));
+		DiagonalDirection direction2 = direction1.getOposite();
+		
+		BlockPos pos1 = pPos.offset(direction1.getNormal().x, direction1.getNormal().y, direction1.getNormal().z);
+		boolean valid1 = CompoundBlock.performOnAllAndCombine(pLevel, pos1, 
+				() -> isValidConnectedBelt(pLevel.getBlockState(pos1), direction2), 
+				(compound, part) -> isValidConnectedBelt(part.getState(), direction2), 
+				CompoundBlock::trueIfAny);
+		
+		if (!valid1) return false;
+		
+		if (!pState.getValue(IS_END)) {
+			BlockPos pos2 = pPos.offset(direction2.getNormal().x, direction2.getNormal().y, direction2.getNormal().z);
+			boolean valid2 = CompoundBlock.performOnAllAndCombine(pLevel, pos2, 
+					() -> isValidConnectedBelt(pLevel.getBlockState(pos2), direction1), 
+					(compound, part) -> isValidConnectedBelt(part.getState(), direction1), 
+					CompoundBlock::trueIfAny);
+			
+			return valid2;
+		}
+		
+		return true;
+	}
+	
+	public boolean isValidConnectedBelt(BlockState pState, DiagonalDirection direction) {
+		if (pState.getBlock() instanceof BeltBlock) {
+			DiagonalDirection d = DiagonalDirection.fromPlanarAndAxis(pState.getValue(ORIENTATION), pState.getValue(AXIS));
+			if (direction == d) return true;
+			if (direction == d.getOposite() && !pState.getValue(IS_END)) return true;
+		}
+		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pNeighborBlock, BlockPos pNeighborPos, boolean pMovedByPiston) {		
+		DiagonalDirection direction1 = DiagonalDirection.fromPlanarAndAxis(pState.getValue(ORIENTATION), pState.getValue(AXIS));
+		BlockPos pos1 = pPos.offset(direction1.getNormal().x, direction1.getNormal().y, direction1.getNormal().z);
+		DiagonalDirection direction2 = direction1.getOposite();
+		BlockPos pos2 = pPos.offset(direction2.getNormal().x, direction2.getNormal().y, direction2.getNormal().z);
+		
+		if (pNeighborPos.equals(pos1) || (!pState.getValue(IS_END) && pNeighborPos.equals(pos2))) {
+			if (!canSurvive(pState, pLevel, pPos))
+				pLevel.destroyBlock(pPos, true);
+		}
+		super.neighborChanged(pState, pLevel, pPos, pNeighborBlock, pNeighborPos, pMovedByPiston);
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
+		updateDiagonalBelts(pState, pLevel, pPos);
+		super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void updateDiagonalBelts(BlockState pState, Level pLevel, BlockPos pPos) {
+		DiagonalDirection direction1 = DiagonalDirection.fromPlanarAndAxis(pState.getValue(ORIENTATION), pState.getValue(AXIS));
+		BlockPos pos1 = pPos.offset(direction1.getNormal().x, direction1.getNormal().y, direction1.getNormal().z);
+		BlockState state1 = pLevel.getBlockState(pos1);
+		
+		state1.getBlock().neighborChanged(state1, pLevel, pos1, pState.getBlock(), pPos, false);
+		
+		if (!pState.getValue(IS_END)) {
+			DiagonalDirection direction2 = direction1.getOposite();
+			BlockPos pos2 = pPos.offset(direction2.getNormal().x, direction2.getNormal().y, direction2.getNormal().z);
+			BlockState state2 = pLevel.getBlockState(pos2);
+			
+			state2.getBlock().neighborChanged(state2, pLevel, pos2, pState.getBlock(), pPos, false);
+		}
 	}
 	
 	@Override

@@ -124,7 +124,9 @@ class ServerLevelRedirect extends ServerLevel {
 	@Override
 	public boolean setBlock(BlockPos pPos, BlockState pState, int pFlags, int pRecursionLeft) {
 		if (pPos.equals(block.getPos())) {
+			BlockState oldState = block.getState();
 			block.setBlock(pState);
+			oldState.onRemove(this, pPos, pState, false);
 			if ((pFlags & 1) > 0) GameUtility.triggerUpdate(level, pPos);
 			return true;
 		}
@@ -380,6 +382,11 @@ class ServerLevelRedirect extends ServerLevel {
 	@Override
 	public void neighborChanged(BlockPos pPos, Block pBlock, BlockPos pFromPos) {
 		level.neighborChanged(pPos, pBlock, pFromPos);
+	}
+
+	@Override
+	public void neighborShapeChanged(Direction pDirection, BlockState pQueried, BlockPos pPos, BlockPos pOffsetPos, int pFlags, int pRecursionLevel) {
+		level.neighborShapeChanged(pDirection, pQueried, pPos, pOffsetPos, pFlags, pRecursionLevel);
 	}
 	
 	@Override
