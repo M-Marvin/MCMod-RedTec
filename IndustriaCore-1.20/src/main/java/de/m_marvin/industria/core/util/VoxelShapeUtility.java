@@ -11,6 +11,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class VoxelShapeUtility {
 	
+	private VoxelShapeUtility() {}
+	
 	public static VoxelShape box(float ax, float ay, float az, float bx, float by, float bz) {
 		return Shapes.create(
 				(ax > bx ? bx : ax) * 0.0625F, 

@@ -1,5 +1,6 @@
 package de.m_marvin.industria.core.util;
 
+import java.text.Normalizer.Form;
 import java.util.List;
 
 import joptsimple.internal.Strings;

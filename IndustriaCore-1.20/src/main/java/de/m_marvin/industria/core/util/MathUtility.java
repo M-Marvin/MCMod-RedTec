@@ -39,6 +39,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class MathUtility {
 
+	private MathUtility() {}
+	
 	public static final double ANGULAR_VELOCITY_TO_ROTATIONS_PER_SECOND = (180.0 / Math.PI) / 360.0;
 	public static final double ROTATIONS_PER_SECOND_TO_ANGULAR_VELOCITY = 360 / (180.0 / Math.PI);
 

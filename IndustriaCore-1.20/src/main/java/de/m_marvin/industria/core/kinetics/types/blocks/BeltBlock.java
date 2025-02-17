@@ -1,6 +1,7 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
 import de.m_marvin.industria.core.compound.types.blocks.CompoundBlock;
+import de.m_marvin.industria.core.kinetics.types.blockentities.BeltBlockEntity;
 import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
 import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
@@ -133,7 +134,7 @@ public class BeltBlock extends BaseEntityBlock implements IKineticBlock {
 	
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-		return new SimpleKineticBlockEntity(pPos, pState);
+		return new BeltBlockEntity(pPos, pState);
 	}
 
 	@Override

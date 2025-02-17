@@ -1,0 +1,14 @@
+{
+  "variants": {
+    "axis=x,is_end=false,orientation=y_positive": { "model": "industriacore:block/belt_streight" },
+    "axis=x,is_end=true,orientation=y_negative": { "model": "industriacore:block/belt_streight_end1" },
+    
+    
+    "axis=z,is_end=false,orientation=y_positive": { "model": "industriacore:block/belt_streight", "y": -90 },
+    "axis=z,is_end=true,orientation=y_negative": { "model": "industriacore:block/belt_streight_end1", "y": -90 },
+    
+    
+    "axis=y,is_end=false,orientation=y_positive": { "model": "industriacore:block/belt_streight" },
+    "axis=y,is_end=true,orientation=y_negative": { "model": "industriacore:block/belt_streight_end1" }
+  }
+}
