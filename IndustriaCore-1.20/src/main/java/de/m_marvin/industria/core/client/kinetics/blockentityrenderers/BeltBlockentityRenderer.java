@@ -37,14 +37,10 @@ public class BeltBlockentityRenderer implements BlockEntityRenderer<BeltBlockEnt
 		BlockState state = pBlockEntity.getBlockState();
 		BakedModel model = dispatcher.getBlockModel(state);
 		ModelData data = ModelData.EMPTY;
-		Axis axis = state.getValue(BeltBlock.AXIS);
 		
 		double rpm = pBlockEntity.getRPM(0);
-		
-		float animation = (float) (-rpm * 0.333F * ClientTimer.getRenderTicks() / 1000) % 1F;
+		float animation = (float) (rpm * -0.333F * ClientTimer.getRenderTicks() / 1000) % 1F;
 		if (animation < 0F) animation += 1F;
-		
-//		float rotation = (float) ((float) (ClientTimer.getRenderTicks() / 3000 * rpm * rotationalSpeed) * 2 * Math.PI);
 		
 		if (model instanceof SimpleBakedModel simpleModel) {
 			

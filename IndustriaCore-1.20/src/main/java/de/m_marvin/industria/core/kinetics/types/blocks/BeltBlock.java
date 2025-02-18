@@ -1,14 +1,16 @@
 package de.m_marvin.industria.core.kinetics.types.blocks;
 
+import de.m_marvin.industria.core.compound.types.blockentities.CompoundBlockEntity;
 import de.m_marvin.industria.core.compound.types.blocks.CompoundBlock;
 import de.m_marvin.industria.core.kinetics.types.blockentities.BeltBlockEntity;
-import de.m_marvin.industria.core.kinetics.types.blockentities.SimpleKineticBlockEntity;
 import de.m_marvin.industria.core.registries.Blocks;
 import de.m_marvin.industria.core.util.VoxelShapeUtility;
 import de.m_marvin.industria.core.util.types.DiagonalDirection;
 import de.m_marvin.industria.core.util.types.DiagonalPlanarDirection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -51,11 +53,19 @@ public class BeltBlock extends BaseEntityBlock implements IKineticBlock {
 	
 	@Override
 	public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+		
+		final VoxelShape SHAPE_STRAIGHT = Shapes.or(VoxelShapeUtility.box(1, 3, 0, 15, 4, 16), VoxelShapeUtility.box(1, 12, 0, 15, 13, 16));
+		final VoxelShape SHAPE_STREIGHT_END = Shapes.or(VoxelShapeUtility.box(1, 3, 0, 15, 4, 16), VoxelShapeUtility.box(1, 12, 0, 15, 13, 16));
+		
+		VoxelShape shape = pState.getValue(IS_END) ? SHAPE_STREIGHT_END : SHAPE_STRAIGHT;
+		
+		Axis axis = pState.getValue(AXIS);
+		
 		return VoxelShapeUtility.transformation()
 				.centered()
-				.rotateFromAxisY(pState.getValue(AXIS))
+				.rotateFromAxisX(axis)
 				.uncentered()
-				.transform(Shapes.join(VoxelShapeUtility.box(0, 0, 0, 16, 16, 16), Shapes.or(ShaftBlock.SHAPE, BeltShaftBlock.SHAPE), BooleanOp.ONLY_FIRST));
+				.transform(shape);
 	}
 	
 	@Override
@@ -101,10 +111,9 @@ public class BeltBlock extends BaseEntityBlock implements IKineticBlock {
 		DiagonalDirection direction2 = direction1.getOposite();
 		BlockPos pos2 = pPos.offset(direction2.getNormal().x, direction2.getNormal().y, direction2.getNormal().z);
 		
-		if (pNeighborPos.equals(pos1) || (!pState.getValue(IS_END) && pNeighborPos.equals(pos2))) {
-			if (!canSurvive(pState, pLevel, pPos))
-				pLevel.destroyBlock(pPos, true);
-		}
+		if (pNeighborPos.equals(pos1) || (!pState.getValue(IS_END) && pNeighborPos.equals(pos2)))
+			pLevel.scheduleTick(pPos, this, 1);
+		
 		super.neighborChanged(pState, pLevel, pPos, pNeighborBlock, pNeighborPos, pMovedByPiston);
 	}
 	
@@ -115,20 +124,21 @@ public class BeltBlock extends BaseEntityBlock implements IKineticBlock {
 		super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
 	}
 	
-	@SuppressWarnings("deprecation")
+	@Override
+	public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
+		if (!canSurvive(pState, pLevel, pPos))
+			pLevel.destroyBlock(pPos, true);
+	}
+	
 	public void updateDiagonalBelts(BlockState pState, Level pLevel, BlockPos pPos) {
 		DiagonalDirection direction1 = DiagonalDirection.fromPlanarAndAxis(pState.getValue(ORIENTATION), pState.getValue(AXIS));
 		BlockPos pos1 = pPos.offset(direction1.getNormal().x, direction1.getNormal().y, direction1.getNormal().z);
-		BlockState state1 = pLevel.getBlockState(pos1);
-		
-		state1.getBlock().neighborChanged(state1, pLevel, pos1, pState.getBlock(), pPos, false);
+		pLevel.scheduleTick(pos1, this, 1);
 		
 		if (!pState.getValue(IS_END)) {
 			DiagonalDirection direction2 = direction1.getOposite();
 			BlockPos pos2 = pPos.offset(direction2.getNormal().x, direction2.getNormal().y, direction2.getNormal().z);
-			BlockState state2 = pLevel.getBlockState(pos2);
-			
-			state2.getBlock().neighborChanged(state2, pLevel, pos2, pState.getBlock(), pPos, false);
+			pLevel.scheduleTick(pos2, this, 1);
 		}
 	}
 	

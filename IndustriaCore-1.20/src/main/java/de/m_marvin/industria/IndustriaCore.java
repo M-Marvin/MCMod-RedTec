@@ -18,6 +18,7 @@ import de.m_marvin.industria.core.registries.NetworkPackages;
 import de.m_marvin.industria.core.registries.ParticleTypes;
 import de.m_marvin.industria.core.registries.StructureDataPlugins;
 import de.m_marvin.univec.VectorParser;
+import net.minecraft.client.gui.components.DebugScreenOverlay;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkRegistry;

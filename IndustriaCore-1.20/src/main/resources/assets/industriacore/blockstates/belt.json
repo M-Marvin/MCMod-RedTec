@@ -1,14 +1,34 @@
 {
   "variants": {
-    "axis=x,is_end=false,orientation=y_positive": { "model": "industriacore:block/belt_streight" },
-    "axis=x,is_end=true,orientation=y_negative": { "model": "industriacore:block/belt_streight_end1" },
+    "axis=x,is_end=false,orientation=x_positive": { "model": "industriacore:block/belt_streight", "y": 0 },
+    "axis=x,is_end=false,orientation=x_negative": { "model": "industriacore:block/belt_streight", "y": 0 },
+    "axis=x,is_end=true,orientation=x_negative": { "model": "industriacore:block/belt_streight_end1", "y": 0 },
+    "axis=x,is_end=true,orientation=x_positive": { "model": "industriacore:block/belt_streight_end2", "y": 0 },
     
+    "axis=z,is_end=false,orientation=x_positive": { "model": "industriacore:block/belt_streight", "y": 90 },
+    "axis=z,is_end=false,orientation=x_negative": { "model": "industriacore:block/belt_streight", "y": 90 },
+    "axis=z,is_end=true,orientation=x_positive": { "model": "industriacore:block/belt_streight_end1", "y": 90 },
+    "axis=z,is_end=true,orientation=x_negative": { "model": "industriacore:block/belt_streight_end2", "y": 90 },
     
-    "axis=z,is_end=false,orientation=y_positive": { "model": "industriacore:block/belt_streight", "y": -90 },
-    "axis=z,is_end=true,orientation=y_negative": { "model": "industriacore:block/belt_streight_end1", "y": -90 },
+    "axis=x,is_end=false,orientation=y_positive": { "model": "industriacore:block/belt_streight", "x": 90 },
+    "axis=x,is_end=false,orientation=y_negative": { "model": "industriacore:block/belt_streight", "x": 90 },
+    "axis=x,is_end=true,orientation=y_negative": { "model": "industriacore:block/belt_streight_end1", "x": 90 },
+    "axis=x,is_end=true,orientation=y_positive": { "model": "industriacore:block/belt_streight_end2", "x": 90 },
     
+    "axis=z,is_end=false,orientation=y_positive": { "model": "industriacore:block/belt_streight", "x": 90, "y": 90 },
+    "axis=z,is_end=false,orientation=y_negative": { "model": "industriacore:block/belt_streight", "x": 90, "y": 90 },
+    "axis=z,is_end=true,orientation=y_negative": { "model": "industriacore:block/belt_streight_end1", "x": 90, "y": 90 },
+    "axis=z,is_end=true,orientation=y_positive": { "model": "industriacore:block/belt_streight_end2", "x": 90, "y": 90 },
     
-    "axis=y,is_end=false,orientation=y_positive": { "model": "industriacore:block/belt_streight" },
-    "axis=y,is_end=true,orientation=y_negative": { "model": "industriacore:block/belt_streight_end1" }
+    "axis=y,is_end=false,orientation=x_positive": { "model": "industriacore:block/belt_streight_sideway", "y": -90 },
+    "axis=y,is_end=false,orientation=x_negative": { "model": "industriacore:block/belt_streight_sideway", "y": -90 },
+    "axis=y,is_end=true,orientation=x_positive": { "model": "industriacore:block/belt_streight_sideway_end1", "y": 90 },
+    "axis=y,is_end=true,orientation=x_negative": { "model": "industriacore:block/belt_streight_sideway_end2", "y": 90 },
+    
+    "axis=y,is_end=false,orientation=y_positive": { "model": "industriacore:block/belt_streight_sideway", "y": 0 },
+    "axis=y,is_end=false,orientation=y_negative": { "model": "industriacore:block/belt_streight_sideway", "y": 0 },
+    "axis=y,is_end=true,orientation=y_positive": { "model": "industriacore:block/belt_streight_sideway_end1", "y": 180 },
+    "axis=y,is_end=true,orientation=y_negative": { "model": "industriacore:block/belt_streight_sideway_end2", "y": 180 }
+    
   }
 }

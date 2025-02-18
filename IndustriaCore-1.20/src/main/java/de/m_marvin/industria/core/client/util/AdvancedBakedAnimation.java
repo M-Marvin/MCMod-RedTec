@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Predicate;
 
 import de.m_marvin.industria.IndustriaCore;
@@ -13,7 +15,12 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
@@ -71,9 +78,20 @@ public class AdvancedBakedAnimation {
 		
 	}
 	
-	// TODO Baked Animator Reload @SubscribeEvent
-	public static void onResourceReload() {
-		CACHED_DEFAULT_UV.clear();
+	@SubscribeEvent
+	public static void onResourceReload(RegisterClientReloadListenersEvent event) {
+		event.registerReloadListener(new PreparableReloadListener() {
+			@Override
+			public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager,
+					ProfilerFiller pPreparationsProfiler, ProfilerFiller pReloadProfiler, Executor pBackgroundExecutor,
+					Executor pGameExecutor) {
+				
+				// Clear the UV state cache on reloading the assets
+				CACHED_DEFAULT_UV.clear();
+				IndustriaCore.LOGGER.debug("Cleared baked animation UV cache!");
+				return null;
+			}
+		});
 	}
 	
 }

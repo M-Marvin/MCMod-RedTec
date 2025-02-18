@@ -9,10 +9,10 @@ import net.minecraft.util.StringRepresentable;
 
 public enum DiagonalPlanarDirection implements StringRepresentable {
 	
-	Y_POS(			"y_positive",	new Vec2i(+1, 0),	1,	1),
-	Y_NEG(			"y_negative",	new Vec2i(-1, 0),	0,	0),
-	X_POS(			"x_positive",	new Vec2i(0, +1),	3,	2),
-	X_NEG(			"x_negative",	new Vec2i(0, -1),	2,	3),
+	Y_POS(			"y_positive",	new Vec2i(0, +1),	1,	1),
+	Y_NEG(			"y_negative",	new Vec2i(0, -1),	0,	0),
+	X_POS(			"x_positive",	new Vec2i(+1, 0),	3,	3),
+	X_NEG(			"x_negative",	new Vec2i(-1, 0),	2,	2),
 	X_POS_Y_POS(	"x_pos_y_pos",	new Vec2i(+1, +1),	4,	7),
 	X_NEG_Y_POS(	"x_neg_y_pos",	new Vec2i(-1, +1),	5,	6),
 	X_POS_Y_NEG(	"x_pos_y_neg",	new Vec2i(+1, -1),	6,	5),
@@ -59,6 +59,15 @@ public enum DiagonalPlanarDirection implements StringRepresentable {
 	@Override
 	public String getSerializedName() {
 		return name;
+	}
+	
+	public PlanarDirection getPlanarDirection() {
+		if (this.data2d > 3) return null;
+		return PlanarDirection.from2DDataValue(this.data2d);
+	}
+	
+	public static DiagonalPlanarDirection fromPlanarDirection(PlanarDirection direction) {
+		return BY_2D_DATA[direction.get2DDataValue()];
 	}
 	
 	public DiagonalPlanarDirection getOposite() {
