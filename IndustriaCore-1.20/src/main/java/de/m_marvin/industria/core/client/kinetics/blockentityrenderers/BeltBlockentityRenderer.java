@@ -2,11 +2,9 @@ package de.m_marvin.industria.core.client.kinetics.blockentityrenderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.m_marvin.industria.IndustriaCore;
 import de.m_marvin.industria.core.client.util.AdvancedBakedAnimation;
 import de.m_marvin.industria.core.client.util.ClientTimer;
 import de.m_marvin.industria.core.kinetics.types.blockentities.BeltBlockEntity;
-import de.m_marvin.industria.core.kinetics.types.blocks.BeltBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -14,8 +12,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.SimpleBakedModel;
-import net.minecraft.core.Direction.Axis;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 
@@ -43,12 +39,8 @@ public class BeltBlockentityRenderer implements BlockEntityRenderer<BeltBlockEnt
 		if (animation < 0F) animation += 1F;
 		
 		if (model instanceof SimpleBakedModel simpleModel) {
-			
-			ResourceLocation tex1 = ResourceLocation.tryBuild(IndustriaCore.MODID, "block/belt");
-			ResourceLocation tex2 = ResourceLocation.tryBuild(IndustriaCore.MODID, "block/belt_side");
-			
-			AdvancedBakedAnimation.shiftTextureUV(simpleModel, 0F, animation * 0.5F, tex1, tex2);
-			
+			// TODO texture selective animation
+			AdvancedBakedAnimation.shiftTextureUV(simpleModel, 0F, animation * 0.5F, tex -> true);
 		}
 		
 		for (net.minecraft.client.renderer.RenderType rt : model.getRenderTypes(state, pBlockEntity.getLevel().getRandom(), data))
